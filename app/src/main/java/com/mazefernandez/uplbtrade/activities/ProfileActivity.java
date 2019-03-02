@@ -165,18 +165,18 @@ public class ProfileActivity extends AppCompatActivity {
                     contactNo.setText(editContactNo);
                     break;
                 case 3:
-                    Bundle itemInfo = data.getExtras();
-                    String itemName = itemInfo.getString("NAME");
-                    String itemDesc = itemInfo.getString("DESC");
-                    String itemPrice = itemInfo.getString("PRICE");
-                    Double price = Double.parseDouble(itemPrice);
-                    String itemCondition = itemInfo.getString("CONDITION");
-                    itemArrayList.add(new Item(4,itemName,itemDesc,price,null,itemCondition,1));
-                    itemAdapter.notifyItemInserted(itemArrayList.size() - 1);
-                    Toast.makeText(this,"Added new item",Toast.LENGTH_SHORT).show();
+                    if (getIntent().hasExtra("NAME")) {
+                        Bundle itemInfo = data.getExtras();
+                        String itemName = itemInfo.getString("NAME");
+                        String itemDesc = itemInfo.getString("DESC");
+                        String itemPrice = itemInfo.getString("PRICE");
+                        Double price = Double.parseDouble(itemPrice);
+                        String itemCondition = itemInfo.getString("CONDITION");
+                        itemArrayList.add(new Item(4, itemName, itemDesc, price, null, itemCondition, 1));
+                        itemAdapter.notifyItemInserted(itemArrayList.size() - 1);
+                        Toast.makeText(this, "Added new item", Toast.LENGTH_SHORT).show();
+                    }
                     break;
-                case 4:
-                    Toast.makeText(this, "Add Item cancelled", Toast.LENGTH_SHORT).show();
             }
     }
 

@@ -11,8 +11,6 @@ import android.widget.ImageView;
 
 import com.mazefernandez.uplbtrade.R;
 
-import static com.mazefernandez.uplbtrade.models.RequestCode.ADD_ITEM;
-import static com.mazefernandez.uplbtrade.models.RequestCode.CANCEL_ITEM;
 /* Upload Item for selling */
 
 public class AddItemActivity extends AppCompatActivity{
