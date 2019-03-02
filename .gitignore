@@ -1,0 +1,12 @@
+*.iml
+.gradle
+/local.properties
+.idea/libraries
+.idea/vcs.xml
+.idea/workspace.xml
+assets/edit.png
+/*/build/
+/captures
+.externalNativeBuild
+*.class
+/app/credentials.json
