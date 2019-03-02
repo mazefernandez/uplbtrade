@@ -11,10 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
-        >
+        android:fullBackupContent="">
         <activity
             android:name=".activities.LoginActivity"
-            android:label="login"
+            android:label="UPLB Trade"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
