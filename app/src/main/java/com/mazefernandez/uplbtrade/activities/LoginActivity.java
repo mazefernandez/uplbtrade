@@ -22,6 +22,7 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
 
 public class LoginActivity extends AppCompatActivity {
     private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
+    private GoogleSignInAccount account = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null) {
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             onLoggedIn(account);

@@ -14,13 +14,13 @@ import com.mazefernandez.uplbtrade.models.Item;
 
 import java.util.ArrayList;
 
-// binds values of item information to views
+/* Binds values of item information to views */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
-    private ArrayList<Item> dataList;
+    private ArrayList<Item> itemList;
 
-    public ItemAdapter(ArrayList<Item> dataList) {
-        this.dataList = dataList;
+    public ItemAdapter(ArrayList<Item> itemList) {
+        this.itemList = itemList;
     }
 
     @NonNull
@@ -44,15 +44,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 //            e.printStackTrace();
 //        }
         holder.itemImg.setImageResource(R.drawable.placeholder);
-        // format price into decimal
-        holder.itemName.setText(dataList.get(position).getItemName());
-        @SuppressLint("DefaultLocale") String price = String.format("%.2f",dataList.get(position).getPrice());
+        /* Format price into decimal */
+        holder.itemName.setText(itemList.get(position).getItemName());
+        @SuppressLint("DefaultLocale") String price = String.format("%.2f",itemList.get(position).getPrice());
         holder.itemPrice.setText(price);
     }
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return itemList.size();
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {

@@ -20,10 +20,11 @@
 
         <ImageView
             android:id="@+id/item_img"
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="100dp"
             android:adjustViewBounds="true"
-            />
+            android:contentDescription="@string/profile"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/item_name"
@@ -34,7 +35,8 @@
             android:id="@+id/item_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
+            android:contentDescription="@string/Price"
+            />
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

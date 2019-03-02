@@ -4,4 +4,13 @@
     <string name="inbox">Inbox</string>
     <string name="offers">Offers</string>
     <string name="profile">Profile</string>
+    <string name="SignOut">Sign Out</string>
+    <string name="ItemName">Item Name</string>
+    <string name="ItemDescription">Item Description</string>
+    <string name="ItemPrice">Item Price</string>
+    <string name="ItemCondition">Item Condition</string>
+    <string name="Add">Add</string>
+    <string name="ItemImage">Item Image</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Price">Price</string>
 </resources>

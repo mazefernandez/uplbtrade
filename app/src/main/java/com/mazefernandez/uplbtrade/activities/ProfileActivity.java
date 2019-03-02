@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,7 +33,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
+import static com.mazefernandez.uplbtrade.models.RequestCode.ADD_ITEM;
 import static com.mazefernandez.uplbtrade.models.RequestCode.EDIT_PROFILE;
+/* Customer's Profile */
 
 public class ProfileActivity extends AppCompatActivity {
     private TextView profileName, profileAddress, contactNo;
@@ -73,13 +76,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         /* Show customer items */
         itemArrayList = new ArrayList<>();
-        displayItems(itemArrayList);
         itemAdapter = new ItemAdapter(itemArrayList);
+        displayItems(itemArrayList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(itemAdapter);
 
-        // edit Customer info
+        /* Edit Customer info */
         editCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Bundle userInfo = new Bundle();
                 String address = profileAddress.getText().toString();
                 String contact = contactNo.getText().toString();
-                userInfo.putParcelable("GOOGLE_ACCOUNT",account);
+                userInfo.putParcelable(GOOGLE_ACCOUNT,account);
                 userInfo.putString("ADDRESS",address);
                 userInfo.putString("CONTACT",contact);
 
@@ -96,7 +99,16 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        // navigation bar
+        /* Upload Item */
+        addItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileActivity.this, AddItemActivity.class);
+                startActivityForResult(intent, ADD_ITEM);
+            }
+        });
+
+        /* Navigation bar */
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_profile);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -117,7 +129,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-        // sign-out implementation
+        /* Sign-out implementation */
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,11 +150,12 @@ public class ProfileActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
 
-        // accepts data from edit activity
+        /* Accepts data from edit activity */
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode) {
                 case 2:
                     Bundle editInfo = data.getExtras();
+                    assert editInfo != null;
                     String editAddress = editInfo.getString("NEW_ADDRESS");
                     String editContactNo = editInfo.getString("NEW_CONTACT");
 
@@ -150,6 +163,20 @@ public class ProfileActivity extends AppCompatActivity {
                     TextView contactNo = findViewById(R.id.contactNo);
                     profileAddress.setText(editAddress);
                     contactNo.setText(editContactNo);
+                    break;
+                case 3:
+                    Bundle itemInfo = data.getExtras();
+                    String itemName = itemInfo.getString("NAME");
+                    String itemDesc = itemInfo.getString("DESC");
+                    String itemPrice = itemInfo.getString("PRICE");
+                    Double price = Double.parseDouble(itemPrice);
+                    String itemCondition = itemInfo.getString("CONDITION");
+                    itemArrayList.add(new Item(4,itemName,itemDesc,price,null,itemCondition,1));
+                    itemAdapter.notifyItemInserted(itemArrayList.size() - 1);
+                    Toast.makeText(this,"Added new item",Toast.LENGTH_SHORT).show();
+                    break;
+                case 4:
+                    Toast.makeText(this, "Add Item cancelled", Toast.LENGTH_SHORT).show();
             }
     }
 
@@ -162,9 +189,10 @@ public class ProfileActivity extends AppCompatActivity {
         rating.setRating((float) 3.5);
     }
 
+    /* Display customer's items */
     private void displayItems(ArrayList itemArrayList) {
         itemArrayList.add(new Item(1,"TC7 Mathbook","",200.00, null,"Used but good",1));
         itemArrayList.add(new Item(2,"CASIO Scientific Calculator","",400.00, null,"Old",1));
-        itemArrayList.add(new Item(1,"Hum 3 Reader","",150.00, null,"Never used",1));
+        itemArrayList.add(new Item(3,"Hum 3 Reader","",150.00, null,"Never used",1));
     }
 }

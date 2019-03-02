@@ -14,8 +14,7 @@ import com.google.android.gms.tasks.Task;
 /* Manage Google Sign In */
 
 public class GoogleAccountAdapter {
-    public static final String TAG = "UPLB Trade";
-    public static final String GOOGLE_ACCOUNT = "google_account";
+    public static final String TAG = "UPLB Trade", GOOGLE_ACCOUNT = "google_account";
 
     public GoogleAccountAdapter() {}
 
@@ -28,11 +27,14 @@ public class GoogleAccountAdapter {
         /* Configures client with options specified by googleSignInOptions */
         return GoogleSignIn.getClient(activity, googleSIO);
     }
+
+    /* Verify account login */
     public GoogleSignInAccount getAccount(Intent intent) {
         GoogleSignInAccount account = null;
         try {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intent);
             account = task.getResult(ApiException.class);
+            Log.w(TAG, "SigninResult:success");
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
