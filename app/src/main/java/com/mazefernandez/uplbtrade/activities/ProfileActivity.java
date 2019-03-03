@@ -45,8 +45,8 @@ public class ProfileActivity extends AppCompatActivity {
     private SearchView profileSearch;
     private ImageButton editCustomer;
     private FloatingActionButton addItem;
-    private RecyclerView recyclerView;
 
+    private RecyclerView recyclerView;
     private ArrayList<Item> itemArrayList;
     private ItemAdapter itemAdapter;
 
@@ -179,5 +179,4 @@ public class ProfileActivity extends AppCompatActivity {
         itemArrayList.add(new Item(2,"CASIO Scientific Calculator","",400.00, null,"Old",1));
         itemArrayList.add(new Item(3,"Hum 3 Reader","",150.00, null,"Never used",1));
     }
-
 }
