@@ -6,10 +6,14 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SearchView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
 
@@ -19,12 +23,14 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 
 public class HomeActivity extends AppCompatActivity {
     private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
+    private Button signOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
        // SearchView homeSearch = findViewById(R.id.home_search);
+        Button signOut = findViewById(R.id.sign_out);
 
         /* Configure Google Sign in */
         final GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
@@ -47,6 +53,22 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                 }
                 return false;
+            }
+        });
+
+        /* Sign-out implementation */
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                googleSIC.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        //brings user to login after sign out
+                        Intent intent = new Intent(HomeActivity.this,LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                });
             }
         });
     }

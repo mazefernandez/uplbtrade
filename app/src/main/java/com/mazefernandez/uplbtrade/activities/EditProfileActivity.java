@@ -14,6 +14,9 @@ import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
 import com.mazefernandez.uplbtrade.R;
 import com.squareup.picasso.Picasso;
 
+import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
+/* Edit Customer Information */
+
 public class EditProfileActivity extends AppCompatActivity {
     private TextView editName;
     private EditText editAddress, editContactNo;
@@ -36,7 +39,8 @@ public class EditProfileActivity extends AppCompatActivity {
         saveCustomer = findViewById(R.id.save_customer);
         profileIntent = getIntent();
         userInfo = profileIntent.getExtras();
-        account = userInfo.getParcelable("GOOGLE_ACCOUNT");
+        assert userInfo != null;
+        account = userInfo.getParcelable(GOOGLE_ACCOUNT);
 
         displayUser();
 

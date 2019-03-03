@@ -1,36 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/item_img"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/ItemImage"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="28dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_item_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@android:drawable/ic_menu_camera"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/item_name"
+        app:layout_constraintEnd_toEndOf="@+id/item_name" />
 
     <EditText
-        android:id="@+id/edit_name"
+        android:id="@+id/item_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/ItemName"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@+id/item_img"
+        tools:layout_editor_absoluteX="4dp" />
 
     <EditText
-        android:id="@+id/edit_desc"
+        android:id="@+id/item_desc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="49dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/ItemDescription"
+        android:inputType="text"
+        android:lines="4"
+        android:maxLines="4"
+        app:layout_constraintTop_toBottomOf="@+id/item_name"
+        tools:layout_editor_absoluteX="8dp" />
 
     <EditText
-        android:id="@+id/edit_price"
+        android:id="@+id/item_price"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/ItemPrice"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@+id/item_desc"
+        tools:layout_editor_absoluteX="8dp" />
 
     <!--insert upload image here -->
 
     <EditText
-        android:id="@+id/edit_condition"
+        android:id="@+id/item_condition"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/ItemCondition"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@+id/item_price"
+        app:layout_constraintTop_toBottomOf="@+id/item_price" />
 
     <Button
-        android:layout_width="71dp"
+        android:id="@+id/add_item"
+        android:layout_width="72dp"
         android:layout_height="37dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="12dp"
-        android:text="Save" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/Add"
+        app:layout_constraintEnd_toEndOf="@+id/item_condition"
+        app:layout_constraintTop_toBottomOf="@+id/item_condition" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="90dp"
+        android:layout_height="37dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/Cancel"
+        app:layout_constraintStart_toStartOf="@+id/item_condition"
+        app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
 </android.support.constraint.ConstraintLayout>
