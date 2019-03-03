@@ -45,8 +45,9 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
 //            e.printStackTrace();
 //        }
         holder.offerImg.setImageResource(R.drawable.placeholder);
-        /* Format price into decimal */
-        holder.offerName.setText(offerList.get(position).getofferId());
+        /* get item name from REST API */
+        holder.offerName.setText("Math 17 book");
+        //holder.offerName.setText(offerList.get(position).getOfferId());
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",offerList.get(position).getPrice());
         holder.offerPrice.setText(price);
     }
@@ -62,9 +63,9 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
 
         ItemViewHolder(View view) {
             super(view);
-            offerImg = view.findViewById(R.id.item_img);
-            offerName = view.findViewById(R.id.item_name);
-            offerPrice = view.findViewById(R.id.item_price);
+            offerImg = view.findViewById(R.id.offer_img);
+            offerName = view.findViewById(R.id.offer_name);
+            offerPrice = view.findViewById(R.id.offer_price);
         }
     }
 }
