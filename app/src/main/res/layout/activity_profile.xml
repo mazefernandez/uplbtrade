@@ -10,23 +10,27 @@
 
     <TextView
         android:id="@+id/profile_text"
-        android:layout_width="207dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toTopOf="@+id/profile_img" />
 
     <TextView
         android:id="@+id/profile_address"
-        android:layout_width="197dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:lines="2"
         android:maxLines="2"
         android:textAppearance="@style/TextAppearance.Compat.Notification"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_text" />
 
@@ -40,7 +44,7 @@
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.Compat.Notification"
         app:layout_constraintEnd_toStartOf="@+id/editCustomer"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_address" />
 
@@ -49,43 +53,42 @@
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:numStars="5"
-        android:progressTint="@color/gold"
         android:stepSize="0.5"
         app:layout_constraintBottom_toBottomOf="@+id/profile_img"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/contactNo"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginLeft="8dp" />
 
     <ImageView
         android:id="@+id/profile_img"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/app_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="8dp" />
 
     <SearchView
         android:id="@+id/profile_search"
-        android:layout_width="305dp"
-        android:layout_height="35dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/border"
         android:inputType="text"
         android:queryHint="Search items"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/profile_text"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_img" />
 
@@ -93,8 +96,6 @@
         android:id="@+id/editCustomer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/app_name"
         android:src="@drawable/edit_button"
@@ -108,7 +109,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:clickable="true"
         android:focusable="true"
         android:foregroundGravity="bottom"
@@ -117,7 +117,8 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="@+id/recycler_view"
         app:layout_constraintEnd_toEndOf="@+id/recycler_view"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:layout_marginRight="8dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
