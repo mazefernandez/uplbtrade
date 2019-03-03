@@ -64,6 +64,11 @@ public class HomeActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         break;
+                    case R.id.navigation_offers:
+                        item.setChecked(true);
+                        Intent offer = new Intent(HomeActivity.this, OfferActivity.class);
+                        offer.putExtra(GOOGLE_ACCOUNT,account);
+                        startActivity(offer);
                     case R.id.navigation_profile:
                         item.setChecked(true);
                         Intent profile = new Intent(HomeActivity.this,ProfileActivity.class);

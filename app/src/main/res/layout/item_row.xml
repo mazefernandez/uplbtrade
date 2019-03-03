@@ -23,7 +23,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/profile"
+            android:contentDescription="@string/ItemImage"
             android:scaleType="centerCrop" />
 
         <TextView

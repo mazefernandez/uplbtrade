@@ -121,6 +121,11 @@ public class ProfileActivity extends AppCompatActivity {
                         home.putExtra(GOOGLE_ACCOUNT, account);
                         startActivity(home);
                         break;
+                    case R.id.navigation_offers:
+                        item.setChecked(true);
+                        Intent offer = new Intent(ProfileActivity.this, OfferActivity.class);
+                        offer.putExtra(GOOGLE_ACCOUNT,account);
+                        startActivity(offer);
                     case R.id.navigation_profile:
                         break;
                 }
