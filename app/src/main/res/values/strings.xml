@@ -13,4 +13,8 @@
     <string name="ItemImage">Item Image</string>
     <string name="Cancel">Cancel</string>
     <string name="Price">Price</string>
+    <string name="address">Address</string>
+    <string name="save">Save</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="search">Search items</string>
 </resources>
