@@ -27,6 +27,9 @@
         <activity android:name=".activities.HomeActivity"
             android:label="home"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.OfferActivity"
+            android:label="offer"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.ProfileActivity"
             android:label="profile"
