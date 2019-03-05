@@ -36,6 +36,9 @@
             android:label="profile"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.ItemActivity"
+            android:label="item"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.EditProfileActivity"
             android:label="edit_profile"
