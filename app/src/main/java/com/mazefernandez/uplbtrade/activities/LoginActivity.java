@@ -13,7 +13,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.SignInButton;
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
+import com.mazefernandez.uplbtrade.models.Customer;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 import static com.mazefernandez.uplbtrade.models.RequestCode.LOGIN;
@@ -69,9 +75,55 @@ public class LoginActivity extends AppCompatActivity {
     }
     /* Proceed to HOME after sign in */
     private void onLoggedIn(GoogleSignInAccount account) {
+        checkCustomer(account.getEmail());
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(GOOGLE_ACCOUNT, account);
         startActivity(intent);
         finish();
+    }
+    /* Check if customer is new */
+    private void checkCustomer(String email) {
+        UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
+            @Override
+            public void onResponse(Call<Customer> call, Response<Customer> response) {
+                if (response.isSuccessful()) {
+                    final int customerId = response.body().getcustomerId();
+                    System.out.println("Customer exists");
+                }
+                else {
+                    System.out.println("find customer by email error " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Customer> call, Throwable t) {
+                addCustomer();
+                System.out.println("Find Customer by email Failed");
+                System.out.println(t.getMessage());
+            }
+        }, email);
+    }
+
+    /* Add new customer */
+    private void addCustomer() {
+        Customer customer = new Customer(account.getGivenName(), account.getFamilyName(), account.getEmail());
+
+        UPLBTrade.retrofitClient.addCustomer(new Callback<Customer>() {
+            @Override
+            public void onResponse(Call<Customer> call, Response<Customer> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("Added new customer");
+                }
+                else {
+                    System.out.println("add new customer error " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Customer> call, Throwable t) {
+                System.out.println("Add Customer Failed");
+                System.out.println(t.getMessage());
+            }
+        }, customer);
     }
 }

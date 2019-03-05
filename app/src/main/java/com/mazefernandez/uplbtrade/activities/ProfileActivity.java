@@ -24,14 +24,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
 import com.mazefernandez.uplbtrade.adapters.ItemAdapter;
+import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
 import com.mazefernandez.uplbtrade.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 import static com.mazefernandez.uplbtrade.models.RequestCode.ADD_ITEM;
@@ -47,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FloatingActionButton addItem;
 
     private RecyclerView recyclerView;
-    private ArrayList<Item> itemArrayList;
+    private List<Item> itemList;
     private ItemAdapter itemAdapter;
 
     private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
@@ -75,9 +82,9 @@ public class ProfileActivity extends AppCompatActivity {
         displayCustomer(account);
 
         /* Show customer items */
-        itemArrayList = new ArrayList<>();
-        itemAdapter = new ItemAdapter(itemArrayList);
-        displayItems(itemArrayList);
+        itemList = new ArrayList<Item>();
+        itemAdapter = new ItemAdapter(itemList);
+        displayItems(itemList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(itemAdapter);
@@ -163,8 +170,8 @@ public class ProfileActivity extends AppCompatActivity {
                         String itemPrice = itemInfo.getString("PRICE");
                         Double price = Double.parseDouble(itemPrice);
                         String itemCondition = itemInfo.getString("CONDITION");
-                        itemArrayList.add(new Item(4, itemName, itemDesc, price, null, itemCondition, 1));
-                        itemAdapter.notifyItemInserted(itemArrayList.size() - 1);
+                        itemList.add(new Item(4, itemName, itemDesc, price, null, itemCondition, 1));
+                        itemAdapter.notifyItemInserted(itemList.size() - 1);
                         Toast.makeText(this, "Added new item", Toast.LENGTH_SHORT).show();
                     }
 
@@ -176,15 +183,43 @@ public class ProfileActivity extends AppCompatActivity {
     private void displayCustomer(GoogleSignInAccount account) {
         Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
         profileName.setText(account.getDisplayName());
-        profileAddress.setText("Pedro R. Sandoval Ave, Los Baños, Laguna");
-        contactNo.setText("09876543210");
-        rating.setRating((float) 3.5);
+
+        UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
+            @Override
+            public void onResponse(Call<Customer> call, Response<Customer> response) {
+                profileAddress.setText(response.body().getAddress());
+                contactNo.setText(response.body().getcontactNo());
+                double rate = response.body().getoverallRating();
+                float r = (float) rate;
+                rating.setRating(r);
+            }
+
+            @Override
+            public void onFailure(Call<Customer> call, Throwable t) {
+                System.out.println("Get Customer by email Failed");
+                System.out.println(t.getMessage());
+            }
+        }, account.getEmail() );
     }
 
     /* Display customer's items */
-    private void displayItems(ArrayList itemArrayList) {
-        itemArrayList.add(new Item(1,"TC7 Mathbook","",200.00, null,"Used but good",1));
-        itemArrayList.add(new Item(2,"CASIO Scientific Calculator","",400.00, null,"Old",1));
-        itemArrayList.add(new Item(3,"Hum 3 Reader","",150.00, null,"Never used",1));
+    private void displayItems(final List itemList) {
+        UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                if (response.isSuccessful()) {
+                    itemList.addAll(response.body());
+                }
+                else {
+                    System.out.println("display items error " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Item>> call, Throwable t) {
+                System.out.println("Get Items Failed");
+                System.out.println(t.getMessage());
+            }
+        });
     }
 }

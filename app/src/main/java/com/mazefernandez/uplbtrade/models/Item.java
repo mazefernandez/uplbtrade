@@ -14,13 +14,13 @@ public class Item {
     @SerializedName("price")
     private Double price;
     @SerializedName("image")
-    private Blob image;
+    private String image;
     @SerializedName("condition")
     private String condition;
     @SerializedName("customer_id")
     private Integer customerId;
 
-    public Item(Integer itemId, String name, String description, Double price, Blob image, String condition, Integer customerId){
+    public Item(Integer itemId, String name, String description, Double price, String image, String condition, Integer customerId){
         this.itemId = itemId;
         this.name = name;
         this.description = description;
@@ -62,11 +62,11 @@ public class Item {
         this.price = price;
     }
 
-    public Blob getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Blob image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

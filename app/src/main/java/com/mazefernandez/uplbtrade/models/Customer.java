@@ -30,6 +30,12 @@ public class Customer {
         this.overallRating = overallRating;
     }
 
+    public Customer(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
     public Integer getcustomerId() {
         return customerId;
     }

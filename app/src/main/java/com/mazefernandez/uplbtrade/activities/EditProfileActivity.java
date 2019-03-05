@@ -10,9 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.mazefernandez.uplbtrade.UPLBTrade;
+import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
 import com.mazefernandez.uplbtrade.R;
 import com.squareup.picasso.Picasso;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 /* Edit Customer Information */
@@ -71,4 +77,5 @@ public class EditProfileActivity extends AppCompatActivity {
         editAddress.setText(userInfo.getString("ADDRESS"));
         editContactNo.setText(userInfo.getString("CONTACT"));
     }
+
 }
