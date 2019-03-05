@@ -18,4 +18,7 @@
     <string name="contact_number">Contact Number</string>
     <string name="search">Search items</string>
     <string name="recommended">Recommended Items</string>
+    <string name="buying">Buying</string>
+    <string name="selling">Selling</string>
+    <string name="edit_item">Edit Item</string>
 </resources>

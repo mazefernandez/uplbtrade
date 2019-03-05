@@ -121,6 +121,12 @@ public class ProfileActivity extends AppCompatActivity {
                         home.putExtra(GOOGLE_ACCOUNT, account);
                         startActivity(home);
                         break;
+                    case R.id.navigation_offers:
+                        item.setChecked(true);
+                        Intent offer = new Intent(ProfileActivity.this, OfferActivity.class);
+                        offer.putExtra(GOOGLE_ACCOUNT,account);
+                        startActivity(offer);
+                        break;
                     case R.id.navigation_profile:
                         break;
                 }
@@ -149,8 +155,9 @@ public class ProfileActivity extends AppCompatActivity {
                     break;
                 /* Results from add item */
                 case 3:
-                    if (getIntent().hasExtra("NAME")) {
-                        Bundle itemInfo = data.getExtras();
+
+                    Bundle itemInfo = data.getExtras();
+                    if (itemInfo != null) {
                         String itemName = itemInfo.getString("NAME");
                         String itemDesc = itemInfo.getString("DESC");
                         String itemPrice = itemInfo.getString("PRICE");
@@ -160,6 +167,7 @@ public class ProfileActivity extends AppCompatActivity {
                         itemAdapter.notifyItemInserted(itemArrayList.size() - 1);
                         Toast.makeText(this, "Added new item", Toast.LENGTH_SHORT).show();
                     }
+
                     break;
             }
     }

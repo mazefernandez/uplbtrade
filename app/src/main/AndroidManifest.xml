@@ -26,11 +26,18 @@
         </activity>
         <activity android:name=".activities.HomeActivity"
             android:label="home"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".activities.OfferActivity"
+            android:label="offer"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.ProfileActivity"
             android:label="profile"
             android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.ItemActivity"
+            android:label="item"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.EditProfileActivity"
