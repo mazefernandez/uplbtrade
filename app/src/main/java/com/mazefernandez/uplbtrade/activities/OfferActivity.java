@@ -63,7 +63,7 @@ public class OfferActivity extends AppCompatActivity {
 
         /* Navigation bar */
         BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setSelectedItemId(R.id.navigation_profile);
+        navigation.setSelectedItemId(R.id.navigation_offers);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
