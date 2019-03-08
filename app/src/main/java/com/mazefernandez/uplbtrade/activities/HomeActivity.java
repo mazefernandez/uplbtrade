@@ -17,11 +17,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
 import com.mazefernandez.uplbtrade.adapters.ItemAdapter;
 import com.mazefernandez.uplbtrade.models.Item;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 
@@ -32,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button signOut;
 
     private RecyclerView recyclerView;
-    private ArrayList<Item> itemArrayList;
+    private ArrayList<Item> itemList;
     private ItemAdapter itemAdapter;
 
     @Override
@@ -48,9 +54,9 @@ public class HomeActivity extends AppCompatActivity {
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
         /* Show customer items */
-        itemArrayList = new ArrayList<>();
-        itemAdapter = new ItemAdapter(itemArrayList);
-        displayItems(itemArrayList);
+        itemList = new ArrayList<>();
+        itemAdapter = new ItemAdapter(itemList);
+        displayItems(itemList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this,3);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(itemAdapter);
@@ -98,10 +104,24 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    /* Display customer's items */
-    private void displayItems(ArrayList itemArrayList) {
-        itemArrayList.add(new Item(1,"TC7 Mathbook","",200.00, null,"Used but good",1));
-        itemArrayList.add(new Item(2,"CASIO Scientific Calculator","",400.00, null,"Old",1));
-        itemArrayList.add(new Item(3,"Hum 3 Reader","",150.00, null,"Never used",1));
+    /* Display customers' items */
+    private void displayItems(final ArrayList<Item> itemList) {
+        UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                if (response.isSuccessful()) {
+                    itemList.addAll(response.body());
+                }
+                else {
+                    System.out.println("display items error " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Item>> call, Throwable t) {
+                System.out.println("Get Items Failed");
+                System.out.println(t.getMessage());
+            }
+        });
     }
 }
