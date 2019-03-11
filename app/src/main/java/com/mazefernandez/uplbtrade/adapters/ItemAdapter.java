@@ -40,21 +40,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        /* convert blob to bitmap image */
-//        if (itemList.get(position).getImage() == null) {
-            holder.itemImg.setImageResource(R.drawable.placeholder);
-//        }
-//        else {
-//            Blob itemBlob = itemList.get(position).getImage();
-//            try {
-//                int blobLength = (int) itemBlob.length();
-//                byte[] itemByteArray = itemBlob.getBytes(1,blobLength);
-//                Bitmap itemBitMap = BitmapFactory.decodeByteArray(itemByteArray, 0, itemByteArray.length);
-//                holder.itemImg.setImageBitmap(itemBitMap);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        holder.itemImg.setImageResource(R.drawable.placeholder);
         /* Format price into decimal */
         holder.itemName.setText(itemList.get(position).getItemName());
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",itemList.get(position).getPrice());

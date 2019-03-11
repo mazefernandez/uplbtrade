@@ -36,6 +36,11 @@ public class Customer {
         this.email = email;
     }
 
+    public Customer(String address, String contactNo) {
+        this.address = address;
+        this.contactNo = contactNo;
+    }
+
     public Integer getcustomerId() {
         return customerId;
     }

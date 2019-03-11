@@ -20,8 +20,7 @@ public class Item {
     @SerializedName("customer_id")
     private Integer customerId;
 
-    public Item(Integer itemId, String name, String description, Double price, String image, String condition, Integer customerId){
-        this.itemId = itemId;
+    public Item(String name, String description, Double price, String image, String condition, Integer customerId){
         this.name = name;
         this.description = description;
         this.price = price;

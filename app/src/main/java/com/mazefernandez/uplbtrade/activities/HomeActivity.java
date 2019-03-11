@@ -81,6 +81,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        displayItems(itemList);
+    }
 
     /* Display customers' items */
     private void displayItems(final ArrayList<Item> itemList) {
@@ -88,6 +94,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
                 if (response.isSuccessful()) {
+                    itemList.clear();
                     itemList.addAll(response.body());
                 }
                 else {

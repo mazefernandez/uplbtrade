@@ -53,8 +53,8 @@ public class RetrofitClient {
         addCustomerCall.enqueue(callback);
     }
 
-    public void updateCustomer(Callback<Customer> callback, Customer customer) {
-        Call<Customer> updateCustomerCall = service.updateCustomer(customer);
+    public void updateCustomer(Callback<Customer> callback, Customer customer, int customer_id) {
+        Call<Customer> updateCustomerCall = service.updateCustomer(customer,customer_id);
         updateCustomerCall.enqueue(callback);
     }
 

@@ -2,6 +2,7 @@ package com.mazefernandez.uplbtrade.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,10 +10,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -50,13 +49,9 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView profileImg;
     private RatingBar rating;
     private SearchView profileSearch;
-    private ImageButton editCustomer;
-    private ImageButton settings;
-    private FloatingActionButton addItem;
 
-    private RecyclerView recyclerView;
+    private int customerId;
     private List<Item> itemList;
-    private ItemAdapter itemAdapter;
 
     private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
 
@@ -72,20 +67,25 @@ public class ProfileActivity extends AppCompatActivity {
         profileImg = findViewById(R.id.profile_img);
         rating = findViewById(R.id.rating);
         profileSearch = findViewById(R.id.profile_search);
-        editCustomer = findViewById(R.id.editCustomer);
-        addItem = findViewById(R.id.addItem);
-        settings = findViewById(R.id.settings);
-        recyclerView = findViewById(R.id.recycler_view);
+        ImageButton editCustomer = findViewById(R.id.editCustomer);
+        FloatingActionButton addItem = findViewById(R.id.addItem);
+        ImageButton settings = findViewById(R.id.settings);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
         /* Configure Google Sign in */
         final GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
+        /*SharedPref to save customer_id*/
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = pref.edit();
+
+        /* Retrieve current Customer */
         displayCustomer(account);
 
         /* Show customer items */
-        itemList = new ArrayList<Item>();
-        itemAdapter = new ItemAdapter(itemList);
+        itemList = new ArrayList<>();
+        ItemAdapter itemAdapter = new ItemAdapter(itemList);
         displayItems(itemList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
         recyclerView.setLayoutManager(layoutManager);
@@ -125,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-                        intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
                 });
@@ -176,6 +176,19 @@ public class ProfileActivity extends AppCompatActivity {
                     TextView contactNo = findViewById(R.id.contactNo);
                     profileAddress.setText(editAddress);
                     contactNo.setText(editContactNo);
+                    Customer customer = new Customer(editAddress, editContactNo);
+                    UPLBTrade.retrofitClient.updateCustomer(new Callback<Customer>() {
+                        @Override
+                        public void onResponse(Call<Customer> call, Response<Customer> response) {
+                            System.out.println("Updated Customer");
+                        }
+
+                        @Override
+                        public void onFailure(Call<Customer> call, Throwable t) {
+                            System.out.println("Failed to update customer");
+                            System.out.println(t.getMessage());
+                        }
+                    }, customer, customerId);
                     break;
                 /* Results from add item */
                 case 3:
@@ -187,32 +200,60 @@ public class ProfileActivity extends AppCompatActivity {
                         String itemPrice = itemInfo.getString("PRICE");
                         Double price = Double.parseDouble(itemPrice);
                         String itemCondition = itemInfo.getString("CONDITION");
-                        itemList.add(new Item(4, itemName, itemDesc, price, null, itemCondition, 1));
-                        itemAdapter.notifyItemInserted(itemList.size() - 1);
+                        Item item = new Item(itemName, itemDesc, price, null, itemCondition, customerId);
+
+                        UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
+                            @Override
+                            public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
+                                System.out.println("Added Item");
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
+                                System.out.println("Failed to add item");
+                                System.out.println(t.getMessage());
+                            }
+                        }, item);
+                        itemList.clear();
+                        displayItems(itemList);
                         Toast.makeText(this, "Added new item", Toast.LENGTH_SHORT).show();
                     }
 
                     break;
             }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        itemList.clear();
+        displayItems(itemList);
+    }
+
 
     /* Display current customer data */
     private void displayCustomer(GoogleSignInAccount account) {
         Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
         profileName.setText(account.getDisplayName());
 
+        /*SharedPref to save customer_id*/
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = pref.edit();
+
         UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
             @Override
-            public void onResponse(Call<Customer> call, Response<Customer> response) {
+            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
                 profileAddress.setText(response.body().getAddress());
                 contactNo.setText(response.body().getcontactNo());
                 double rate = response.body().getoverallRating();
                 float r = (float) rate;
                 rating.setRating(r);
+                customerId = response.body().getcustomerId();
+                editor.putInt("customer_id", customerId);
+                editor.apply();
             }
 
             @Override
-            public void onFailure(Call<Customer> call, Throwable t) {
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
                 System.out.println("Get Customer by email Failed");
                 System.out.println(t.getMessage());
             }
@@ -221,10 +262,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     /* Display customer's items */
     private void displayItems(final List itemList) {
-        UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
+        int customerId;
+        /*SharedPref to save customer_id*/
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        customerId = pref.getInt("customer_id", -1);
+        UPLBTrade.retrofitClient.getCustomerItems(new Callback<List<Item>>() {
             @Override
-            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
                 if (response.isSuccessful()) {
+                    itemList.clear();
                     itemList.addAll(response.body());
                 }
                 else {
@@ -233,10 +279,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Item>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
                 System.out.println("Get Items Failed");
                 System.out.println(t.getMessage());
             }
-        });
+        }, customerId);
     }
 }

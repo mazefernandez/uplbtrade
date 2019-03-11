@@ -18,14 +18,18 @@ public interface UplbTradeApi {
     /* Customer calls */
     @GET("/api/customers")
     Call<List<Customer>> getCustomers();
-    @GET("/api/customers")
-    Call<Customer> getCustomer(@Query("customer_id") int customerId);
-    @GET("/api/customers/search")
-    Call<Customer> getCustomerByEmail(@Query("email") String email);
+
+    @GET("/api/customers/{customer_id}")
+    Call<Customer> getCustomer(@Path("customer_id") int customerId);
+
+    @GET("/api/customers/search/{email}")
+    Call<Customer> getCustomerByEmail(@Path("email") String email);
+
     @POST("/api/customers")
     Call<Customer> addCustomer(@Body Customer customer);
-    @PUT("/api/customers")
-    Call<Customer> updateCustomer(@Body Customer customer);
+
+    @PUT("/api/customers/{customer_id}")
+    Call<Customer> updateCustomer(@Body Customer customer, @Path("customer_id") int customerId);
 
     @GET("/api/customers/{customer_id}/items")
     Call<List<Item>> getCustomerItems(@Path("customer_id") int customerId);
@@ -33,12 +37,16 @@ public interface UplbTradeApi {
     /* Item calls */
     @GET("/api/items")
     Call<List<Item>> getItems();
+
     @GET("/api/items")
     Call<Item> getItem(@Query("item_id") int itemId);
+
     @POST("/api/items")
     Call<Item> addItem(@Body Item item);
+
     @PUT("/api/items")
     Call<Item> updateItem(@Body Item item);
+
     @DELETE("/api/items")
     Call<Item> deleteItem(@Query("item_id") int itemId);
 }
