@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.models.Item;
@@ -67,12 +69,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImg;
         TextView itemName, itemPrice;
+        LinearLayout card;
 
         ItemViewHolder(View view) {
             super(view);
             itemImg = view.findViewById(R.id.item_img);
             itemName = view.findViewById(R.id.item_name);
             itemPrice = view.findViewById(R.id.item_price);
+            card = view.findViewById(R.id.card);
+
+            card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
 }

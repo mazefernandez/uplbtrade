@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -34,7 +33,7 @@ public class OfferActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_offer);
+        setContentView(R.layout.activity_offers);
 
         buying = findViewById(R.id.buying);
         selling = findViewById(R.id.selling);
@@ -78,7 +77,7 @@ public class OfferActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_profile:
                         item.setChecked(true);
-                        Intent profile = new Intent(OfferActivity.this,HomeActivity.class);
+                        Intent profile = new Intent(OfferActivity.this,ProfileActivity.class);
                         profile.putExtra(GOOGLE_ACCOUNT, account);
                         startActivity(profile);
                         break;

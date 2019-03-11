@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <ImageView
         android:id="@+id/item_img"
@@ -91,15 +92,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_price" />
 
-    <Button
-        android:id="@+id/edit_item"
-        android:layout_width="92dp"
-        android:layout_height="40dp"
+    <ImageButton
+        android:id="@+id/item_edit"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/edit_item"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_owner" />
+        android:background="@color/background"
+        android:contentDescription="@string/edit_item"
+        app:layout_constraintEnd_toEndOf="@+id/item_owner"
+        app:layout_constraintTop_toBottomOf="@+id/item_owner"
+        app:srcCompat="@drawable/edit_button" />
+
+    <ImageButton
+        android:id="@+id/item_delete"
+        android:layout_width="48dp"
+        android:layout_height="53dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/background"
+        android:contentDescription="@string/delete_item"
+        android:tint="?attr/colorError"
+        app:layout_constraintStart_toStartOf="@+id/item_owner"
+        app:layout_constraintTop_toBottomOf="@+id/item_owner"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
 </android.support.constraint.ConstraintLayout>

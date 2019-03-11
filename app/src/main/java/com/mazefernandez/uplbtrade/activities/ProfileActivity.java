@@ -51,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
     private RatingBar rating;
     private SearchView profileSearch;
     private ImageButton editCustomer;
+    private ImageButton settings;
     private FloatingActionButton addItem;
 
     private RecyclerView recyclerView;
@@ -73,6 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
         profileSearch = findViewById(R.id.profile_search);
         editCustomer = findViewById(R.id.editCustomer);
         addItem = findViewById(R.id.addItem);
+        settings = findViewById(R.id.settings);
         recyclerView = findViewById(R.id.recycler_view);
 
         /* Configure Google Sign in */
@@ -112,6 +114,21 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ProfileActivity.this, AddItemActivity.class);
                 startActivityForResult(intent, ADD_ITEM);
+            }
+        });
+
+        /* Sign Out */
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                googleSIC.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                        intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                });
             }
         });
 
