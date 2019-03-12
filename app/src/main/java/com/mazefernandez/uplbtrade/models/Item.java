@@ -30,6 +30,14 @@ public class Item implements Serializable{
         this.customerId = customerId;
     }
 
+    public Item(String name, String description, Double price, String image, String condition) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.image = image;
+        this.condition = condition;
+    }
+
     public Integer getitemId() {
         return itemId;
     }

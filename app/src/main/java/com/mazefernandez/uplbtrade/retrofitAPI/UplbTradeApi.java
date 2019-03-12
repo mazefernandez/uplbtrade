@@ -41,16 +41,16 @@ public interface UplbTradeApi {
     @GET("/api/items")
     Call<List<Item>> getItems();
 
-    @GET("/api/items")
-    Call<Item> getItem(@Query("item_id") int itemId);
+    @GET("/api/items/{item_id}")
+    Call<Item> getItem(@Path("item_id") int itemId);
 
     @POST("/api/items")
     Call<Item> addItem(@Body Item item);
 
-    @PUT("/api/items")
-    Call<Item> updateItem(@Body Item item);
+    @PUT("/api/items/{item_id}")
+    Call<Item> updateItem(@Body Item item, @Path("item_id") int itemId);
 
-    @DELETE("/api/items")
-    Call<Item> deleteItem(@Query("item_id") int itemId);
+    @DELETE("/api/items/{item_id}")
+    Call<Item> deleteItem(@Path("item_id") int itemId);
 }
 

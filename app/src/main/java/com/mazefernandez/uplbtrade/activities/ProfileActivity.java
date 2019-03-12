@@ -174,7 +174,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode) {
                 /* Results from edit activity */
-                case 2:
+                case EDIT_PROFILE:
                     Bundle editInfo = data.getExtras();
                     assert editInfo != null;
                     String editAddress = editInfo.getString("NEW_ADDRESS");
@@ -199,8 +199,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }, customer, customerId);
                     break;
                 /* Results from add item */
-                case 3:
-
+                case ADD_ITEM:
                     Bundle itemInfo = data.getExtras();
                     if (itemInfo != null) {
                         String itemName = itemInfo.getString("NAME");
@@ -215,7 +214,6 @@ public class ProfileActivity extends AppCompatActivity {
                             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
                                 System.out.println("Added Item");
                             }
-
                             @Override
                             public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
                                 System.out.println("Failed to add item");
@@ -226,7 +224,6 @@ public class ProfileActivity extends AppCompatActivity {
                         displayItems(itemList);
                         Toast.makeText(this, "Added new item", Toast.LENGTH_SHORT).show();
                     }
-
                     break;
             }
     }
