@@ -3,6 +3,7 @@ package com.mazefernandez.uplbtrade.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +12,10 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
@@ -55,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null) {
+        if (account != null && checkDomain(account)) {
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             onLoggedIn(account);
         } else {
@@ -70,19 +74,27 @@ public class LoginActivity extends AppCompatActivity {
             switch (requestCode) {
                 case 1:
                     final GoogleSignInAccount account = googleAdapter.getAccount(data);
-                    onLoggedIn(account);
+                    /* Restrict login to UP mail domain*/
+                    if (checkDomain(account)) {
+                        onLoggedIn(account);
+                    }
+                    else {
+                        Toast.makeText(this, "Please use UP mail to sign in", Toast.LENGTH_LONG).show();
+                        signOut();
+                    }
             }
     }
     /* Proceed to HOME after sign in */
     private void onLoggedIn(GoogleSignInAccount account) {
-        checkCustomer(account.getEmail());
+        checkCustomer(account);
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(GOOGLE_ACCOUNT, account);
         startActivity(intent);
         finish();
     }
     /* Check if customer is new */
-    private void checkCustomer(String email) {
+    private void checkCustomer(final GoogleSignInAccount account) {
+        String email = account.getEmail();
         UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
             @Override
             public void onResponse(Call<Customer> call, Response<Customer> response) {
@@ -97,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Customer> call, Throwable t) {
-                addCustomer();
+                addCustomer(account);
                 System.out.println("Find Customer by email Failed");
                 System.out.println(t.getMessage());
             }
@@ -105,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /* Add new customer */
-    private void addCustomer() {
+    private void addCustomer(GoogleSignInAccount account) {
         Customer customer = new Customer(account.getGivenName(), account.getFamilyName(), account.getEmail());
 
         UPLBTrade.retrofitClient.addCustomer(new Callback<Customer>() {
@@ -125,5 +137,29 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, customer);
+    }
+
+    /* Check if the customer follows the domain needed for the app */
+    public boolean checkDomain(GoogleSignInAccount account) {
+        String email = account.getEmail();
+        String[] split = email.split("@");
+        String domain = split[1];
+        if (domain.equals("up.edu.ph")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /* Sign out the customer */
+    public void signOut(){
+        GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
+        googleSIC.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -3,10 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/AppTheme.NoActionBar"
-    android:background="@color/background">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/item_img"
@@ -26,22 +25,22 @@
 
     <TextView
         android:id="@+id/item_owner"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
-    <TextView
+    <EditText
         android:id="@+id/item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,86 +49,81 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:gravity="center"
+        android:hint="@string/ItemName"
+        android:inputType="text"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_img" />
 
-    <TextView
+    <EditText
         android:id="@+id/item_desc"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:gravity="center"
+        android:hint="@string/ItemDescription"
+        android:inputType="text"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
-    <TextView
+    <EditText
         android:id="@+id/item_price"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:gravity="center"
+        android:hint="@string/ItemPrice"
+        android:inputType="text|numberDecimal"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
-    <TextView
+    <EditText
         android:id="@+id/item_condition"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:gravity="center"
+        android:hint="@string/ItemCondition"
+        android:inputType="text"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_price" />
 
-    <ImageButton
-        android:id="@+id/item_edit"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+    <Button
+        android:id="@+id/save_item"
+        android:layout_width="71dp"
+        android:layout_height="37dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/background"
-        android:contentDescription="@string/edit_item"
+        android:text="@string/save"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
-        app:layout_constraintTop_toBottomOf="@+id/item_owner"
-        app:srcCompat="@drawable/edit_button" />
-
-    <ImageButton
-        android:id="@+id/item_delete"
-        android:layout_width="48dp"
-        android:layout_height="53dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/background"
-        android:contentDescription="@string/delete_item"
-        android:tint="?attr/colorError"
-        app:layout_constraintStart_toStartOf="@+id/item_owner"
-        app:layout_constraintTop_toBottomOf="@+id/item_owner"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        app:layout_constraintTop_toBottomOf="@+id/item_owner" />
 
 </android.support.constraint.ConstraintLayout>

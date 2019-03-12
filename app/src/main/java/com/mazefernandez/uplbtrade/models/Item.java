@@ -2,9 +2,10 @@ package com.mazefernandez.uplbtrade.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.sql.Blob;
 
-public class Item {
+public class Item implements Serializable{
     @SerializedName("item_id")
     private Integer itemId;
     @SerializedName("name")
@@ -20,14 +21,21 @@ public class Item {
     @SerializedName("customer_id")
     private Integer customerId;
 
-    public Item(Integer itemId, String name, String description, Double price, String image, String condition, Integer customerId){
-        this.itemId = itemId;
+    public Item(String name, String description, Double price, String image, String condition, Integer customerId){
         this.name = name;
         this.description = description;
         this.price = price;
         this.image = image;
         this.condition = condition;
         this.customerId = customerId;
+    }
+
+    public Item(String name, String description, Double price, String image, String condition) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.image = image;
+        this.condition = condition;
     }
 
     public Integer getitemId() {

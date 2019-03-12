@@ -21,4 +21,6 @@
     <string name="buying">Buying</string>
     <string name="selling">Selling</string>
     <string name="edit_item">Edit Item</string>
+    <string name="delete_item">delete item</string>
+    <string name="item_name">Item Name</string>
 </resources>

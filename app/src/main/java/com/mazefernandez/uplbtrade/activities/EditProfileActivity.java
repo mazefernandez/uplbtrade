@@ -54,8 +54,6 @@ public class EditProfileActivity extends AppCompatActivity {
         saveCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText editAddress = findViewById(R.id.edit_address);
-                EditText editContactNo = findViewById(R.id.edit_contactNo);
                 String address = editAddress.getText().toString();
                 String contactNo = editContactNo.getText().toString();
 

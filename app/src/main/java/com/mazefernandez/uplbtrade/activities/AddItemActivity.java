@@ -40,24 +40,24 @@ public class AddItemActivity extends AppCompatActivity{
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText itemName = findViewById(R.id.item_name);
-                EditText itemDesc = findViewById(R.id.item_desc);
-                EditText itemPrice = findViewById(R.id.item_price);
-                EditText itemCondition= findViewById(R.id.item_condition);
-                String name = itemName.getText().toString();
-                String desc = itemDesc.getText().toString();
-                String price = itemPrice.getText().toString();
-                String condition = itemCondition.getText().toString();
+            EditText itemName = findViewById(R.id.item_name);
+            EditText itemDesc = findViewById(R.id.item_desc);
+            EditText itemPrice = findViewById(R.id.item_price);
+            EditText itemCondition= findViewById(R.id.item_condition);
+            String name = itemName.getText().toString();
+            String desc = itemDesc.getText().toString();
+            String price = itemPrice.getText().toString();
+            String condition = itemCondition.getText().toString();
 
-                Intent intent = new Intent();
-                Bundle itemInfo = new Bundle();
-                itemInfo.putString("NAME",name);
-                itemInfo.putString("DESC",desc);
-                itemInfo.putString("PRICE",price);
-                itemInfo.putString("CONDITION",condition);
-                intent.putExtras(itemInfo);
-                setResult(RESULT_OK,intent);
-                finish();
+            Intent intent = new Intent();
+            Bundle itemInfo = new Bundle();
+            itemInfo.putString("NAME",name);
+            itemInfo.putString("DESC",desc);
+            itemInfo.putString("PRICE",price);
+            itemInfo.putString("CONDITION",condition);
+            intent.putExtras(itemInfo);
+            setResult(RESULT_OK,intent);
+            finish();
             }
         });
 

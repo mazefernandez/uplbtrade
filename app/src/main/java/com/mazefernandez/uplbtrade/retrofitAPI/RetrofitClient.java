@@ -53,14 +53,19 @@ public class RetrofitClient {
         addCustomerCall.enqueue(callback);
     }
 
-    public void updateCustomer(Callback<Customer> callback, Customer customer) {
-        Call<Customer> updateCustomerCall = service.updateCustomer(customer);
+    public void updateCustomer(Callback<Customer> callback, Customer customer, int customer_id) {
+        Call<Customer> updateCustomerCall = service.updateCustomer(customer,customer_id);
         updateCustomerCall.enqueue(callback);
     }
 
     public void getCustomerItems(Callback<List<Item>> callback, int customer_id) {
         Call<List<Item>> getCustomerItemsCall = service.getCustomerItems(customer_id);
         getCustomerItemsCall.enqueue(callback);
+    }
+
+    public void searchCustomerItems(Callback<List<Item>> callback, String email) {
+        Call<List<Item>> searchCustomerItemsCall = service.searchCustomerItems(email);
+        searchCustomerItemsCall.enqueue(callback);
     }
 
     public void getItems(Callback<List<Item>> callback) {
@@ -78,8 +83,8 @@ public class RetrofitClient {
         addItemCall.enqueue(callback);
     }
 
-    public void updateItem(Callback<Item> callback, Item item) {
-        Call<Item> updateItemCall = service.updateItem(item);
+    public void updateItem(Callback<Item> callback, Item item, int item_id) {
+        Call<Item> updateItemCall = service.updateItem(item, item_id);
         updateItemCall.enqueue(callback);
     }
 
