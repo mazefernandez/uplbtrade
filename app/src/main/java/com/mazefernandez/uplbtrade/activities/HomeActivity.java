@@ -82,8 +82,8 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onRestart() {
+        super.onRestart();
         displayItems(itemList);
     }
 

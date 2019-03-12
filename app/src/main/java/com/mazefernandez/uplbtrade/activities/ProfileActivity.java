@@ -78,7 +78,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         /*SharedPref to save customer_id*/
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        final SharedPreferences.Editor editor = pref.edit();
 
         /* Retrieve current Customer */
         displayCustomer(account);
@@ -230,7 +229,6 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public void onRestart() {
         super.onRestart();
-        itemList.clear();
         displayItems(itemList);
     }
 
@@ -270,6 +268,7 @@ public class ProfileActivity extends AppCompatActivity {
         /*SharedPref to save customer_id*/
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         customerId = pref.getInt("customer_id", -1);
+
         UPLBTrade.retrofitClient.getCustomerItems(new Callback<List<Item>>() {
             @Override
             public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {

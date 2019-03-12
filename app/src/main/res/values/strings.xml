@@ -24,4 +24,7 @@
     <string name="delete_item">delete item</string>
     <string name="item_name">Item Name</string>
     <string name="make_offer">Make Offer</string>
+    <string name="offer_status">Offer status</string>
+    <string name="accept">accept</string>
+    <string name="decline">decline</string>
 </resources>

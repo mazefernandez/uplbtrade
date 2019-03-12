@@ -71,6 +71,8 @@
         android:gravity="center"
         android:hint="@string/ItemDescription"
         android:inputType="text"
+        android:lines="4"
+        android:maxLines="4"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

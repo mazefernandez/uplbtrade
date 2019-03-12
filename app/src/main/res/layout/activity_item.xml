@@ -66,6 +66,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:lines="4"
+        android:maxLines="4"
         android:gravity="center"
         android:background="@color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"

@@ -17,12 +17,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:orientation="vertical"
+        android:focusable="true"
+        android:clickable="true"
         android:padding="5dp">
 
         <ImageView
             android:id="@+id/offer_img"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/ItemImage"
             android:scaleType="centerCrop" />
@@ -38,6 +40,11 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/Price"
             />
+        <TextView
+            android:id="@+id/offer_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/offer_status"/>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
