@@ -2,6 +2,7 @@ package com.mazefernandez.uplbtrade.retrofitAPI;
 
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
+import com.mazefernandez.uplbtrade.models.Offer;
 
 import java.util.List;
 
@@ -52,5 +53,24 @@ public interface UplbTradeApi {
 
     @DELETE("/api/items/{item_id}")
     Call<Item> deleteItem(@Path("item_id") int itemId);
+
+    /* Offer Calls */
+    @GET("/api/offers")
+    Call<List<Offer>> getOffers();
+
+    @GET("/api/offers/{offer_id}")
+    Call<Offer> getOffer(@Path("offer_id") int offerId);
+
+    @POST("/api/offers")
+    Call<Offer> addOffer(@Body Offer offer);
+
+    @DELETE("/api/offers/{offer_id}")
+    Call<Offer> deleteOffer(@Path("offer_id") int offerId);
+
+    @GET("/api/offers/buyer/{buyer_id}")
+    Call<List<Offer>> getOfferBuying(@Path("buyer_id") int buyerId);
+
+    @GET("/api/offers/seller/{seller_id}")
+    Call<List<Offer>> getOfferSelling(@Path("seller_id") int sellerId);
 }
 
