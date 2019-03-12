@@ -84,7 +84,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-
         displayItems(itemList);
     }
 

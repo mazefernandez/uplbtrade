@@ -63,6 +63,11 @@ public class RetrofitClient {
         getCustomerItemsCall.enqueue(callback);
     }
 
+    public void searchCustomerItems(Callback<List<Item>> callback, String email) {
+        Call<List<Item>> searchCustomerItemsCall = service.searchCustomerItems(email);
+        searchCustomerItemsCall.enqueue(callback);
+    }
+
     public void getItems(Callback<List<Item>> callback) {
         Call<List<Item>> getItemsCall = service.getItems();
         getItemsCall.enqueue(callback);

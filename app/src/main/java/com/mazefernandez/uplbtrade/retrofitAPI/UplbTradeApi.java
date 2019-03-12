@@ -22,7 +22,7 @@ public interface UplbTradeApi {
     @GET("/api/customers/{customer_id}")
     Call<Customer> getCustomer(@Path("customer_id") int customerId);
 
-    @GET("/api/customers/search/{email}")
+    @GET("/api/customers/email/{email}")
     Call<Customer> getCustomerByEmail(@Path("email") String email);
 
     @POST("/api/customers")
@@ -33,6 +33,9 @@ public interface UplbTradeApi {
 
     @GET("/api/customers/{customer_id}/items")
     Call<List<Item>> getCustomerItems(@Path("customer_id") int customerId);
+
+    @GET("/api/customers/search/{email}")
+    Call<List<Item>> searchCustomerItems(@Path("email") String email);
 
     /* Item calls */
     @GET("/api/items")

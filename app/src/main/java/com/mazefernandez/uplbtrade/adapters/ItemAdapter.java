@@ -2,19 +2,24 @@ package com.mazefernandez.uplbtrade.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.activities.ItemActivity;
 import com.mazefernandez.uplbtrade.models.Item;
 
 import java.sql.Blob;
@@ -45,6 +50,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         holder.itemName.setText(itemList.get(position).getItemName());
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",itemList.get(position).getPrice());
         holder.itemPrice.setText(price);
+        holder.item = itemList.get(position);
     }
 
     @Override
@@ -52,10 +58,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         return itemList.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
-        ImageView itemImg;
-        TextView itemName, itemPrice;
-        LinearLayout card;
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private ImageView itemImg;
+        private TextView itemName, itemPrice;
+        private LinearLayout card;
+        private final Context context;
+        private Item item;
 
         ItemViewHolder(View view) {
             super(view);
@@ -63,13 +71,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             itemName = view.findViewById(R.id.item_name);
             itemPrice = view.findViewById(R.id.item_price);
             card = view.findViewById(R.id.card);
+            context = view.getContext();
+            card.setOnClickListener(this);
+        }
 
-            card.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(context, ItemActivity.class);
+            intent.putExtra("ITEM", item);
+            context.startActivity(intent);
         }
     }
 }

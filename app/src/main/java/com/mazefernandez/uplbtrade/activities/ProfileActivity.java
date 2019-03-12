@@ -91,6 +91,14 @@ public class ProfileActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(itemAdapter);
 
+        /* Search Items */
+        profileSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         /* Edit Customer info */
         editCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,23 +146,23 @@ public class ProfileActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        item.setChecked(true);
-                        Intent home = new Intent(ProfileActivity.this,HomeActivity.class);
-                        home.putExtra(GOOGLE_ACCOUNT, account);
-                        startActivity(home);
-                        break;
-                    case R.id.navigation_offers:
-                        item.setChecked(true);
-                        Intent offer = new Intent(ProfileActivity.this, OfferActivity.class);
-                        offer.putExtra(GOOGLE_ACCOUNT,account);
-                        startActivity(offer);
-                        break;
-                    case R.id.navigation_profile:
-                        break;
-                }
-                return false;
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    item.setChecked(true);
+                    Intent home = new Intent(ProfileActivity.this,HomeActivity.class);
+                    home.putExtra(GOOGLE_ACCOUNT, account);
+                    startActivity(home);
+                    break;
+                case R.id.navigation_offers:
+                    item.setChecked(true);
+                    Intent offer = new Intent(ProfileActivity.this, OfferActivity.class);
+                    offer.putExtra(GOOGLE_ACCOUNT,account);
+                    startActivity(offer);
+                    break;
+                case R.id.navigation_profile:
+                    break;
+            }
+            return false;
             }
         });
     }
@@ -228,7 +236,6 @@ public class ProfileActivity extends AppCompatActivity {
         itemList.clear();
         displayItems(itemList);
     }
-
 
     /* Display current customer data */
     private void displayCustomer(GoogleSignInAccount account) {

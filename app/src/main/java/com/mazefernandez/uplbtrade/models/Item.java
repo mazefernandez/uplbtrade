@@ -2,9 +2,10 @@ package com.mazefernandez.uplbtrade.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.sql.Blob;
 
-public class Item {
+public class Item implements Serializable{
     @SerializedName("item_id")
     private Integer itemId;
     @SerializedName("name")
