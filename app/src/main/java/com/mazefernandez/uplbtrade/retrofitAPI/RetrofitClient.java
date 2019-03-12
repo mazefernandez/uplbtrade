@@ -2,6 +2,7 @@ package com.mazefernandez.uplbtrade.retrofitAPI;
 
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
+import com.mazefernandez.uplbtrade.models.Offer;
 
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class RetrofitClient {
         searchCustomerItemsCall.enqueue(callback);
     }
 
+
     public void getItems(Callback<List<Item>> callback) {
         Call<List<Item>> getItemsCall = service.getItems();
         getItemsCall.enqueue(callback);
@@ -92,4 +94,31 @@ public class RetrofitClient {
         Call<Item> deleteItemCall = service.deleteItem(item_id);
         deleteItemCall.enqueue(callback);
     }
+
+
+    public void getOffers(Callback<List<Offer>> callback) {
+        Call<List<Offer>> getOffersCall = service.getOffers();
+        getOffersCall.enqueue(callback);
+    }
+
+    public void getOffer(Callback<Offer> callback, int offer_id) {
+        Call<Offer> getOfferCall = service.getOffer(offer_id);
+        getOfferCall.enqueue(callback);
+    }
+
+    public void addOffer(Callback<Offer> callback, Offer offer) {
+        Call<Offer> addOfferCall = service.addOffer(offer);
+        addOfferCall.enqueue(callback);
+    }
+
+    public void getOfferBuying(Callback<List<Offer>> callback, int buyer_id) {
+        Call<List<Offer>> getOfferBuyingCall = service.getOfferBuying(buyer_id);
+        getOfferBuyingCall.enqueue(callback);
+    }
+
+    public void getOfferSelling(Callback<List<Offer>> callback, int seller_id) {
+        Call<List<Offer>> getOfferSellingCall = service.getOfferSelling(seller_id);
+        getOfferSellingCall.enqueue(callback);
+    }
 }
+

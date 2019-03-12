@@ -51,5 +51,6 @@
         <activity android:name=".activities.EditItemActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name=".activities.OfferActivity" />
     </application>
 </manifest>

@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,13 +34,20 @@ public class ItemActivity extends AppCompatActivity {
     private TextView itemCondition;
     private ImageButton itemEdit;
     private ImageButton itemDelete;
+    private Button makeOffer;
     private int itemId;
+    private int sessionId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
 
+        /*SharedPref to save customer_id*/
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        sessionId = pref.getInt("customer_id",-1);
+
+        /*Item activity views */
         itemOwner = findViewById(R.id.item_owner);
         itemName = findViewById(R.id.item_name);
         itemDesc = findViewById(R.id.item_desc);
@@ -47,7 +56,9 @@ public class ItemActivity extends AppCompatActivity {
         itemCondition = findViewById(R.id.item_condition);
         itemEdit = findViewById(R.id.item_edit);
         itemDelete = findViewById(R.id.item_delete);
+        makeOffer = findViewById(R.id.make_offer);
 
+        /* Retrieve item data */
         Item item = (Item) getIntent().getSerializableExtra("ITEM");
         itemId = item.getitemId();
         getOwner(item);
@@ -83,6 +94,16 @@ public class ItemActivity extends AppCompatActivity {
                 confirmDelete();
             }
         });
+    }
+
+    private void checkCustomer(int sessionId, int customerId) {
+        if (sessionId == customerId) {
+            makeOffer.setVisibility(View.GONE);
+        }
+        else {
+            itemEdit.setVisibility(View.GONE);
+            itemDelete.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -140,7 +161,9 @@ public class ItemActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
                 Customer customer = response.body();
+                int customerId = response.body().getcustomerId();
                 displayItem(customer,item);
+                checkCustomer(sessionId, customerId);
                 System.out.println("Retrieved owner of item");
             }
 

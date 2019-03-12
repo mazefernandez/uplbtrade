@@ -58,8 +58,6 @@ public class OffersActivity extends AppCompatActivity {
         selling.setLayoutManager(layoutManager2);
         selling.setAdapter(sellingAdapter);
 
-
-
         /* Navigation bar */
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_offers);
@@ -89,8 +87,6 @@ public class OffersActivity extends AppCompatActivity {
 
     /* Display items from catalog */
     private void displayOffers(ArrayList offerArrayList) {
-        offerArrayList.add(new Offer(1,100.00,"Pending","Please, I need it", 1));
-        offerArrayList.add(new Offer(2,200.00,"Accepted","Hello sana okay lang yung new price",2));
-        offerArrayList.add(new Offer(3,130.30,"Pending","", 3));
+
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mazefernandez.uplbtrade.R;
@@ -34,22 +35,13 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        //convert blob to bitmap image
-//        Blob itemBlob = dataList.get(position).getImage();
-//        try {
-//            int blobLength = (int) itemBlob.length();
-//            byte[] itemByteArray = itemBlob.getBytes(1,blobLength);
-//            Bitmap itemBitMap = BitmapFactory.decodeByteArray(itemByteArray, 0, itemByteArray.length);
-//            holder.itemImg.setImageBitmap(itemBitMap);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         holder.offerImg.setImageResource(R.drawable.placeholder);
         /* get item name from REST API */
         holder.offerName.setText("Math 17 book");
         //holder.offerName.setText(offerList.get(position).getOfferId());
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",offerList.get(position).getPrice());
         holder.offerPrice.setText(price);
+        holder.offer = offerList.get(position);
     }
 
     @Override
@@ -57,15 +49,23 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
         return offerList.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView offerImg;
         TextView offerName, offerPrice;
+        LinearLayout card;
+        Offer offer;
 
         ItemViewHolder(View view) {
             super(view);
             offerImg = view.findViewById(R.id.offer_img);
             offerName = view.findViewById(R.id.offer_name);
             offerPrice = view.findViewById(R.id.offer_price);
+            card = view.findViewById(R.id.card);
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 }
