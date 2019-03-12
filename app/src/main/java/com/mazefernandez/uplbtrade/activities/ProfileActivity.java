@@ -155,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_offers:
                     item.setChecked(true);
-                    Intent offer = new Intent(ProfileActivity.this, OfferActivity.class);
+                    Intent offer = new Intent(ProfileActivity.this, OffersActivity.class);
                     offer.putExtra(GOOGLE_ACCOUNT,account);
                     startActivity(offer);
                     break;
@@ -187,12 +187,12 @@ public class ProfileActivity extends AppCompatActivity {
                     Customer customer = new Customer(editAddress, editContactNo);
                     UPLBTrade.retrofitClient.updateCustomer(new Callback<Customer>() {
                         @Override
-                        public void onResponse(Call<Customer> call, Response<Customer> response) {
+                        public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
                             System.out.println("Updated Customer");
                         }
 
                         @Override
-                        public void onFailure(Call<Customer> call, Throwable t) {
+                        public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
                             System.out.println("Failed to update customer");
                             System.out.println(t.getMessage());
                         }
@@ -228,8 +228,8 @@ public class ProfileActivity extends AppCompatActivity {
             }
     }
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onRestart() {
+        super.onRestart();
         itemList.clear();
         displayItems(itemList);
     }

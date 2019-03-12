@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_offers:
                         item.setChecked(true);
-                        Intent offer = new Intent(HomeActivity.this, OfferActivity.class);
+                        Intent offer = new Intent(HomeActivity.this, OffersActivity.class);
                         offer.putExtra(GOOGLE_ACCOUNT,account);
                         startActivity(offer);
                         break;
@@ -91,7 +91,7 @@ public class HomeActivity extends AppCompatActivity {
     private void displayItems(final ArrayList<Item> itemList) {
         UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
             @Override
-            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
                 if (response.isSuccessful()) {
                     itemList.clear();
                     itemList.addAll(response.body());
@@ -102,7 +102,7 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Item>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
                 System.out.println("Get Items Failed");
                 System.out.println(t.getMessage());
             }
