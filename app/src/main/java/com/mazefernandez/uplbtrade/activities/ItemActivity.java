@@ -1,13 +1,17 @@
 package com.mazefernandez.uplbtrade.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
@@ -76,7 +80,7 @@ public class ItemActivity extends AppCompatActivity {
         itemDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                confirmDelete();
             }
         });
     }
@@ -105,12 +109,12 @@ public class ItemActivity extends AppCompatActivity {
                     Item item = new Item(name, desc, dprice, null, condition);
                     UPLBTrade.retrofitClient.updateItem(new Callback<Item>() {
                         @Override
-                        public void onResponse(Call<Item> call, Response<Item> response) {
+                        public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
                             System.out.println("Updated Item");
                         }
 
                         @Override
-                        public void onFailure(Call<Item> call, Throwable t) {
+                        public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
                             System.out.println("Failed to update Item");
                             System.out.println(t.getMessage());
                         }
@@ -134,16 +138,53 @@ public class ItemActivity extends AppCompatActivity {
     private void getOwner(final Item item) {
         UPLBTrade.retrofitClient.getCustomer(new Callback<Customer>() {
             @Override
-            public void onResponse(Call<Customer> call, Response<Customer> response) {
+            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
                 Customer customer = response.body();
                 displayItem(customer,item);
                 System.out.println("Retrieved owner of item");
             }
 
             @Override
-            public void onFailure(Call<Customer> call, Throwable t) {
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
                 System.out.println(t.getMessage());
             }
         }, item.getcustomerId());
+    }
+
+    private void confirmDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Item");
+        builder.setMessage("Do you really want to delete your item?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteItem();
+                Toast.makeText(getApplicationContext(), "Item has been deleted", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
+    }
+    private void deleteItem(){
+        UPLBTrade.retrofitClient.deleteItem(new Callback<Item>() {
+            @Override
+            public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
+                System.out.println("Deleted Item");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
+                System.out.println("Failed to delete item");
+            }
+        }, itemId);
     }
 }

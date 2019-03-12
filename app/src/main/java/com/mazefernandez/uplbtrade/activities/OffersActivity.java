@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 
-public class OfferActivity extends AppCompatActivity {
+public class OffersActivity extends AppCompatActivity {
     private RecyclerView buying;
     private RecyclerView selling;
     private ArrayList<Offer> buyingArrayList;
@@ -46,7 +46,7 @@ public class OfferActivity extends AppCompatActivity {
         buyingArrayList = new ArrayList<>();
         buyingAdapter = new OfferAdapter(buyingArrayList);
         displayOffers(buyingArrayList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(OfferActivity.this,LinearLayoutManager.HORIZONTAL,false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(OffersActivity.this,LinearLayoutManager.HORIZONTAL,false);
         buying.setLayoutManager(layoutManager);
         buying.setAdapter(buyingAdapter);
 
@@ -54,7 +54,7 @@ public class OfferActivity extends AppCompatActivity {
         sellingArrayList = new ArrayList<>();
         sellingAdapter = new OfferAdapter(sellingArrayList);
         displayOffers(sellingArrayList);
-        RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(OfferActivity.this,LinearLayoutManager.HORIZONTAL,false);
+        RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(OffersActivity.this,LinearLayoutManager.HORIZONTAL,false);
         selling.setLayoutManager(layoutManager2);
         selling.setAdapter(sellingAdapter);
 
@@ -69,7 +69,7 @@ public class OfferActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         item.setChecked(true);
-                        Intent home = new Intent(OfferActivity.this,HomeActivity.class);
+                        Intent home = new Intent(OffersActivity.this,HomeActivity.class);
                         home.putExtra(GOOGLE_ACCOUNT, account);
                         startActivity(home);
                         break;
@@ -77,7 +77,7 @@ public class OfferActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_profile:
                         item.setChecked(true);
-                        Intent profile = new Intent(OfferActivity.this,ProfileActivity.class);
+                        Intent profile = new Intent(OffersActivity.this,ProfileActivity.class);
                         profile.putExtra(GOOGLE_ACCOUNT, account);
                         startActivity(profile);
                         break;

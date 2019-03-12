@@ -29,7 +29,7 @@
             android:label="home"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".activities.OfferActivity"
+        <activity android:name=".activities.OffersActivity"
             android:label="offer"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
