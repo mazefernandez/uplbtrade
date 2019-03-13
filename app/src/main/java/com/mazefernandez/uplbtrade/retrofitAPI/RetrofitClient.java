@@ -111,6 +111,11 @@ public class RetrofitClient {
         addOfferCall.enqueue(callback);
     }
 
+    public void deleteOffer(Callback<Offer> callback, int offer_id) {
+        Call<Offer> deleteOfferCall = service.deleteOffer(offer_id);
+        deleteOfferCall.enqueue(callback);
+    }
+
     public void getOfferBuying(Callback<List<Offer>> callback, int buyer_id) {
         Call<List<Offer>> getOfferBuyingCall = service.getOfferBuying(buyer_id);
         getOfferBuyingCall.enqueue(callback);
@@ -119,6 +124,16 @@ public class RetrofitClient {
     public void getOfferSelling(Callback<List<Offer>> callback, int seller_id) {
         Call<List<Offer>> getOfferSellingCall = service.getOfferSelling(seller_id);
         getOfferSellingCall.enqueue(callback);
+    }
+
+    public void decline(Callback<Offer> callback, int offer_id) {
+        Call<Offer> declineCall = service.decline(offer_id);
+        declineCall.enqueue(callback);
+    }
+
+    public void accept(Callback<Offer> callback, int offer_id) {
+        Call<Offer> acceptCall = service.accept(offer_id);
+        acceptCall.enqueue(callback);
     }
 }
 

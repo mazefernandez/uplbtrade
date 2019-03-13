@@ -72,5 +72,11 @@ public interface UplbTradeApi {
 
     @GET("/api/offers/seller/{seller_id}")
     Call<List<Offer>> getOfferSelling(@Path("seller_id") int sellerId);
+
+    @PUT("/api/offers/decline/{offer_id}")
+    Call<Offer> decline(@Path("offer_id") int offerId);
+
+    @PUT("/api/offers/accept/{offer_id}")
+    Call<Offer> accept(@Path("offer_id") int offerId);
 }
 

@@ -1,5 +1,7 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Response;
 import com.mazefernandez.uplbtrade.R;
@@ -37,6 +40,7 @@ public class OfferActivity extends AppCompatActivity {
     private int buyerId;
     private int sellerId;
     private int sessionId;
+    private int offerId;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +67,7 @@ public class OfferActivity extends AppCompatActivity {
         itemId = offer.getitemId();
         buyerId = offer.getBuyerId();
         sellerId = offer.getSellerId();
+        offerId = offer.getofferId();
 
         /* Initialize values */
         restrictView(sessionId, buyerId);
@@ -73,23 +78,136 @@ public class OfferActivity extends AppCompatActivity {
         decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                confirmDecline();
             }
         });
 
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                confirmAccept();
             }
         });
 
         deleteOffer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                confirmDelete();
             }
         });
+    }
+    private void confirmDecline() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Decline Offer");
+        builder.setMessage("Do you really want to decline the offer?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Declined offer", Toast.LENGTH_SHORT).show();
+                declineOffer();
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Decline cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void confirmAccept() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Accept Offer");
+        builder.setMessage("Do you really want to accept the offer?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Accepted offer", Toast.LENGTH_SHORT).show();
+                acceptOffer();
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Accept cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void confirmDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Offer");
+        builder.setMessage("Do you really want to delete the offer?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Deleted offer", Toast.LENGTH_SHORT).show();
+                deleteOffer();
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void deleteOffer() {
+        UPLBTrade.retrofitClient.deleteOffer(new Callback<Offer>() {
+            @Override
+            public void onResponse(Call<Offer> call, retrofit2.Response<Offer> response) {
+                System.out.println("Deleted Offer");
+            }
+
+            @Override
+            public void onFailure(Call<Offer> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, offerId);
+    }
+
+    private void declineOffer() {
+        UPLBTrade.retrofitClient.decline(new Callback<Offer>() {
+            @Override
+            public void onResponse(Call<Offer> call, retrofit2.Response<Offer> response) {
+                System.out.println("Declined Offer");
+            }
+
+            @Override
+            public void onFailure(Call<Offer> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, offerId);
+    }
+
+    private void acceptOffer() {
+        UPLBTrade.retrofitClient.accept(new Callback<Offer>() {
+            @Override
+            public void onResponse(Call<Offer> call, retrofit2.Response<Offer> response) {
+                System.out.println("Accepted Offer");
+            }
+
+            @Override
+            public void onFailure(Call<Offer> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, offerId);
     }
 
     public void displayOffer(Offer offer) {

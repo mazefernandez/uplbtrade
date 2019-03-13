@@ -99,11 +99,18 @@ public class OffersActivity extends AppCompatActivity {
         });
     }
 
+    public void onRestart() {
+        super.onRestart();
+        displayOffersBuying(buyingArrayList);
+        displayOffersSelling(sellingArrayList);
+    }
+
     /* Display items from catalog */
     private void displayOffersBuying(final ArrayList offerArrayList) {
         UPLBTrade.retrofitClient.getOfferBuying(new Callback<List<Offer>>() {
             @Override
             public void onResponse(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Response<List<Offer>> response) {
+                offerArrayList.clear();
                 offerArrayList.addAll(response.body());
                 System.out.println("Retrieved all offers: buying");
             }
@@ -119,6 +126,7 @@ public class OffersActivity extends AppCompatActivity {
         UPLBTrade.retrofitClient.getOfferSelling(new Callback<List<Offer>>() {
             @Override
             public void onResponse(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Response<List<Offer>> response) {
+                offerArrayList.clear();
                 offerArrayList.addAll(response.body());
                 System.out.println("Retrieved all offers: buying");
             }
