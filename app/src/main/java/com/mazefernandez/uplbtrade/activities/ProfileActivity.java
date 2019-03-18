@@ -42,17 +42,16 @@ import retrofit2.Response;
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 import static com.mazefernandez.uplbtrade.models.RequestCode.ADD_ITEM;
 import static com.mazefernandez.uplbtrade.models.RequestCode.EDIT_PROFILE;
+
 /* Customer's Profile */
 
 public class ProfileActivity extends AppCompatActivity {
     private TextView profileName, profileAddress, contactNo;
     private ImageView profileImg;
     private RatingBar rating;
-    private SearchView profileSearch;
-
     private int customerId;
-    private List<Item> itemList;
 
+    private ArrayList<Item> itemList;
     private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
 
     @Override
@@ -66,7 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
         contactNo = findViewById(R.id.contactNo);
         profileImg = findViewById(R.id.profile_img);
         rating = findViewById(R.id.rating);
-        profileSearch = findViewById(R.id.profile_search);
+
+        SearchView profileSearch = findViewById(R.id.profile_search);
         ImageButton editCustomer = findViewById(R.id.editCustomer);
         FloatingActionButton addItem = findViewById(R.id.addItem);
         ImageButton settings = findViewById(R.id.settings);
@@ -75,9 +75,6 @@ public class ProfileActivity extends AppCompatActivity {
         /* Configure Google Sign in */
         final GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
-
-        /*SharedPref to save customer_id*/
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
         /* Retrieve current Customer */
         displayCustomer(account);
@@ -197,6 +194,7 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }, customer, customerId);
                     break;
+
                 /* Results from add item */
                 case ADD_ITEM:
                     Bundle itemInfo = data.getExtras();
@@ -219,17 +217,12 @@ public class ProfileActivity extends AppCompatActivity {
                                 System.out.println(t.getMessage());
                             }
                         }, item);
-                        itemList.clear();
-                        displayItems(itemList);
                         Toast.makeText(this, "Added new item", Toast.LENGTH_SHORT).show();
+                        /* Refresh Profile */
+                        this.recreate();
                     }
                     break;
             }
-    }
-    @Override
-    public void onRestart() {
-        super.onRestart();
-        displayItems(itemList);
     }
 
     /* Display current customer data */
@@ -237,19 +230,22 @@ public class ProfileActivity extends AppCompatActivity {
         Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
         profileName.setText(account.getDisplayName());
 
-        /*SharedPref to save customer_id*/
+        /*SharedPref to save customer_id */
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         final SharedPreferences.Editor editor = pref.edit();
 
+        /* Get customer data */
         UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
             @Override
             public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
-                profileAddress.setText(response.body().getAddress());
-                contactNo.setText(response.body().getcontactNo());
-                double rate = response.body().getoverallRating();
+                Customer customer = response.body();
+                assert customer != null;
+                profileAddress.setText(customer.getAddress());
+                contactNo.setText(customer.getcontactNo());
+                double rate = customer.getoverallRating();
                 float r = (float) rate;
                 rating.setRating(r);
-                customerId = response.body().getcustomerId();
+                customerId = customer.getcustomerId();
                 editor.putInt("customer_id", customerId);
                 editor.apply();
             }
@@ -263,7 +259,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /* Display customer's items */
-    private void displayItems(final List itemList) {
+    private void displayItems(final ArrayList<Item> itemList) {
         int customerId;
         /*SharedPref to save customer_id*/
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
@@ -272,13 +268,10 @@ public class ProfileActivity extends AppCompatActivity {
         UPLBTrade.retrofitClient.getCustomerItems(new Callback<List<Item>>() {
             @Override
             public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
-                if (response.isSuccessful()) {
-                    itemList.clear();
-                    itemList.addAll(response.body());
-                }
-                else {
-                    System.out.println("display items error " + response.errorBody());
-                }
+                ArrayList<Item> items = (ArrayList<Item>) response.body();
+                assert items != null;
+                itemList.clear();
+                itemList.addAll(items);
             }
 
             @Override

@@ -13,14 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Response;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
-
-import org.w3c.dom.Text;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,9 +34,6 @@ public class OfferActivity extends AppCompatActivity {
     private Button accept;
     private ImageButton deleteOffer;
     private int itemId;
-    private int buyerId;
-    private int sellerId;
-    private int sessionId;
     private int offerId;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +42,7 @@ public class OfferActivity extends AppCompatActivity {
 
         /*SharedPref to save customer_id*/
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        sessionId = pref.getInt("customer_id",-1);
+        int sessionId = pref.getInt("customer_id", -1);
 
         /* Offer Views */
         offerImg = findViewById(R.id.offer_img);
@@ -65,16 +59,17 @@ public class OfferActivity extends AppCompatActivity {
         /* Retrieve offer data */
         Offer offer = (Offer) getIntent().getSerializableExtra("OFFER");
         itemId = offer.getitemId();
-        buyerId = offer.getBuyerId();
-        sellerId = offer.getSellerId();
+        int buyerId = offer.getBuyerId();
+        int sellerId = offer.getSellerId();
         offerId = offer.getofferId();
 
-        /* Initialize values */
+        /* Initialize offer values */
         restrictView(sessionId, buyerId);
         getCustomers(buyerId, sellerId);
         getItemName(itemId);
         displayOffer(offer);
 
+        /* Decline offer */
         decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +77,7 @@ public class OfferActivity extends AppCompatActivity {
             }
         });
 
+        /* Accept Offer */
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +85,7 @@ public class OfferActivity extends AppCompatActivity {
             }
         });
 
+        /* Delete Offer */
         deleteOffer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +93,74 @@ public class OfferActivity extends AppCompatActivity {
             }
         });
     }
+
+    /* Display offer details */
+    public void displayOffer(Offer offer) {
+        offerImg.setImageResource(R.drawable.placeholder);
+        getItemName(itemId);
+        String price = offer.getPrice().toString();
+        offerPrice.setText(price);
+        offerStatus.setText(offer.getStatus());
+        offerMessage.setText(offer.getMessage());
+    }
+
+    private void getItemName(int itemId) {
+        UPLBTrade.retrofitClient.getItem(new Callback<Item>() {
+            @Override
+            public void onResponse(@NonNull Call<Item> call, @NonNull retrofit2.Response<Item> response) {
+                Item item = response.body();
+                assert item != null;
+                offerName.setText(item.getItemName());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, itemId);
+    }
+
+    private void getCustomers(int buyerId, int sellerId) {
+        UPLBTrade.retrofitClient.getCustomer(new Callback<Customer>() {
+            @Override
+            public void onResponse(@NonNull Call<Customer> call, @NonNull retrofit2.Response<Customer> response) {
+                Customer customer = response.body();
+                assert customer != null;
+                offerBuyer.setText(String.format("%s %s", customer.getfirstName(), customer.getlastName()));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, buyerId);
+
+        UPLBTrade.retrofitClient.getCustomer(new Callback<Customer>() {
+            @Override
+            public void onResponse(@NonNull Call<Customer> call, @NonNull retrofit2.Response<Customer> response) {
+                Customer customer = response.body();
+                assert customer != null;
+                offerSeller.setText(String.format("%s %s", customer.getfirstName(), customer.getlastName()));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, sellerId);
+    }
+
+    /* Loads appropriate view for buyer or seller */
+    public void restrictView(int sessionId, int buyerId) {
+        if (sessionId == buyerId) {
+            decline.setVisibility(View.GONE);
+            accept.setVisibility(View.GONE);
+        }
+        else {
+            deleteOffer.setVisibility(View.GONE);
+        }
+    }
+
     private void confirmDecline() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Decline Offer");
@@ -120,6 +185,20 @@ public class OfferActivity extends AppCompatActivity {
         builder.show();
     }
 
+    private void declineOffer() {
+        UPLBTrade.retrofitClient.decline(new Callback<Offer>() {
+            @Override
+            public void onResponse(@NonNull Call<Offer> call, @NonNull retrofit2.Response<Offer> response) {
+                System.out.println("Declined Offer");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Offer> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, offerId);
+    }
+
     private void confirmAccept() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Accept Offer");
@@ -142,6 +221,20 @@ public class OfferActivity extends AppCompatActivity {
         });
 
         builder.show();
+    }
+
+    private void acceptOffer() {
+        UPLBTrade.retrofitClient.accept(new Callback<Offer>() {
+            @Override
+            public void onResponse(@NonNull Call<Offer> call, @NonNull retrofit2.Response<Offer> response) {
+                System.out.println("Accepted Offer");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Offer> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, offerId);
     }
 
     private void confirmDelete() {
@@ -171,101 +264,14 @@ public class OfferActivity extends AppCompatActivity {
     private void deleteOffer() {
         UPLBTrade.retrofitClient.deleteOffer(new Callback<Offer>() {
             @Override
-            public void onResponse(Call<Offer> call, retrofit2.Response<Offer> response) {
+            public void onResponse(@NonNull Call<Offer> call, @NonNull retrofit2.Response<Offer> response) {
                 System.out.println("Deleted Offer");
             }
 
             @Override
-            public void onFailure(Call<Offer> call, Throwable t) {
+            public void onFailure(@NonNull Call<Offer> call, @NonNull Throwable t) {
                 System.out.println(t.getMessage());
             }
         }, offerId);
-    }
-
-    private void declineOffer() {
-        UPLBTrade.retrofitClient.decline(new Callback<Offer>() {
-            @Override
-            public void onResponse(Call<Offer> call, retrofit2.Response<Offer> response) {
-                System.out.println("Declined Offer");
-            }
-
-            @Override
-            public void onFailure(Call<Offer> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, offerId);
-    }
-
-    private void acceptOffer() {
-        UPLBTrade.retrofitClient.accept(new Callback<Offer>() {
-            @Override
-            public void onResponse(Call<Offer> call, retrofit2.Response<Offer> response) {
-                System.out.println("Accepted Offer");
-            }
-
-            @Override
-            public void onFailure(Call<Offer> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, offerId);
-    }
-
-    public void displayOffer(Offer offer) {
-        offerImg.setImageResource(R.drawable.placeholder);
-        getItemName(itemId);
-        offerPrice.setText(offer.getPrice().toString());
-        offerStatus.setText(offer.getStatus());
-        offerMessage.setText(offer.getMessage());
-    }
-
-    private void getItemName(int itemId) {
-        UPLBTrade.retrofitClient.getItem(new Callback<Item>() {
-            @Override
-            public void onResponse(Call<Item> call, retrofit2.Response<Item> response) {
-                offerName.setText(response.body().getItemName());
-            }
-
-            @Override
-            public void onFailure(Call<Item> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, itemId);
-    }
-
-    private void getCustomers(int buyerId, int sellerId) {
-        UPLBTrade.retrofitClient.getCustomer(new Callback<Customer>() {
-            @Override
-            public void onResponse(Call<Customer> call, retrofit2.Response<Customer> response) {
-                offerBuyer.setText(String.format("%s %s", response.body().getfirstName(), response.body().getlastName()));
-            }
-
-            @Override
-            public void onFailure(Call<Customer> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, buyerId);
-
-        UPLBTrade.retrofitClient.getCustomer(new Callback<Customer>() {
-            @Override
-            public void onResponse(Call<Customer> call, retrofit2.Response<Customer> response) {
-                offerSeller.setText(String.format("%s %s", response.body().getfirstName(), response.body().getlastName()));
-            }
-
-            @Override
-            public void onFailure(Call<Customer> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, sellerId);
-    }
-
-    /* Loads appropriate view for buyer or seller */
-    public void restrictView(int sessionId, int buyerId) {
-        if (sessionId == buyerId) {
-            decline.setVisibility(View.GONE);
-            accept.setVisibility(View.GONE);
-        }
-        else {
-            deleteOffer.setVisibility(View.GONE);
-        }
     }
 }

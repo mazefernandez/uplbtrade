@@ -26,7 +26,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/ItemImage"
+            android:contentDescription="@string/item_image"
             android:scaleType="centerCrop" />
 
         <TextView
@@ -38,7 +38,7 @@
             android:id="@+id/item_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/Price"
+            android:contentDescription="@string/item_price"
             />
 
     </LinearLayout>

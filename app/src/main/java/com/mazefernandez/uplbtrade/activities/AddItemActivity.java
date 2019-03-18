@@ -20,30 +20,27 @@ public class AddItemActivity extends AppCompatActivity{
     private EditText itemDesc;
     private EditText itemPrice;
     private EditText itemCondition;
-    private Button addItem;
-    private Button cancel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
 
+        /* Upload Item Views */
         itemImg = findViewById(R.id.item_img);
         addItemImg = findViewById(R.id.add_item_img);
         itemName = findViewById(R.id.item_name);
         itemDesc = findViewById(R.id.item_desc);
         itemPrice = findViewById(R.id.item_price);
         itemCondition = findViewById(R.id.item_condition);
-        addItem = findViewById(R.id.add_item);
-        cancel = findViewById(R.id.cancel);
 
+        Button addItem = findViewById(R.id.add_item);
+        Button cancel = findViewById(R.id.cancel);
+
+        /* New Item */
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            EditText itemName = findViewById(R.id.item_name);
-            EditText itemDesc = findViewById(R.id.item_desc);
-            EditText itemPrice = findViewById(R.id.item_price);
-            EditText itemCondition= findViewById(R.id.item_condition);
             String name = itemName.getText().toString();
             String desc = itemDesc.getText().toString();
             String price = itemPrice.getText().toString();
@@ -61,6 +58,7 @@ public class AddItemActivity extends AppCompatActivity{
             }
         });
 
+        /* Cancel and return to profile */
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

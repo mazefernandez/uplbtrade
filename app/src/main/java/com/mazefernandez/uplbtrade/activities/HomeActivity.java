@@ -11,10 +11,8 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
 import com.mazefernandez.uplbtrade.adapters.ItemAdapter;
 import com.mazefernandez.uplbtrade.models.Item;
 
@@ -30,26 +28,22 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 /* Home Page (Item Catalog) */
 
 public class HomeActivity extends AppCompatActivity {
-    private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
-
-    private RecyclerView recyclerView;
-    private ArrayList<Item> itemList;
-    private ItemAdapter itemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        SearchView homeSearch = findViewById(R.id.home_search);
-        recyclerView = findViewById(R.id.recycler_view);
 
-        /* Configure Google Sign in */
-        final GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
+        /* Home Views */
+        SearchView homeSearch = findViewById(R.id.home_search);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+
+        /* Get Google Account */
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
         /* Show customer items */
-        itemList = new ArrayList<>();
-        itemAdapter = new ItemAdapter(itemList);
+        ArrayList<Item> itemList = new ArrayList<>();
+        ItemAdapter itemAdapter = new ItemAdapter(itemList);
         displayItems(itemList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this,3);
         recyclerView.setLayoutManager(layoutManager);
@@ -81,24 +75,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
-    public void onRestart() {
-        super.onRestart();
-        displayItems(itemList);
-    }
 
     /* Display customers' items */
     private void displayItems(final ArrayList<Item> itemList) {
         UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
             @Override
             public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
-                if (response.isSuccessful()) {
-                    itemList.clear();
-                    itemList.addAll(response.body());
-                }
-                else {
-                    System.out.println("display items error " + response.errorBody());
-                }
+                itemList.clear();
+                itemList.addAll(response.body());
             }
 
             @Override

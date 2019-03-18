@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.mazefernandez.uplbtrade.R;
 
+/* Edit Item */
+
 public class EditItemActivity extends AppCompatActivity {
     private TextView itemOwner;
     private EditText itemName;
@@ -18,26 +20,25 @@ public class EditItemActivity extends AppCompatActivity {
     private EditText itemPrice;
     private ImageView itemImg;
     private EditText itemCondition;
-    private Button saveItem;
-    private Intent itemIntent;
     private Bundle itemInfo;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
 
+        /* Edit Item Views */
         itemOwner = findViewById(R.id.item_owner);
         itemName = findViewById(R.id.item_name);
         itemDesc = findViewById(R.id.item_desc);
         itemPrice = findViewById(R.id.item_price);
         itemImg = findViewById(R.id.item_img);
         itemCondition = findViewById(R.id.item_condition);
-        saveItem = findViewById(R.id.save_item);
 
-        itemIntent = getIntent();
+        Button saveItem = findViewById(R.id.save_item);
+
+        /* Display Item Details */
+        Intent itemIntent = getIntent();
         itemInfo = itemIntent.getExtras();
-
-
         displayItem();
 
         /* Save info to item */

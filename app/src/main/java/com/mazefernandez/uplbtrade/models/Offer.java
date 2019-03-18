@@ -20,14 +20,22 @@ public class Offer implements Serializable{
     @SerializedName("seller_id")
     private Integer sellerId;
 
-    public Offer(Integer offerId, Double price, String status, String message, Integer itemId, Integer buyerId, Integer sellerId) {
-        this.offerId = offerId;
+    public Offer(Double price, String status, String message, Integer itemId, Integer buyerId, Integer sellerId) {
         this.price = price;
         this.status = status;
         this.message = message;
         this.itemId = itemId;
         this.buyerId = buyerId;
         this.sellerId = sellerId;
+    }
+
+    public Offer(Offer offer) {
+        this.price = offer.price;
+        this.status = offer.status;
+        this.message = offer.message;
+        this.itemId = offer.itemId;
+        this.buyerId = offer.buyerId;
+        this.sellerId = offer.sellerId;
     }
 
     public Integer getofferId() {

@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,7 +31,6 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
 
 public class LoginActivity extends AppCompatActivity {
     private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
-    private GoogleSignInAccount account = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        account = GoogleSignIn.getLastSignedInAccount(this);
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null && checkDomain(account)) {
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             onLoggedIn(account);
@@ -97,9 +95,8 @@ public class LoginActivity extends AppCompatActivity {
         String email = account.getEmail();
         UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
             @Override
-            public void onResponse(Call<Customer> call, Response<Customer> response) {
+            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
                 if (response.isSuccessful()) {
-                    final int customerId = response.body().getcustomerId();
                     System.out.println("Customer exists");
                 }
                 else {
@@ -108,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Customer> call, Throwable t) {
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
                 addCustomer(account);
                 System.out.println("Find Customer by email Failed");
                 System.out.println(t.getMessage());
@@ -122,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
 
         UPLBTrade.retrofitClient.addCustomer(new Callback<Customer>() {
             @Override
-            public void onResponse(Call<Customer> call, Response<Customer> response) {
+            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
                 if (response.isSuccessful()) {
                     System.out.println("Added new customer");
                 }
@@ -132,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Customer> call, Throwable t) {
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
                 System.out.println("Add Customer Failed");
                 System.out.println(t.getMessage());
             }
@@ -142,13 +139,10 @@ public class LoginActivity extends AppCompatActivity {
     /* Check if the customer follows the domain needed for the app */
     public boolean checkDomain(GoogleSignInAccount account) {
         String email = account.getEmail();
+        assert email != null;
         String[] split = email.split("@");
         String domain = split[1];
-        if (domain.equals("up.edu.ph")) {
-            return true;
-        } else {
-            return false;
-        }
+        return domain.equals("up.edu.ph");
     }
     /* Sign out the customer */
     public void signOut(){

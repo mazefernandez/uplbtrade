@@ -151,11 +151,11 @@
         android:layout_marginBottom="8dp"
         android:background="@color/background"
         android:tint="@android:color/darker_gray"
-        android:tooltipText="Logout"
         app:layout_constraintBottom_toTopOf="@+id/profile_address"
         app:layout_constraintEnd_toEndOf="@+id/profile_address"
         app:layout_constraintTop_toTopOf="@+id/profile_text"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/gear" />
+        app:srcCompat="@drawable/gear"
+        android:contentDescription="@string/settings" />
 
 </android.support.constraint.ConstraintLayout>

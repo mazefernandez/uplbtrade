@@ -10,25 +10,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
 import com.mazefernandez.uplbtrade.R;
 import com.squareup.picasso.Picasso;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
+
 /* Edit Customer Information */
 
 public class EditProfileActivity extends AppCompatActivity {
     private TextView editName;
     private EditText editAddress, editContactNo;
     private ImageView editImg;
-    private Button saveCustomer;
-    private Intent profileIntent;
     private Bundle userInfo;
     private GoogleSignInAccount account;
 
@@ -38,19 +31,22 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        /* Edit Customer Views */
         editName = findViewById(R.id.edit_text);
         editAddress = findViewById(R.id.edit_address);
         editContactNo = findViewById(R.id.edit_contactNo);
         editImg = findViewById(R.id.edit_img);
-        saveCustomer = findViewById(R.id.save_customer);
-        profileIntent = getIntent();
+
+        Button saveCustomer = findViewById(R.id.save_customer);
+        Intent profileIntent = getIntent();
+
+        /* Display Customer Details */
         userInfo = profileIntent.getExtras();
         assert userInfo != null;
         account = userInfo.getParcelable(GOOGLE_ACCOUNT);
-
         displayUser();
 
-        // save new info to Customer
+        /* save new info to Customer */
         saveCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,7 +64,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-    // display user account data
+    /* display user account data */
     private void displayUser() {
         Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(editImg);
         editName.setText(account.getDisplayName());

@@ -16,7 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="?attr/colorBackgroundFloating"
-        android:contentDescription="@string/ItemImage"
+        android:contentDescription="@string/item_image"
         android:foregroundGravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
