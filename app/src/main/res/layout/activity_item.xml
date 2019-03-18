@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme.NoActionBar"
@@ -18,7 +17,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="?attr/colorBackgroundFloating"
-        android:contentDescription="@string/ItemImage"
+        android:contentDescription="@string/item_image"
         android:foregroundGravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,6 +65,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:lines="4"
+        android:maxLines="4"
         android:gravity="center"
         android:background="@color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -135,14 +136,21 @@
     <Button
         android:id="@+id/make_offer"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_height="37dp"
         android:text="@string/make_offer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintStart_toStartOf="@+id/item_owner"
         app:layout_constraintTop_toBottomOf="@+id/item_owner" />
+
+    <Button
+        android:id="@+id/see_offer"
+        android:layout_width="wrap_content"
+        android:layout_height="37dp"
+        android:text="@string/see_offer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/item_owner"
+        app:layout_constraintStart_toStartOf="@+id/item_owner"
+        app:layout_constraintTop_toBottomOf="@+id/item_owner"/>
 
 </android.support.constraint.ConstraintLayout>
