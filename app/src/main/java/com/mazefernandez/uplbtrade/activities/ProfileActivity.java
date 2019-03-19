@@ -50,8 +50,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView profileImg;
     private RatingBar rating;
     private int customerId;
+    RecyclerView recyclerView;
 
-    private ArrayList<Item> itemList;
     private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
 
     @Override
@@ -70,7 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
         ImageButton editCustomer = findViewById(R.id.editCustomer);
         FloatingActionButton addItem = findViewById(R.id.addItem);
         ImageButton settings = findViewById(R.id.settings);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
 
         /* Configure Google Sign in */
         final GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
@@ -80,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
         displayCustomer(account);
 
         /* Show customer items */
-        itemList = new ArrayList<>();
+        ArrayList<Item> itemList = new ArrayList<>();
         ItemAdapter itemAdapter = new ItemAdapter(itemList);
         displayItems(itemList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
@@ -193,6 +193,8 @@ public class ProfileActivity extends AppCompatActivity {
                             System.out.println(t.getMessage());
                         }
                     }, customer, customerId);
+                    /* Refresh Profile */
+                    this.recreate();
                     break;
 
                 /* Results from add item */

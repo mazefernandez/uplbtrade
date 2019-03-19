@@ -79,6 +79,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         public void onClick(View v) {
             Intent intent = new Intent(context, ItemActivity.class);
             intent.putExtra("ITEM", item);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(intent);
         }
     }
