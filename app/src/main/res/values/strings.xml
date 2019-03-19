@@ -30,4 +30,6 @@
     <string name="offer_message">Message</string>
     <string name="see_offer">See Offer</string>
     <string name="offer_image">Offer Image</string>
+    <string name="price">Price</string>
+    <string name="message">Message</string>
 </resources>
