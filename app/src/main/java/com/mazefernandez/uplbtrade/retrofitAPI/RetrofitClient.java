@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /* Handles Retrofit Calls */
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://ec2-54-169-159-167.ap-southeast-1.compute.amazonaws.com:8000";
+    private static final String BASE_URL = "http://ec2-13-229-64-199.ap-southeast-1.compute.amazonaws.com:8000";
     private static UPLBTradeApi service;
     private static RetrofitClient retrofitClient;
 
