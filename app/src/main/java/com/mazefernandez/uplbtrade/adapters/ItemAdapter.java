@@ -4,28 +4,23 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.activities.ItemActivity;
 import com.mazefernandez.uplbtrade.models.Item;
 
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+
+import static android.graphics.BitmapFactory.decodeByteArray;
 
 /* Binds values of item information to views */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
@@ -33,6 +28,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     public ItemAdapter(List<Item> itemList) {
         this.itemList = itemList;
+    }
+
+    private Bitmap stringToBitMap(String encodedString){
+        try{
+            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
+            return decodeByteArray(encodeByte, 0, encodeByte.length);
+        }catch(Exception e){
+            e.getMessage();
+            return null;
+        }
     }
 
     @NonNull
@@ -45,7 +50,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        holder.itemImg.setImageResource(R.drawable.placeholder);
+        if(itemList.get(position).getImage() == null) {
+            holder.itemImg.setImageResource(R.drawable.placeholder);
+        }
+        else {
+            holder.itemImg.setImageBitmap(stringToBitMap(itemList.get(position).getImage()));
+        }
         /* Format price into decimal */
         holder.itemName.setText(itemList.get(position).getItemName());
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",itemList.get(position).getPrice());

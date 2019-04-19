@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -21,12 +23,15 @@ import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.graphics.BitmapFactory.decodeByteArray;
 import static com.mazefernandez.uplbtrade.models.RequestCode.EDIT_ITEM;
 import static com.mazefernandez.uplbtrade.models.RequestCode.MAKE_OFFER;
 
@@ -39,8 +44,6 @@ public class ItemActivity extends AppCompatActivity {
     private TextView itemPrice;
     private ImageView itemImg;
     private TextView itemCondition;
-    private ImageButton itemEdit;
-    private ImageButton itemDelete;
     private Button makeOffer;
     private Button seeOffer;
     private int itemId;
@@ -64,8 +67,8 @@ public class ItemActivity extends AppCompatActivity {
         itemPrice = findViewById(R.id.item_price);
         itemImg = findViewById(R.id.item_img);
         itemCondition = findViewById(R.id.item_condition);
-        itemEdit = findViewById(R.id.item_edit);
-        itemDelete = findViewById(R.id.item_delete);
+        ImageButton itemEdit = findViewById(R.id.item_edit);
+        ImageButton itemDelete = findViewById(R.id.item_delete);
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
 
@@ -76,8 +79,39 @@ public class ItemActivity extends AppCompatActivity {
         getOwner(item);
 
         /* Set View Visibilities */
-        checkOfferExists();
-        checkCustomer(sessionId, sellerId);
+        UPLBTrade.retrofitClient.getOfferBuying(new Callback<List<Offer>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Offer>> call, @NonNull Response<List<Offer>> response) {
+                ArrayList<Offer> offers = (ArrayList<Offer>) response.body();
+                assert offers != null;
+                for (int i = 0; i<offers.size(); i++) {
+                    if (offers.get(i).getItemId() == itemId) {
+                        offer = new Offer(offers.get(i),offers.get(i).getOfferId());
+                        seeOffer.setVisibility(View.VISIBLE);
+                        makeOffer.setVisibility(View.GONE);
+                        break;
+                    }
+                    else {
+                        seeOffer.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Offer>> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, sessionId);
+
+        /* Check if customer owns this item */
+        if (sessionId == sellerId) {
+            makeOffer.setVisibility(View.GONE);
+        }
+        else {
+            makeOffer.setVisibility(View.VISIBLE);
+            itemEdit.setVisibility(View.GONE);
+            itemDelete.setVisibility(View.GONE);
+        }
 
         /* Edit item */
         itemEdit.setOnClickListener(new View.OnClickListener() {
@@ -139,16 +173,6 @@ public class ItemActivity extends AppCompatActivity {
         });
     }
 
-    /* Check if customer is seller or buyer */
-    private void checkCustomer(int sessionId, int customerId) {
-        if (sessionId == customerId) {
-            makeOffer.setVisibility(View.GONE);
-        }
-        else {
-            itemEdit.setVisibility(View.GONE);
-            itemDelete.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -164,15 +188,19 @@ public class ItemActivity extends AppCompatActivity {
                     String desc = editInfo.getString("DESC");
                     String price = editInfo.getString("PRICE");
                     String condition = editInfo.getString("CONDITION");
+                    String image = editInfo.getString("IMAGE");
+
+                    Bitmap bm = stringToBitMap(image);
 
                     itemName.setText(name);
                     itemDesc.setText(desc);
                     itemPrice.setText(price);
                     itemCondition.setText(condition);
+                    itemImg.setImageBitmap(bm);
 
                     Double double_price = Double.parseDouble(price);
 
-                    Item item = new Item(name, desc, double_price, null, condition);
+                    Item item = new Item(name, desc, double_price, image, condition);
                     UPLBTrade.retrofitClient.updateItem(new Callback<Item>() {
                         @Override
                         public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
@@ -209,9 +237,23 @@ public class ItemActivity extends AppCompatActivity {
         itemDesc.setText(item.getDescription());
         String price = item.getPrice().toString();
         itemPrice.setText(price);
-        /*TODO add item picture */
-        itemImg.setImageResource(R.drawable.placeholder);
+        if (item.getImage() == null) {
+            itemImg.setImageResource(R.drawable.placeholder);
+        }
+        else {
+            itemImg.setImageBitmap(stringToBitMap(item.getImage()));
+        }
         itemCondition.setText(item.getCondition());
+    }
+
+    public Bitmap stringToBitMap(String encodedString){
+        try{
+            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
+            return decodeByteArray(encodeByte, 0, encodeByte.length);
+        }catch(Exception e){
+            e.getMessage();
+            return null;
+        }
     }
 
     /* Retrieve owner of item */
@@ -230,32 +272,6 @@ public class ItemActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, item.getcustomerId());
-    }
-
-    private void checkOfferExists() {
-        UPLBTrade.retrofitClient.getOfferBuying(new Callback<List<Offer>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Offer>> call, @NonNull Response<List<Offer>> response) {
-                ArrayList<Offer> offers = (ArrayList<Offer>) response.body();
-                assert offers != null;
-                for (int i = 0; i<offers.size(); i++) {
-                    if (offers.get(i).getItemId() == itemId) {
-                        offer = new Offer(offers.get(i));
-                        makeOffer.setVisibility(View.GONE);
-                        seeOffer.setVisibility(View.VISIBLE);
-                        break;
-                    }
-                    else {
-                        seeOffer.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Offer>> call, @NonNull Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, sessionId);
     }
 
     private void makeOffer(Offer offer) {

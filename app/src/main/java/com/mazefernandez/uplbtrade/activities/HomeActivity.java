@@ -1,6 +1,5 @@
 package com.mazefernandez.uplbtrade.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -29,6 +28,7 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 /* Home Page (Item Catalog) */
 
 public class HomeActivity extends AppCompatActivity {
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +37,35 @@ public class HomeActivity extends AppCompatActivity {
 
         /* Home Views */
         SearchView homeSearch = findViewById(R.id.home_search);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
 
         /* Get Google Account */
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
-        /* Show customer items */
-        ArrayList<Item> itemList = new ArrayList<>();
-        ItemAdapter itemAdapter = new ItemAdapter(itemList);
-        displayItems(itemList);
+        /* Set up home items */
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this,3);
         recyclerView.setLayoutManager(layoutManager);
+        ArrayList<Item> itemList = new ArrayList<>();
+        ItemAdapter itemAdapter = new ItemAdapter(itemList);
         recyclerView.setAdapter(itemAdapter);
+
+        /* Show customer items */
+        UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
+                ArrayList<Item> items = (ArrayList<Item>) response.body();
+                assert items != null;
+                ArrayList<Item> itemList = new ArrayList<>(items);
+                ItemAdapter itemAdapter = new ItemAdapter(itemList);
+                recyclerView.setAdapter(itemAdapter);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
+                System.out.println("Get Items Failed");
+                System.out.println(t.getMessage());
+            }
+        });
 
         /* Navigation bar */
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -73,23 +90,6 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                 }
                 return false;
-            }
-        });
-    }
-
-    /* Display customers' items */
-    private void displayItems(final ArrayList<Item> itemList) {
-        UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
-                itemList.clear();
-                itemList.addAll(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
-                System.out.println("Get Items Failed");
-                System.out.println(t.getMessage());
             }
         });
     }
