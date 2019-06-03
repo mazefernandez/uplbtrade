@@ -37,7 +37,7 @@ public class GoogleAccountAdapter {
         try {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intent);
             account = task.getResult(ApiException.class);
-            Log.w(TAG, "SigninResult:success");
+            Log.w(TAG, "signInResult:success");
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }

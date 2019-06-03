@@ -1,6 +1,6 @@
 package com.mazefernandez.uplbtrade.activities;
 
-import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,10 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.ItemAdapter;
@@ -29,26 +33,47 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 /* Home Page (Item Catalog) */
 
 public class HomeActivity extends AppCompatActivity {
+    RecyclerView recyclerView;
+    private static final String TAG = "UPLB Trade";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        checkGoogleServices();
+
         /* Home Views */
         SearchView homeSearch = findViewById(R.id.home_search);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
 
         /* Get Google Account */
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
-        /* Show customer items */
-        ArrayList<Item> itemList = new ArrayList<>();
-        ItemAdapter itemAdapter = new ItemAdapter(itemList);
-        displayItems(itemList);
+        /* Set up home items */
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this,3);
         recyclerView.setLayoutManager(layoutManager);
+        ArrayList<Item> itemList = new ArrayList<>();
+        ItemAdapter itemAdapter = new ItemAdapter(itemList);
         recyclerView.setAdapter(itemAdapter);
+
+        /* Show customer items */
+        UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
+                ArrayList<Item> items = (ArrayList<Item>) response.body();
+                assert items != null;
+                ArrayList<Item> itemList = new ArrayList<>(items);
+                ItemAdapter itemAdapter = new ItemAdapter(itemList);
+                recyclerView.setAdapter(itemAdapter);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
+                System.out.println("Get Items Failed");
+                System.out.println(t.getMessage());
+            }
+        });
 
         /* Navigation bar */
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -76,21 +101,23 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-
-    /* Display customers' items */
-    private void displayItems(final ArrayList<Item> itemList) {
-        UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
-                itemList.clear();
-                itemList.addAll(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
-                System.out.println("Get Items Failed");
-                System.out.println(t.getMessage());
-            }
-        });
+    /* Check to see if user has correct version of google maps*/
+    public boolean checkGoogleServices() {
+        Log.d(TAG, "checkGoogleServices: Verifying Google Play Services Version");
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(HomeActivity.this);
+        /* User's Google Play Services i*/
+        if (available == ConnectionResult.SUCCESS) {
+            Log.d(TAG, "checkGoogleServices: Google Play Services is enabled");
+            return true;
+        }
+        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
+            Log.d(TAG, "checkGoogleServices: Error occurred, but resolvable");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(HomeActivity.this,available,9001);
+            dialog.show();
+        }
+        else {
+            Toast.makeText(this,"There's a problem with your Google Play Services, maps may not work.", Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 }

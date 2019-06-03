@@ -72,6 +72,13 @@ public class ProfileActivity extends AppCompatActivity {
         ImageButton settings = findViewById(R.id.settings);
         recyclerView = findViewById(R.id.recycler_view);
 
+        /*setup profile items */
+        ArrayList<Item> itemList = new ArrayList<>();
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
+        recyclerView.setLayoutManager(layoutManager);
+        ItemAdapter itemAdapter = new ItemAdapter(itemList);
+        recyclerView.setAdapter(itemAdapter);
+
         /* Configure Google Sign in */
         final GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
@@ -79,13 +86,30 @@ public class ProfileActivity extends AppCompatActivity {
         /* Retrieve current Customer */
         displayCustomer(account);
 
+        /*SharedPref to save customer_id*/
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        customerId = pref.getInt("customer_id", -1);
+
         /* Show customer items */
-        ArrayList<Item> itemList = new ArrayList<>();
-        ItemAdapter itemAdapter = new ItemAdapter(itemList);
-        displayItems(itemList);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(itemAdapter);
+        UPLBTrade.retrofitClient.getCustomerItems(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
+
+                ArrayList<Item> items = (ArrayList<Item>) response.body();
+                assert items != null;
+                ArrayList<Item> itemList = new ArrayList<>();
+                itemList.clear();
+                itemList.addAll(items);
+                ItemAdapter itemAdapter = new ItemAdapter(itemList);
+                recyclerView.setAdapter(itemAdapter);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
+                System.out.println("Get Items Failed");
+                System.out.println(t.getMessage());
+            }
+        }, customerId);
 
         /* Search Items */
         profileSearch.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +141,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ProfileActivity.this, AddItemActivity.class);
+                intent.putExtra("CUSTOMER_ID",customerId);
                 startActivityForResult(intent, ADD_ITEM);
             }
         });
@@ -193,35 +218,12 @@ public class ProfileActivity extends AppCompatActivity {
                             System.out.println(t.getMessage());
                         }
                     }, customer, customerId);
-                    /* Refresh Profile */
-                    this.recreate();
                     break;
 
                 /* Results from add item */
                 case ADD_ITEM:
-                    Bundle itemInfo = data.getExtras();
-                    if (itemInfo != null) {
-                        String itemName = itemInfo.getString("NAME");
-                        String itemDesc = itemInfo.getString("DESC");
-                        String itemPrice = itemInfo.getString("PRICE");
-                        Double price = Double.parseDouble(itemPrice);
-                        String itemCondition = itemInfo.getString("CONDITION");
-                        Item item = new Item(itemName, itemDesc, price, null, itemCondition, customerId);
-
-                        UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
-                            @Override
-                            public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                                System.out.println("Added Item");
-                            }
-                            @Override
-                            public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
-                                System.out.println("Failed to add item");
-                                System.out.println(t.getMessage());
-                            }
-                        }, item);
+                    if (data.getIntExtra("CHECK",-1) == 1) {
                         Toast.makeText(this, "Added new item", Toast.LENGTH_SHORT).show();
-                        /* Refresh Profile */
-                        this.recreate();
                     }
                     break;
             }
@@ -258,29 +260,5 @@ public class ProfileActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, account.getEmail() );
-    }
-
-    /* Display customer's items */
-    private void displayItems(final ArrayList<Item> itemList) {
-        int customerId;
-        /*SharedPref to save customer_id*/
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        customerId = pref.getInt("customer_id", -1);
-
-        UPLBTrade.retrofitClient.getCustomerItems(new Callback<List<Item>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
-                ArrayList<Item> items = (ArrayList<Item>) response.body();
-                assert items != null;
-                itemList.clear();
-                itemList.addAll(items);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
-                System.out.println("Get Items Failed");
-                System.out.println(t.getMessage());
-            }
-        }, customerId);
     }
 }

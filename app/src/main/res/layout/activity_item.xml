@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme.NoActionBar"
@@ -145,12 +146,12 @@
 
     <Button
         android:id="@+id/see_offer"
-        android:layout_width="wrap_content"
+        android:layout_width="108dp"
         android:layout_height="37dp"
         android:text="@string/see_offer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintStart_toStartOf="@+id/item_owner"
-        app:layout_constraintTop_toBottomOf="@+id/item_owner"/>
+        app:layout_constraintTop_toBottomOf="@+id/item_owner" />
 
 </android.support.constraint.ConstraintLayout>

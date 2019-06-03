@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.mazefernandez.uplbtrade.activities.LoginActivity;
-import com.mazefernandez.uplbtrade.activities.MapsActivity;
 import com.mazefernandez.uplbtrade.retrofitAPI.RetrofitClient;
 
 public class UPLBTrade extends Application {

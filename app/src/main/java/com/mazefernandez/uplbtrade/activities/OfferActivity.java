@@ -2,6 +2,7 @@ package com.mazefernandez.uplbtrade.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
+import com.mazefernandez.uplbtrade.fragments.MapFragment;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -32,6 +34,7 @@ public class OfferActivity extends AppCompatActivity {
     private TextView offerBuyer;
     private Button decline;
     private Button accept;
+    private Button meetUp;
     private ImageButton deleteOffer;
     private int itemId;
     private int offerId;
@@ -55,21 +58,39 @@ public class OfferActivity extends AppCompatActivity {
         decline = findViewById(R.id.decline);
         accept = findViewById(R.id.accept);
         deleteOffer = findViewById(R.id.offer_delete);
+        meetUp = findViewById(R.id.meet_up);
+
 
         /* Retrieve offer data */
-        Offer offer = (Offer) getIntent().getSerializableExtra("OFFER");
+        final Offer offer = (Offer) getIntent().getSerializableExtra("OFFER");
         itemId = offer.getitemId();
         int buyerId = offer.getBuyerId();
         int sellerId = offer.getSellerId();
         offerId = offer.getofferId();
 
-        /* Initialize offer values */
-        restrictView(sessionId, buyerId);
+        /* Initialize views */
+        if (sessionId == buyerId) {
+            decline.setVisibility(View.GONE);
+            accept.setVisibility(View.GONE);
+        }
+        else {
+            deleteOffer.setVisibility(View.GONE);
+        }
+
+        if (!offer.getStatus().equals("Accepted")) {
+            meetUp.setVisibility(View.GONE);
+        }
+        else {
+            decline.setVisibility(View.GONE);
+            accept.setVisibility(View.GONE);
+        }
+
+        /* Initialize offer data */
         getCustomers(buyerId, sellerId);
         getItemName(itemId);
         displayOffer(offer);
 
-        /* Decline offer */
+        /* Decline Offer */
         decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +103,20 @@ public class OfferActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 confirmAccept();
+            }
+        });
+
+        /* Set Meet Up */
+        meetUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OfferActivity.this, MeetUpActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("customer",offerBuyer.getText().toString());
+                bundle.putString("item",offerName.getText().toString());
+                bundle.putString("price",offerPrice.getText().toString());
+                intent.putExtra("info",bundle);
+                startActivity(intent);
             }
         });
 
@@ -148,17 +183,6 @@ public class OfferActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, sellerId);
-    }
-
-    /* Loads appropriate view for buyer or seller */
-    public void restrictView(int sessionId, int buyerId) {
-        if (sessionId == buyerId) {
-            decline.setVisibility(View.GONE);
-            accept.setVisibility(View.GONE);
-        }
-        else {
-            deleteOffer.setVisibility(View.GONE);
-        }
     }
 
     private void confirmDecline() {

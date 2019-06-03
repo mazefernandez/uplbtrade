@@ -25,8 +25,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
-import static com.mazefernandez.uplbtrade.models.RequestCode.LOGIN;
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
+import static com.mazefernandez.uplbtrade.models.RequestCode.LOGIN;
 /* Login Customers through Google Account */
 
 public class LoginActivity extends AppCompatActivity {
@@ -47,8 +47,13 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signIn = googleSIC.getSignInIntent();
-                startActivityForResult(signIn, LOGIN);
+                try {
+                    Intent signIn = googleSIC.getSignInIntent();
+                    startActivityForResult(signIn, LOGIN);
+                }
+                catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         });
     }

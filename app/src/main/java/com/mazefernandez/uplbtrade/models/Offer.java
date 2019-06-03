@@ -29,7 +29,8 @@ public class Offer implements Serializable{
         this.sellerId = sellerId;
     }
 
-    public Offer(Offer offer) {
+    public Offer(Offer offer, int offerId) {
+        this.offerId = offerId;
         this.price = offer.price;
         this.status = offer.status;
         this.message = offer.message;

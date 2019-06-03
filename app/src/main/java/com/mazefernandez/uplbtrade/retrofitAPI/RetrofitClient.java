@@ -6,6 +6,8 @@ import com.mazefernandez.uplbtrade.models.Offer;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -73,8 +75,15 @@ public class RetrofitClient {
         Call<Item> getItemCall = service.getItem(item_id);
         getItemCall.enqueue(callback);
     }
-    public void addItem(Callback<Item> callback, Item item) {
-        Call<Item> addItemCall = service.addItem(item);
+    public void addItem(
+            Callback<Item> callback,
+            RequestBody name,
+            RequestBody description,
+            RequestBody price,
+            MultipartBody.Part image,
+            RequestBody condition,
+            RequestBody customer_id) {
+        Call<Item> addItemCall = service.addItem(name, description, price, image, condition, customer_id);
         addItemCall.enqueue(callback);
     }
 

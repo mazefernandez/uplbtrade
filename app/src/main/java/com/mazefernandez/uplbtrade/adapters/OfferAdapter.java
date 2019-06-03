@@ -3,8 +3,10 @@ package com.mazefernandez.uplbtrade.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.graphics.BitmapFactory.decodeByteArray;
+
 /* Binds values of item information to views */
 public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHolder> {
 
@@ -31,6 +35,16 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
 
     public OfferAdapter(ArrayList<Offer> offerList) {
         this.offerList = offerList;
+    }
+
+    private Bitmap stringToBitMap(String encodedString){
+        try{
+            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
+            return decodeByteArray(encodeByte, 0, encodeByte.length);
+        }catch(Exception e){
+            e.getMessage();
+            return null;
+        }
     }
 
     @NonNull
@@ -45,7 +59,6 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         getItem(offerList.get(position).getitemId(), holder);
         holder.offer = offerList.get(position);
-        holder.offerImg.setImageResource(R.drawable.placeholder);
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",offerList.get(position).getPrice());
         holder.offerPrice.setText(price);
         holder.offerStatus.setText(offerList.get(position).getStatus());
@@ -54,7 +67,15 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
         UPLBTrade.retrofitClient.getItem(new Callback<Item>() {
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                holder.offerName.setText(response.body().getItemName());
+                Item item = response.body();
+                assert item != null;
+                holder.offerName.setText(item.getItemName());
+                if (item.getImage() == null) {
+                    holder.offerImg.setImageResource(R.drawable.placeholder);
+                }
+                else {
+                    holder.offerImg.setImageBitmap(stringToBitMap(item.getImage()));
+                }
                 System.out.println("Retrieved item from offer");
             }
             @Override

@@ -27,7 +27,8 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 /* Buying and Selling Offers */
 
 public class OffersActivity extends AppCompatActivity {
-    private int sessionId;
+    RecyclerView buying;
+    RecyclerView selling;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,31 +36,69 @@ public class OffersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_offers);
 
         /* Offers Views */
-        RecyclerView buying = findViewById(R.id.buying);
-        RecyclerView selling = findViewById(R.id.selling);
+        buying = findViewById(R.id.buying);
+        selling = findViewById(R.id.selling);
 
         /*SharedPref to save customer_id*/
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        sessionId = pref.getInt("customer_id",-1);
+        int sessionId = pref.getInt("customer_id", -1);
 
         /* Get Google Account */
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
         /* Show customer's offers for items to be bought */
         ArrayList<Offer> buyingArrayList = new ArrayList<>();
-        OfferAdapter buyingAdapter = new OfferAdapter(buyingArrayList);
-        displayOffersBuying(buyingArrayList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(OffersActivity.this,LinearLayoutManager.HORIZONTAL,false);
         buying.setLayoutManager(layoutManager);
+        OfferAdapter buyingAdapter = new OfferAdapter(buyingArrayList);
         buying.setAdapter(buyingAdapter);
+
+        /* retrieve buying offers */
+        UPLBTrade.retrofitClient.getOfferBuying(new Callback<List<Offer>>() {
+            @Override
+            public void onResponse(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Response<List<Offer>> response) {
+                ArrayList<Offer> offers = (ArrayList<Offer>) response.body();
+                assert offers != null;
+                ArrayList<Offer> buyingArrayList = new ArrayList<>(offers);
+                OfferAdapter buyingAdapter = new OfferAdapter(buyingArrayList);
+                buying.setAdapter(buyingAdapter);
+            }
+            @Override
+            public void onFailure(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, sessionId);
+
 
         /* Show customer's offers for items to be sold */
         ArrayList<Offer> sellingArrayList = new ArrayList<>();
-        OfferAdapter sellingAdapter = new OfferAdapter(sellingArrayList);
-        displayOffersSelling(sellingArrayList);
         RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(OffersActivity.this,LinearLayoutManager.HORIZONTAL,false);
         selling.setLayoutManager(layoutManager2);
+        OfferAdapter sellingAdapter = new OfferAdapter(sellingArrayList);
         selling.setAdapter(sellingAdapter);
+
+        UPLBTrade.retrofitClient.getOfferSelling(new Callback<List<Offer>>() {
+            @Override
+            public void onResponse(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Response<List<Offer>> response) {
+                ArrayList<Offer> offers = (ArrayList<Offer>) response.body();
+                assert offers != null;
+                ArrayList<Offer> sellingArrayList = new ArrayList<>(offers);
+
+                for (int i=0; i<sellingArrayList.size(); i++) {
+                    if (sellingArrayList.get(i).getStatus().equals("Declined")) {
+                        sellingArrayList.remove(i);
+                    }
+                }
+                OfferAdapter sellingAdapter = new OfferAdapter(sellingArrayList);
+                selling.setAdapter(sellingAdapter);
+                System.out.println("Retrieved all offers: buying");
+            }
+
+            @Override
+            public void onFailure(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, sessionId);
 
         /* Navigation bar */
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -86,40 +125,5 @@ public class OffersActivity extends AppCompatActivity {
                 return false;
             }
         });
-    }
-
-    /* Display items from catalog */
-    private void displayOffersBuying(final ArrayList<Offer> offerArrayList) {
-        UPLBTrade.retrofitClient.getOfferBuying(new Callback<List<Offer>>() {
-            @Override
-            public void onResponse(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Response<List<Offer>> response) {
-                ArrayList<Offer> offers = (ArrayList<Offer>) response.body();
-                offerArrayList.clear();
-                offerArrayList.addAll(offers);
-                System.out.println("Retrieved all offers: buying");
-            }
-
-            @Override
-            public void onFailure(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, sessionId);
-    }
-
-    /* Display items from profile */
-    private void displayOffersSelling(final ArrayList<Offer> offerArrayList) {
-        UPLBTrade.retrofitClient.getOfferSelling(new Callback<List<Offer>>() {
-            @Override
-            public void onResponse(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Response<List<Offer>> response) {
-                offerArrayList.clear();
-                offerArrayList.addAll(response.body());
-                System.out.println("Retrieved all offers: buying");
-            }
-
-            @Override
-            public void onFailure(@NonNull retrofit2.Call<List<Offer>> call, @NonNull Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, sessionId);
     }
 }
