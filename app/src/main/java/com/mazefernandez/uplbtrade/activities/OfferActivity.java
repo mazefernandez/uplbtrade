@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
+import com.mazefernandez.uplbtrade.fragments.MapFragment;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -61,7 +62,7 @@ public class OfferActivity extends AppCompatActivity {
 
 
         /* Retrieve offer data */
-        Offer offer = (Offer) getIntent().getSerializableExtra("OFFER");
+        final Offer offer = (Offer) getIntent().getSerializableExtra("OFFER");
         itemId = offer.getitemId();
         int buyerId = offer.getBuyerId();
         int sellerId = offer.getSellerId();
@@ -109,7 +110,12 @@ public class OfferActivity extends AppCompatActivity {
         meetUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OfferActivity.this, MapsActivity.class);
+                Intent intent = new Intent(OfferActivity.this, MeetUpActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("customer",offerBuyer.getText().toString());
+                bundle.putString("item",offerName.getText().toString());
+                bundle.putString("price",offerPrice.getText().toString());
+                intent.putExtra("info",bundle);
                 startActivity(intent);
             }
         });

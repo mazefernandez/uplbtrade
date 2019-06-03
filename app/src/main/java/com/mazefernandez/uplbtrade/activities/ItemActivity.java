@@ -72,6 +72,7 @@ public class ItemActivity extends AppCompatActivity {
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
 
+        seeOffer.setVisibility(View.GONE);
         /* Retrieve item data */
         Item item = (Item) getIntent().getSerializableExtra("ITEM");
         itemId = item.getitemId();
@@ -106,6 +107,7 @@ public class ItemActivity extends AppCompatActivity {
         /* Check if customer owns this item */
         if (sessionId == sellerId) {
             makeOffer.setVisibility(View.GONE);
+            seeOffer.setVisibility(View.GONE);
         }
         else {
             makeOffer.setVisibility(View.VISIBLE);
@@ -134,6 +136,7 @@ public class ItemActivity extends AppCompatActivity {
 
                 intent.putExtras(itemInfo);
                 startActivityForResult(intent,EDIT_ITEM);
+                seeOffer.setVisibility(View.GONE);
             }
         });
 

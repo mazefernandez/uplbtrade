@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.MapFragment">
+
+    <fragment
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+    
+    <RelativeLayout
+        android:id="@+id/address_bar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="10dp"
+        android:elevation="10dp"
+        tools:targetApi="lollipop">
+
+        <SearchView
+            android:id="@+id/search_bar"
+            android:autofillHints="@string/places_autocomplete_search_hint"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:queryHint="@string/map_query"
+            android:inputType="text"
+            android:background="@drawable/border"
+            tools:targetApi="o" />
+    </RelativeLayout>
+
+</FrameLayout>

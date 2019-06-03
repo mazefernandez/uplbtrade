@@ -33,4 +33,11 @@
     <string name="price">Price</string>
     <string name="message">Message</string>
     <string name="meet_up">Set Meet-Up</string>
+    <string name="venue">Set Venue</string>
+    <string name="confirm">Confirm</string>
+    <string name="date">Set Date</string>
+    <string name="date_time">Set Date/Time</string>
+    <string name="time">Set Time</string>
+    <string name="warning">UPLB Trade encourages customers to set meet-ups within the campus and between 7 am and 7 pm. Always exercise caution when meeting with other customers.</string>
+    <string name="map_query">Enter Venue</string>
 </resources>

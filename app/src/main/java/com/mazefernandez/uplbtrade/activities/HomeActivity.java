@@ -1,5 +1,6 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -7,10 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.ItemAdapter;
@@ -29,11 +34,14 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 
 public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
+    private static final String TAG = "UPLB Trade";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        checkGoogleServices();
 
         /* Home Views */
         SearchView homeSearch = findViewById(R.id.home_search);
@@ -92,5 +100,24 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+    /* Check to see if user has correct version of google maps*/
+    public boolean checkGoogleServices() {
+        Log.d(TAG, "checkGoogleServices: Verifying Google Play Services Version");
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(HomeActivity.this);
+        /* User's Google Play Services i*/
+        if (available == ConnectionResult.SUCCESS) {
+            Log.d(TAG, "checkGoogleServices: Google Play Services is enabled");
+            return true;
+        }
+        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
+            Log.d(TAG, "checkGoogleServices: Error occurred, but resolvable");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(HomeActivity.this,available,9001);
+            dialog.show();
+        }
+        else {
+            Toast.makeText(this,"There's a problem with your Google Play Services, maps may not work.", Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 }

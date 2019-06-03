@@ -2,14 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mazefernandez.uplbtrade">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="ANDROID.PERMISSION.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="ANDROID.PERMISSION.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:name=".UPLBTrade"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
         <activity
@@ -66,10 +68,13 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
-            android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:name=".activities.MeetUpActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.MakeOfferActivity" />
+        <activity android:name=".activities.ConfirmMeetUpActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
