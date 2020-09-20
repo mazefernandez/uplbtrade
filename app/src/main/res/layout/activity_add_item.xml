@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Add Item Layout-->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_item_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,6 +47,7 @@
         android:layout_marginTop="8dp"
         android:hint="@string/item_name"
         android:inputType="text"
+        android:autofillHints="@string/item_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_img" />
@@ -66,12 +67,13 @@
         android:minLines="4"
         android:maxLines="4"
         android:gravity="top"
+        android:autofillHints="@string/item_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
     <EditText
-        android:id="@+id/item_price"
+        android:id="@+id/offer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -81,6 +83,7 @@
         android:layout_marginTop="8dp"
         android:hint="@string/item_price"
         android:inputType="numberDecimal"
+        android:autofillHints="@string/price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_desc" />
@@ -96,9 +99,10 @@
         android:layout_marginTop="8dp"
         android:hint="@string/item_condition"
         android:inputType="text"
+        android:autofillHints="@string/item_condition"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_price" />
+        app:layout_constraintTop_toBottomOf="@+id/offer" />
 
     <Button
         android:id="@+id/add_item"
@@ -120,4 +124,4 @@
         app:layout_constraintStart_toStartOf="@+id/item_condition"
         app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

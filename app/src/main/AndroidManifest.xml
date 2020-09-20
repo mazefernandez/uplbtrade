@@ -13,21 +13,23 @@
     <application
         android:name=".UPLBTrade"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/uplb_trade_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/uplb_trade_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
+        <activity android:name=".activities.TransactionActivity" />
+        <activity android:name=".activities.ReportUserActivity" />
+        <activity android:name=".activities.SettingsActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:label="UPLB Trade"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -38,10 +40,19 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.OffersActivity"
+            android:label="offers"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.OfferActivity"
             android:label="offer"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ProfileActivity"
+            android:label="profile"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.PurchasesActivity"
             android:label="profile"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
@@ -60,7 +71,6 @@
         <activity
             android:name=".activities.EditItemActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.OfferActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -73,8 +83,6 @@
             android:name=".activities.MeetUpActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.MakeOfferActivity" />
-        <activity android:name=".activities.ConfirmMeetUpActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

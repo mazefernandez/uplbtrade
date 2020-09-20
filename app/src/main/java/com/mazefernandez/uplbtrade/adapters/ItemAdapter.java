@@ -4,30 +4,36 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.activities.ItemActivity;
 import com.mazefernandez.uplbtrade.models.Item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.graphics.BitmapFactory.decodeByteArray;
 
 /* Binds values of item information to views */
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements Filterable {
     private List<Item> itemList;
+    private List<Item> itemListFiltered;
 
     public ItemAdapter(List<Item> itemList) {
         this.itemList = itemList;
+        this.itemListFiltered = itemList;
     }
 
     private Bitmap stringToBitMap(String encodedString){
@@ -50,28 +56,60 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        if(itemList.get(position).getImage() == null) {
+        if(itemListFiltered.get(position).getImage() == null) {
             holder.itemImg.setImageResource(R.drawable.placeholder);
         }
         else {
-            holder.itemImg.setImageBitmap(stringToBitMap(itemList.get(position).getImage()));
+            holder.itemImg.setImageBitmap(stringToBitMap(itemListFiltered.get(position).getImage()));
+//            System.out.println(itemListFiltered.get(position).getImage());
         }
+        holder.itemName.setText(itemListFiltered.get(position).getItemName());
         /* Format price into decimal */
-        holder.itemName.setText(itemList.get(position).getItemName());
-        @SuppressLint("DefaultLocale") String price = String.format("%.2f",itemList.get(position).getPrice());
+        @SuppressLint("DefaultLocale") String price = String.format("%.2f",itemListFiltered.get(position).getPrice());
+        price = "\u20B1" + price;
         holder.itemPrice.setText(price);
-        holder.item = itemList.get(position);
+        holder.item = itemListFiltered.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return itemListFiltered.size();
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    /* Search function for item list */
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    itemListFiltered = itemList;
+                } else {
+                    List<Item> filteredList = new ArrayList<>();
+                    for (Item item : itemList) {
+                        if (item.getItemName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(item);
+                        }
+                    }
+                    itemListFiltered = filteredList;
+                }
+                FilterResults results = new FilterResults();
+                results.values = itemListFiltered;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                itemListFiltered = (List<Item>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private ImageView itemImg;
         private TextView itemName, itemPrice;
-        private LinearLayout card;
         private final Context context;
         private Item item;
 
@@ -79,8 +117,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             super(view);
             itemImg = view.findViewById(R.id.item_img);
             itemName = view.findViewById(R.id.item_name);
-            itemPrice = view.findViewById(R.id.item_price);
-            card = view.findViewById(R.id.card);
+            itemPrice = view.findViewById(R.id.offer);
+            LinearLayout card = view.findViewById(R.id.card);
             context = view.getContext();
             card.setOnClickListener(this);
         }

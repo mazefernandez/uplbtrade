@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MapFragment">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/map"
         android:layout_height="match_parent"
@@ -21,7 +21,7 @@
 
         <SearchView
             android:id="@+id/search_bar"
-            android:autofillHints="@string/places_autocomplete_search_hint"
+            android:autofillHints="@string/search_venue"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginEnd="8dp"
@@ -31,6 +31,7 @@
             android:layout_marginTop="8dp"
             android:queryHint="@string/map_query"
             android:inputType="text"
+            android:iconifiedByDefault="false"
             android:background="@drawable/border"
             tools:targetApi="o" />
     </RelativeLayout>

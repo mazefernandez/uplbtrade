@@ -1,12 +1,9 @@
 package com.mazefernandez.uplbtrade.activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.fragments.MapFragment;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -27,6 +26,7 @@ import retrofit2.Callback;
 public class OfferActivity extends AppCompatActivity {
     private ImageView offerImg;
     private TextView offerName;
+    private TextView originalPrice;
     private TextView offerPrice;
     private TextView offerStatus;
     private TextView offerMessage;
@@ -38,6 +38,8 @@ public class OfferActivity extends AppCompatActivity {
     private ImageButton deleteOffer;
     private int itemId;
     private int offerId;
+    private String price;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,7 @@ public class OfferActivity extends AppCompatActivity {
         /* Offer Views */
         offerImg = findViewById(R.id.offer_img);
         offerName = findViewById(R.id.offer_name);
+        originalPrice = findViewById(R.id.original_price);
         offerPrice = findViewById(R.id.offer_price);
         offerStatus = findViewById(R.id.offer_status);
         offerMessage = findViewById(R.id.offer_message);
@@ -63,6 +66,7 @@ public class OfferActivity extends AppCompatActivity {
 
         /* Retrieve offer data */
         final Offer offer = (Offer) getIntent().getSerializableExtra("OFFER");
+        assert offer != null;
         itemId = offer.getitemId();
         int buyerId = offer.getBuyerId();
         int sellerId = offer.getSellerId();
@@ -87,65 +91,51 @@ public class OfferActivity extends AppCompatActivity {
 
         /* Initialize offer data */
         getCustomers(buyerId, sellerId);
-        getItemName(itemId);
         displayOffer(offer);
 
         /* Decline Offer */
-        decline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmDecline();
-            }
-        });
+        decline.setOnClickListener(v -> confirmDecline());
 
         /* Accept Offer */
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmAccept();
-            }
-        });
+        accept.setOnClickListener(v -> confirmAccept());
 
         /* Set Meet Up */
-        meetUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(OfferActivity.this, MeetUpActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("customer",offerBuyer.getText().toString());
-                bundle.putString("item",offerName.getText().toString());
-                bundle.putString("price",offerPrice.getText().toString());
-                intent.putExtra("info",bundle);
-                startActivity(intent);
-            }
+        meetUp.setOnClickListener(v -> {
+            Intent intent = new Intent(OfferActivity.this, MeetUpActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("customer",offerBuyer.getText().toString());
+            bundle.putString("item",offerName.getText().toString());
+            bundle.putString("price", originalPrice.getText().toString());
+            bundle.putString("offer",offerPrice.getText().toString());
+            intent.putExtra("info",bundle);
+            startActivity(intent);
         });
 
         /* Delete Offer */
-        deleteOffer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmDelete();
-            }
-        });
+        deleteOffer.setOnClickListener(v -> confirmDelete());
     }
 
     /* Display offer details */
     public void displayOffer(Offer offer) {
         offerImg.setImageResource(R.drawable.placeholder);
-        getItemName(itemId);
-        String price = offer.getPrice().toString();
-        offerPrice.setText(price);
+        getItem(itemId);
+        String offer_price = String.format("%.2f",offer.getPrice());
+        offer_price = "\u20B1" + offer_price;
+        offerPrice.setText(offer_price);
         offerStatus.setText(offer.getStatus());
         offerMessage.setText(offer.getMessage());
     }
 
-    private void getItemName(int itemId) {
+    private void getItem(int itemId) {
         UPLBTrade.retrofitClient.getItem(new Callback<Item>() {
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull retrofit2.Response<Item> response) {
                 Item item = response.body();
                 assert item != null;
                 offerName.setText(item.getItemName());
+                price = String.format("%.2f",item.getPrice());
+                price = "\u20B1" + price;
+                originalPrice.setText(price);
             }
 
             @Override
@@ -190,23 +180,20 @@ public class OfferActivity extends AppCompatActivity {
         builder.setTitle("Decline Offer");
         builder.setMessage("Do you really want to decline the offer?");
         builder.setCancelable(false);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Declined offer", Toast.LENGTH_SHORT).show();
-                declineOffer();
-                finish();
-            }
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Declined offer", Toast.LENGTH_SHORT).show();
+            declineOffer();
+            dialog.dismiss();
+            finish();
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Decline cancelled", Toast.LENGTH_SHORT).show();
-            }
+        builder.setNegativeButton("No", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Decline cancelled", Toast.LENGTH_SHORT).show();
+            dialog.cancel();
         });
 
-        builder.show();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void declineOffer() {
@@ -228,21 +215,13 @@ public class OfferActivity extends AppCompatActivity {
         builder.setTitle("Accept Offer");
         builder.setMessage("Do you really want to accept the offer?");
         builder.setCancelable(false);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Accepted offer", Toast.LENGTH_SHORT).show();
-                acceptOffer();
-                finish();
-            }
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Accepted offer", Toast.LENGTH_SHORT).show();
+            acceptOffer();
+            finish();
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Accept cancelled", Toast.LENGTH_SHORT).show();
-            }
-        });
+        builder.setNegativeButton("No", (dialog, which) -> Toast.makeText(getApplicationContext(), "Accept cancelled", Toast.LENGTH_SHORT).show());
 
         builder.show();
     }
@@ -266,21 +245,13 @@ public class OfferActivity extends AppCompatActivity {
         builder.setTitle("Delete Offer");
         builder.setMessage("Do you really want to delete the offer?");
         builder.setCancelable(false);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Deleted offer", Toast.LENGTH_SHORT).show();
-                deleteOffer();
-                finish();
-            }
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Deleted offer", Toast.LENGTH_SHORT).show();
+            deleteOffer();
+            finish();
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show();
-            }
-        });
+        builder.setNegativeButton("No", (dialog, which) -> Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show());
 
         builder.show();
     }

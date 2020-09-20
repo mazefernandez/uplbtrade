@@ -2,13 +2,10 @@ package com.mazefernandez.uplbtrade.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
@@ -17,13 +14,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class ItemActivity extends AppCompatActivity {
         itemOwner = findViewById(R.id.item_owner);
         itemName = findViewById(R.id.item_name);
         itemDesc = findViewById(R.id.item_desc);
-        itemPrice = findViewById(R.id.item_price);
+        itemPrice = findViewById(R.id.offer);
         itemImg = findViewById(R.id.item_img);
         itemCondition = findViewById(R.id.item_condition);
         ImageButton itemEdit = findViewById(R.id.item_edit);
@@ -75,8 +74,9 @@ public class ItemActivity extends AppCompatActivity {
         seeOffer.setVisibility(View.GONE);
         /* Retrieve item data */
         Item item = (Item) getIntent().getSerializableExtra("ITEM");
-        itemId = item.getitemId();
-        sellerId = item.getcustomerId();
+        assert item != null;
+        itemId = item.getItemId();
+        sellerId = item.getCustomerId();
         getOwner(item);
 
         /* Set View Visibilities */
@@ -116,63 +116,49 @@ public class ItemActivity extends AppCompatActivity {
         }
 
         /* Edit item */
-        itemEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ItemActivity.this, EditItemActivity.class);
-                Bundle itemInfo = new Bundle();
-                String owner = itemOwner.getText().toString();
-                String name = itemName.getText().toString();
-                String desc = itemDesc.getText().toString();
-                String price = itemPrice.getText().toString();
-                /* TODO FIX ITEM IMG */
-                String condition = itemCondition.getText().toString();
+        itemEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(ItemActivity.this, EditItemActivity.class);
+            Bundle itemInfo = new Bundle();
+            String owner = itemOwner.getText().toString();
+            String name = itemName.getText().toString();
+            String desc = itemDesc.getText().toString();
+            String price = itemPrice.getText().toString();
+            /* TODO FIX ITEM IMG */
+            String condition = itemCondition.getText().toString();
 
-                itemInfo.putString("OWNER",owner);
-                itemInfo.putString("NAME",name);
-                itemInfo.putString("DESC",desc);
-                itemInfo.putString("PRICE",price);
-                itemInfo.putString("CONDITION",condition);
+            itemInfo.putString("OWNER",owner);
+            itemInfo.putString("NAME",name);
+            itemInfo.putString("DESC",desc);
+            itemInfo.putString("PRICE",price);
+            itemInfo.putString("CONDITION",condition);
 
-                intent.putExtras(itemInfo);
-                startActivityForResult(intent,EDIT_ITEM);
-                seeOffer.setVisibility(View.GONE);
-            }
+            intent.putExtras(itemInfo);
+            startActivityForResult(intent,EDIT_ITEM);
+            seeOffer.setVisibility(View.GONE);
         });
 
         /* Delete item */
-        itemDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmDelete();
-            }
-        });
+        itemDelete.setOnClickListener(v -> confirmDelete());
 
         /* Make offer */
-        makeOffer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ItemActivity.this, MakeOfferActivity.class);
-                Bundle offerInfo = new Bundle();
-                String owner = itemOwner.getText().toString();
-                String name = itemName.getText().toString();
+        makeOffer.setOnClickListener(v -> {
+            Intent intent = new Intent(ItemActivity.this, MakeOfferActivity.class);
+            Bundle offerInfo = new Bundle();
+            String owner = itemOwner.getText().toString();
+            String name = itemName.getText().toString();
 
-                offerInfo.putString("OWNER", owner);
-                offerInfo.putString("NAME", name);
-                intent.putExtras(offerInfo);
-                // TODO pass image as well
-                startActivityForResult(intent, MAKE_OFFER);
-            }
+            offerInfo.putString("OWNER", owner);
+            offerInfo.putString("NAME", name);
+            intent.putExtras(offerInfo);
+            // TODO pass image as well
+            startActivityForResult(intent, MAKE_OFFER);
         });
 
         /* View current offer */
-        seeOffer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ItemActivity.this, OfferActivity.class);
-                intent.putExtra("OFFER",offer);
-                startActivity(intent);
-            }
+        seeOffer.setOnClickListener(v -> {
+            Intent intent = new Intent(ItemActivity.this, OfferActivity.class);
+            intent.putExtra("OFFER",offer);
+            startActivity(intent);
         });
     }
 
@@ -201,6 +187,7 @@ public class ItemActivity extends AppCompatActivity {
                     itemCondition.setText(condition);
                     itemImg.setImageBitmap(bm);
 
+                    assert price != null;
                     Double double_price = Double.parseDouble(price);
 
                     Item item = new Item(name, desc, double_price, image, condition);
@@ -274,7 +261,7 @@ public class ItemActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
                 System.out.println(t.getMessage());
             }
-        }, item.getcustomerId());
+        }, item.getCustomerId());
     }
 
     private void makeOffer(Offer offer) {
@@ -293,27 +280,25 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void confirmDelete() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Item");
         builder.setMessage("Do you really want to delete your item?");
         builder.setCancelable(false);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                deleteItem();
-                Toast.makeText(getApplicationContext(), "Item has been deleted", Toast.LENGTH_SHORT).show();
-                finish();
-            }
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            deleteItem();
+            Toast.makeText(getApplicationContext(), "Item has been deleted", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+            finish();
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show();
-            }
+        builder.setNegativeButton("No", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show();
+            dialog.cancel();
         });
 
-        builder.show();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void deleteItem(){
@@ -326,6 +311,7 @@ public class ItemActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
                 System.out.println("Failed to delete item");
+                t.getMessage();
             }
         }, itemId);
     }

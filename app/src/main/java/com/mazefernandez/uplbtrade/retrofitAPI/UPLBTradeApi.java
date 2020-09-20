@@ -48,8 +48,8 @@ public interface UPLBTradeApi {
     @GET("/api/items/{item_id}")
     Call<Item> getItem(@Path("item_id") int itemId);
 
-    @POST("/api/items")
     @Multipart
+    @POST("/api/items")
     Call<Item> addItem(
             @Part("name") RequestBody name,
             @Part("description") RequestBody description,

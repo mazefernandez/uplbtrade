@@ -2,16 +2,16 @@ package com.mazefernandez.uplbtrade.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
 import com.squareup.picasso.Picasso;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
@@ -47,20 +47,17 @@ public class EditProfileActivity extends AppCompatActivity {
         displayUser();
 
         /* save new info to Customer */
-        saveCustomer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String address = editAddress.getText().toString();
-                String contactNo = editContactNo.getText().toString();
+        saveCustomer.setOnClickListener(view -> {
+            String address = editAddress.getText().toString();
+            String contactNo = editContactNo.getText().toString();
 
-                Intent intent = new Intent();
-                Bundle editInfo = new Bundle();
-                editInfo.putString("NEW_ADDRESS",address);
-                editInfo.putString("NEW_CONTACT",contactNo);
-                intent.putExtras(editInfo);
-                setResult(RESULT_OK,intent);
-                finish();
-            }
+            Intent intent = new Intent();
+            Bundle editInfo = new Bundle();
+            editInfo.putString("NEW_ADDRESS",address);
+            editInfo.putString("NEW_CONTACT",contactNo);
+            intent.putExtras(editInfo);
+            setResult(RESULT_OK,intent);
+            finish();
         });
     }
 

@@ -5,7 +5,10 @@
     <color name="colorAccent">#ff4081</color>
     <color name="main">#BA324F</color>
     <color name="accent">#f2c078</color>
-    <color name="background">#f4f4f4</color>
+    <color name="background">#F4F4F4</color>
     <color name="gold">#FFD700</color>
     <color name="white">#ffffff</color>
+    <color name="orange">#F16334</color>
+    <color name="maroon">#800000</color>
+    <color name="off_white">#FBFCFD</color>
 </resources>

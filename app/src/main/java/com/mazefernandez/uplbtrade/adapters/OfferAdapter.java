@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
@@ -28,7 +29,7 @@ import retrofit2.Response;
 
 import static android.graphics.BitmapFactory.decodeByteArray;
 
-/* Binds values of item information to views */
+/* Binds values of offer information to views */
 public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHolder> {
 
     private ArrayList<Offer> offerList;
@@ -60,6 +61,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
         getItem(offerList.get(position).getitemId(), holder);
         holder.offer = offerList.get(position);
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",offerList.get(position).getPrice());
+        price = "\u20B1" + price;
         holder.offerPrice.setText(price);
         holder.offerStatus.setText(offerList.get(position).getStatus());
     }
@@ -92,7 +94,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
 
     class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView offerImg;
-        TextView offerName, offerPrice, offerStatus;
+        TextView offerName, offerPrice, offerStatus, originalPrice;
         LinearLayout card;
         private final Context context;
         Offer offer;
