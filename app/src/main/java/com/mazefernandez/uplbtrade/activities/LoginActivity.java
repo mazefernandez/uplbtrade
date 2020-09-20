@@ -3,18 +3,15 @@ package com.mazefernandez.uplbtrade.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
@@ -23,6 +20,7 @@ import com.mazefernandez.uplbtrade.models.Customer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import timber.log.Timber;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
@@ -44,16 +42,13 @@ public class LoginActivity extends AppCompatActivity {
         final GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
 
         /* Adds login intent to sign in button */
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent signIn = googleSIC.getSignInIntent();
-                    startActivityForResult(signIn, LOGIN);
-                }
-                catch (Exception e) {
-                    e.getStackTrace();
-                }
+        signInButton.setOnClickListener(view -> {
+            try {
+                Intent signIn = googleSIC.getSignInIntent();
+                startActivityForResult(signIn, LOGIN);
+            }
+            catch (Exception e) {
+                e.getStackTrace();
             }
         });
     }
@@ -66,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             onLoggedIn(account);
         } else {
-            Log.d(TAG, "No user logged in");
+            Timber.tag(TAG).d("No user logged in");
         }
     }
     /* Fetch requested data from Google account */
@@ -152,13 +147,10 @@ public class LoginActivity extends AppCompatActivity {
     /* Sign out the customer */
     public void signOut(){
         GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
-        googleSIC.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
+        googleSIC.signOut().addOnCompleteListener(task -> {
+            Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         });
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Edit Profile Info Layout -->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,6 +32,7 @@
         android:hint="@string/contact_number"
         android:inputType="number"
         android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:autofillHints="@string/contact_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/edit_img"
         app:layout_constraintTop_toBottomOf="@+id/edit_address" />
@@ -59,6 +60,7 @@
         android:hint="@string/address"
         android:inputType="textPostalAddress"
         android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:autofillHints="@string/address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/edit_img"
         app:layout_constraintTop_toBottomOf="@+id/edit_text" />
@@ -75,4 +77,4 @@
         android:layout_marginLeft="8dp" />
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

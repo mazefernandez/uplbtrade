@@ -1,13 +1,13 @@
 package com.mazefernandez.uplbtrade.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.mazefernandez.uplbtrade.R;
 
@@ -43,32 +43,26 @@ public class MakeOfferActivity extends AppCompatActivity {
         offerImg.setImageResource(R.drawable.placeholder);
 
         /* Cancel and return to item */
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                setResult(RESULT_OK,intent);
-                finish();
-            }
+        cancel.setOnClickListener(v -> {
+            Intent intent1 = new Intent();
+            setResult(RESULT_OK, intent1);
+            finish();
         });
 
         /* Add Offer */
-        makeOffer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                /* Save Offer Info */
-                String price = offerPrice.getText().toString();
-                String message = offerMessage.getText().toString();
-                Double double_price = Double.parseDouble(price);
-                //TODO add image
-                Bundle offerInfo = new Bundle();
-                offerInfo.putDouble("PRICE", double_price);
-                offerInfo.putString("MESSAGE",message);
-                intent.putExtras(offerInfo);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
+        makeOffer.setOnClickListener(v -> {
+            Intent intent12 = new Intent();
+            /* Save Offer Info */
+            String price = offerPrice.getText().toString();
+            String message = offerMessage.getText().toString();
+            Double double_price = Double.parseDouble(price);
+            //TODO add image
+            Bundle offerInfo = new Bundle();
+            offerInfo.putDouble("PRICE", double_price);
+            offerInfo.putString("MESSAGE",message);
+            intent12.putExtras(offerInfo);
+            setResult(RESULT_OK, intent12);
+            finish();
         });
     }
 }

@@ -38,11 +38,11 @@ public class Item implements Serializable{
         this.condition = condition;
     }
 
-    public Integer getitemId() {
+    public Integer getItemId() {
         return itemId;
     }
 
-    public void setitemId(Integer itemId) {
+    public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }
 
@@ -86,11 +86,11 @@ public class Item implements Serializable{
         this.condition = condition;
     }
 
-    public Integer getcustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setcustomerId(Integer customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 }

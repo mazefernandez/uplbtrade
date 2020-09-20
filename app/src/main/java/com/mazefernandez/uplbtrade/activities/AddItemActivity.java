@@ -1,19 +1,22 @@
 package com.mazefernandez.uplbtrade.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Item;
@@ -23,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -33,12 +37,14 @@ import static com.mazefernandez.uplbtrade.models.RequestCode.SELECT_IMAGE;
 
 /* Upload Item for selling */
 
-public class AddItemActivity extends AppCompatActivity{
+public class AddItemActivity extends AppCompatActivity {
     private ImageView itemImg;
     private EditText itemName;
     private EditText itemDesc;
     private EditText itemPrice;
     private EditText itemCondition;
+    private String imgString;
+    private Bitmap bitmap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,92 +56,88 @@ public class AddItemActivity extends AppCompatActivity{
         FloatingActionButton addItemImg = findViewById(R.id.add_item_img);
         itemName = findViewById(R.id.item_name);
         itemDesc = findViewById(R.id.item_desc);
-        itemPrice = findViewById(R.id.item_price);
+        itemPrice = findViewById(R.id.offer);
         itemCondition = findViewById(R.id.item_condition);
 
         Button addItem = findViewById(R.id.add_item);
         Button cancel = findViewById(R.id.cancel);
 
         /* New Item */
-        addItem.setOnClickListener(new View.OnClickListener() {
+        addItem.setOnClickListener(v -> {
+        String string_name = itemName.getText().toString();
+        String string_desc = itemDesc.getText().toString();
+        String string_price = itemPrice.getText().toString();
+        String string_condition = itemCondition.getText().toString();
+        Double double_price = Double.parseDouble(string_price);
+
+        /* save image to file */
+        File fileDirectory = getApplicationContext().getFilesDir();
+        File file = new File(fileDirectory,"image.jpeg");
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,0, bos);
+        byte[] bitmapData = bos.toByteArray();
+
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(bitmapData);
+            fos.flush();
+            fos.close();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+            int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
+
+        /* Convert item data to RequestBody for database */
+        RequestBody name = RequestBody.create(MultipartBody.FORM, string_name);
+        RequestBody description = RequestBody.create(MultipartBody.FORM, string_desc);
+        RequestBody price = RequestBody.create(MultipartBody.FORM, String.valueOf(double_price));
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part image = MultipartBody.Part.createFormData("image",file.getName(), fileReqBody);
+        RequestBody condition = RequestBody.create(MultipartBody.FORM, string_condition);
+        RequestBody customer_id = RequestBody.create(MultipartBody.FORM, String.valueOf(customerId));
+
+        System.out.println(image);
+
+        UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
             @Override
-            public void onClick(View v) {
-            String string_name = itemName.getText().toString();
-            String string_desc = itemDesc.getText().toString();
-            String string_price = itemPrice.getText().toString();
-            String string_condition = itemCondition.getText().toString();
-            Bitmap bitmap_image = ((BitmapDrawable)itemImg.getDrawable()).getBitmap();
-            Double double_price = Double.parseDouble(string_price);
-
-            /* save image to file */
-            try {
-                File f = new File(AddItemActivity.this.getCacheDir(), "image.jpg");
-                f.createNewFile();
-
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap_image.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
-                byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                FileOutputStream fos = new FileOutputStream(f);
-                fos.write(imageBytes);
-                fos.flush();
-                fos.close();
-
-                int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
-
-                /* Convert item data to RequestBody for database */
-                RequestBody name = RequestBody.create(MultipartBody.FORM, string_name);
-                RequestBody description = RequestBody.create(MultipartBody.FORM, string_desc);
-                RequestBody price = RequestBody.create(MultipartBody.FORM, String.valueOf(double_price));
-                RequestBody fileReqBody = RequestBody.create(MultipartBody.FORM, f);
-                MultipartBody.Part image = MultipartBody.Part.createFormData(bitmapToString(bitmap_image),f.getName(), fileReqBody);
-                RequestBody condition = RequestBody.create(MultipartBody.FORM, string_condition);
-                RequestBody customer_id = RequestBody.create(MultipartBody.FORM, String.valueOf(customerId));
-
-                System.out.println(image);
-
-                UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
-                    @Override
-                    public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                        System.out.println("Added Item");
-                        System.out.println(response.body());
-                    }
-                    @Override
-                    public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
-                        System.out.println("Failed to add item");
-                        System.out.println(t.getMessage());
-                    }
-                }, name, description, price, image, condition, customer_id);
-
-            } catch (IOException ie) {
-                ie.printStackTrace();
+            public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
+                System.out.println("Added Item");
+                System.out.println(response.body());
             }
-
-            Intent intent = new Intent();
-            intent.putExtra("CHECK", 1);
-            setResult(RESULT_OK,intent);
-            finish();
+            @Override
+            public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
+                System.out.println("Failed to add item");
+                System.out.println(t.getMessage());
             }
+        }, name, description, price, image, condition, customer_id);
+
+        Intent intent = new Intent();
+        intent.putExtra("CHECK", 1);
+        setResult(RESULT_OK,intent);
+        finish();
         });
 
-        addItemImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"),SELECT_IMAGE);
+        /* Upload image to item */
+        addItemImg.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            String[] mimeTypes = {"image/jpeg", "image/png"};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
             }
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"),SELECT_IMAGE);
         });
 
         /* Cancel and return to profile */
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("CHECK", 0);
-                setResult(RESULT_OK,intent);
-                finish();
-            }
+        cancel.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.putExtra("CHECK", 0);
+            setResult(RESULT_OK,intent);
+            finish();
         });
     }
 
@@ -147,18 +149,27 @@ public class AddItemActivity extends AppCompatActivity{
             switch (requestCode) {
                 case SELECT_IMAGE:
                     if (data != null) {
+                        Uri uri = data.getData();
+                        String[] filePathColumn = { MediaStore.Images.Media._ID };
+                        assert uri != null;
+                        Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
+                        assert cursor != null;
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        imgString = cursor.getString(columnIndex);
+                        cursor.close();
                         try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
                             itemImg.setImageBitmap(bitmap);
-                        } catch (IOException e) {
+                        }
+                        catch(IOException e) {
                             e.printStackTrace();
                         }
+                        break;
                     }
-                    break;
             }
         }
     }
-
     public String bitmapToString(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG,100, byteArrayOutputStream);

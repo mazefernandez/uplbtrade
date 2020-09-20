@@ -16,6 +16,7 @@
     <string name="save">Save</string>
     <string name="contact_number">Contact Number</string>
     <string name="search">Search Items</string>
+    <string name="search_venue">Search Venues</string>
     <string name="recommended">Recommended Items</string>
     <string name="buying">Buying</string>
     <string name="selling">Selling</string>
@@ -40,4 +41,13 @@
     <string name="time">Set Time</string>
     <string name="warning">UPLB Trade encourages customers to set meet-ups within the campus and between 7 am and 7 pm. Always exercise caution when meeting with other customers.</string>
     <string name="map_query">Enter Venue</string>
+    <string name="edit_meet_up">edit meet-up</string>
+    <string name="complaint">Type complaint here…</string>
+    <string name="edit_profile">edit profile</string>
+    <string name="flag">flag</string>
+    <string name="purchases">Purchases</string>
+    <string name="send">send</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
