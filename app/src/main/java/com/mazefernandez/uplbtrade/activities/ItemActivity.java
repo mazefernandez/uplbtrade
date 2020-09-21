@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,8 +33,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.graphics.BitmapFactory.decodeByteArray;
-import static com.mazefernandez.uplbtrade.models.RequestCode.EDIT_ITEM;
-import static com.mazefernandez.uplbtrade.models.RequestCode.MAKE_OFFER;
 
 /* Item details */
 
@@ -49,6 +49,62 @@ public class ItemActivity extends AppCompatActivity {
     private int sessionId;
     private int sellerId;
     private Offer offer;
+
+    /* Activity Result Launcher to replace onActivityResult() */
+
+    ActivityResultLauncher<Intent> editItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+       if (result.getResultCode() == Activity.RESULT_OK) {
+           Intent intent = result.getData();
+           assert intent != null;
+           Bundle editInfo = intent.getExtras();
+           assert editInfo != null;
+           String name = editInfo.getString("NAME");
+           String desc = editInfo.getString("DESC");
+           String price = editInfo.getString("PRICE");
+           String condition = editInfo.getString("CONDITION");
+           String image = editInfo.getString("IMAGE");
+
+           Bitmap bm = stringToBitMap(image);
+
+           itemName.setText(name);
+           itemDesc.setText(desc);
+           itemPrice.setText(price);
+           itemCondition.setText(condition);
+           itemImg.setImageBitmap(bm);
+
+           assert price != null;
+           Double double_price = Double.parseDouble(price);
+
+           Item item = new Item(name, desc, double_price, image, condition);
+           UPLBTrade.retrofitClient.updateItem(new Callback<Item>() {
+               @Override
+               public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
+                   System.out.println("Updated Item");
+               }
+
+               @Override
+               public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
+                   System.out.println("Failed to update Item");
+                   System.out.println(t.getMessage());
+               }
+           }, item, itemId);
+       }
+    });
+
+    ActivityResultLauncher<Intent> addOffer = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent intent = result.getData();
+            assert intent != null;
+            Bundle offerInfo = intent.getExtras();
+            if (offerInfo != null) {
+                double offerPrice = offerInfo.getDouble("PRICE");
+                String offerMessage = offerInfo.getString("MESSAGE");
+
+                Offer offer = new Offer(offerPrice, "Pending", offerMessage, itemId, sessionId, sellerId);
+                makeOffer(offer);
+            }
+        }
+    });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,7 +189,7 @@ public class ItemActivity extends AppCompatActivity {
             itemInfo.putString("CONDITION",condition);
 
             intent.putExtras(itemInfo);
-            startActivityForResult(intent,EDIT_ITEM);
+            editItem.launch(intent);
             seeOffer.setVisibility(View.GONE);
         });
 
@@ -151,7 +207,7 @@ public class ItemActivity extends AppCompatActivity {
             offerInfo.putString("NAME", name);
             intent.putExtras(offerInfo);
             // TODO pass image as well
-            startActivityForResult(intent, MAKE_OFFER);
+            addOffer.launch(intent);
         });
 
         /* View current offer */
@@ -160,64 +216,6 @@ public class ItemActivity extends AppCompatActivity {
             intent.putExtra("OFFER",offer);
             startActivity(intent);
         });
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                /* Results from Edit Item Activity */
-                case EDIT_ITEM:
-                    Bundle editInfo = data.getExtras();
-                    assert editInfo != null;
-                    String name = editInfo.getString("NAME");
-                    String desc = editInfo.getString("DESC");
-                    String price = editInfo.getString("PRICE");
-                    String condition = editInfo.getString("CONDITION");
-                    String image = editInfo.getString("IMAGE");
-
-                    Bitmap bm = stringToBitMap(image);
-
-                    itemName.setText(name);
-                    itemDesc.setText(desc);
-                    itemPrice.setText(price);
-                    itemCondition.setText(condition);
-                    itemImg.setImageBitmap(bm);
-
-                    assert price != null;
-                    Double double_price = Double.parseDouble(price);
-
-                    Item item = new Item(name, desc, double_price, image, condition);
-                    UPLBTrade.retrofitClient.updateItem(new Callback<Item>() {
-                        @Override
-                        public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                            System.out.println("Updated Item");
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
-                            System.out.println("Failed to update Item");
-                            System.out.println(t.getMessage());
-                        }
-                    }, item, itemId);
-                    break;
-
-                /* Results from Make Offer Activity */
-                case MAKE_OFFER:
-                    Bundle offerInfo = data.getExtras();
-                    if (offerInfo != null) {
-                        double offerPrice = offerInfo.getDouble("PRICE");
-                        String offerMessage = offerInfo.getString("MESSAGE");
-
-                        Offer offer = new Offer(offerPrice, "Pending", offerMessage, itemId, sessionId, sellerId);
-                        makeOffer(offer);
-                    }
-                    break;
-            }
-        }
     }
 
     /* Display Item Details */

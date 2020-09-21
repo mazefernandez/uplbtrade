@@ -78,15 +78,19 @@ public class HomeActivity extends AppCompatActivity {
         homeSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                itemAdapter.getFilter().filter(query);
-                itemAdapter.notifyDataSetChanged();
+                if (itemAdapter != null) {
+                    itemAdapter.getFilter().filter(query);
+                    itemAdapter.notifyDataSetChanged();
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
-                itemAdapter.getFilter().filter(query);
-                itemAdapter.notifyDataSetChanged();
+                if (itemAdapter != null) {
+                    itemAdapter.getFilter().filter(query);
+                    itemAdapter.notifyDataSetChanged();
+                }
                 return false;
             }
         });

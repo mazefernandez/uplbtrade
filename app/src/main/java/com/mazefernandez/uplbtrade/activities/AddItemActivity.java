@@ -1,5 +1,6 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,8 +36,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.mazefernandez.uplbtrade.models.RequestCode.SELECT_IMAGE;
-
 /* Upload Item for selling */
 
 public class AddItemActivity extends AppCompatActivity {
@@ -45,6 +46,31 @@ public class AddItemActivity extends AppCompatActivity {
     private EditText itemCondition;
     private String imgString;
     private Bitmap bitmap;
+
+    /* AR Launchers to replace OnActivityResult */
+    ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent intent = result.getData();
+            /* get image */
+            if (intent != null) {
+                Uri uri = intent.getData();
+                String[] filePathColumn = {MediaStore.Images.Media._ID};
+                assert uri != null;
+                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
+                assert cursor != null;
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                imgString = cursor.getString(columnIndex);
+                cursor.close();
+                try {
+                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                    itemImg.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,7 +155,7 @@ public class AddItemActivity extends AppCompatActivity {
                 intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
             }
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"),SELECT_IMAGE);
+            selectImage.launch(Intent.createChooser(intent, "Select Picture"));
         });
 
         /* Cancel and return to profile */
@@ -141,35 +167,6 @@ public class AddItemActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case SELECT_IMAGE:
-                    if (data != null) {
-                        Uri uri = data.getData();
-                        String[] filePathColumn = { MediaStore.Images.Media._ID };
-                        assert uri != null;
-                        Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                        assert cursor != null;
-                        cursor.moveToFirst();
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        imgString = cursor.getString(columnIndex);
-                        cursor.close();
-                        try {
-                            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                            itemImg.setImageBitmap(bitmap);
-                        }
-                        catch(IOException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    }
-            }
-        }
-    }
     public String bitmapToString(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG,100, byteArrayOutputStream);
