@@ -29,6 +29,7 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 public class OffersActivity extends AppCompatActivity {
     RecyclerView buying;
     RecyclerView selling;
+    BottomNavigationView navigation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,7 @@ public class OffersActivity extends AppCompatActivity {
         }, sessionId);
 
         /* Navigation bar */
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_offers);
         navigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -110,20 +111,20 @@ public class OffersActivity extends AppCompatActivity {
                     Intent home = new Intent(OffersActivity.this,HomeActivity.class);
                     home.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(home);
-                    break;
+                    return true;
                 case R.id.navigation_offers:
-                    break;
+                    return true;
                 case R.id.navigation_profile:
                     item.setChecked(true);
                     Intent profile = new Intent(OffersActivity.this,ProfileActivity.class);
                     profile.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(profile);
-                    break;
+                    return true;
                 case R.id.navigation_purchases:
                     item.setChecked(true);
                     Intent purchase = new Intent(OffersActivity.this, PurchasesActivity.class);
                     startActivity(purchase);
-                    break;
+                    return true;
             }
             return false;
         });
