@@ -3,6 +3,7 @@ package com.mazefernandez.uplbtrade.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -26,9 +27,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import timber.log.Timber;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
+import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
 
 /* Home Page (Item Catalog) */
 
@@ -36,7 +37,6 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ItemAdapter itemAdapter;
     BottomNavigationView navigation;
-    private static final String TAG = "UPLB Trade";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,15 +78,19 @@ public class HomeActivity extends AppCompatActivity {
         homeSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                itemAdapter.getFilter().filter(query);
-                itemAdapter.notifyDataSetChanged();
+                if (itemAdapter != null) {
+                    itemAdapter.getFilter().filter(query);
+                    itemAdapter.notifyDataSetChanged();
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
-                itemAdapter.getFilter().filter(query);
-                itemAdapter.notifyDataSetChanged();
+                if (itemAdapter != null) {
+                    itemAdapter.getFilter().filter(query);
+                    itemAdapter.notifyDataSetChanged();
+                }
                 return false;
             }
         });
@@ -130,14 +134,14 @@ public class HomeActivity extends AppCompatActivity {
 
     /* Check to see if user has correct version of google maps*/
     public void checkGoogleServices() {
-        Timber.d("checkGoogleServices: Verifying Google Play Services Version");
+        Log.w(TAG,"checkGoogleServices: Verifying Google Play Services Version");
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(HomeActivity.this);
         /* User's Google Play Services i*/
         if (available == ConnectionResult.SUCCESS) {
-            Timber.d("checkGoogleServices: Google Play Services is enabled");
+            Log.w(TAG,"checkGoogleServices: Google Play Services is enabled");
         }
         else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
-            Timber.d("checkGoogleServices: Error occurred, but resolvable");
+            Log.w(TAG,"checkGoogleServices: Error occurred, but resolvable");
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(HomeActivity.this,available,9001);
             dialog.show();
         }

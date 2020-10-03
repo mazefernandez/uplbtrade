@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "843183298443",
+    "firebase_url": "https://uplbtrade-1548146218729.firebaseio.com",
+    "project_id": "uplbtrade-1548146218729",
+    "storage_bucket": "uplbtrade-1548146218729.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843183298443:android:683ff598fe0faf29c1818e",
+        "android_client_info": {
+          "package_name": "com.mazefernandez.uplbtrade"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843183298443-qskbji4s641uup6c9nqoq4oc0dq5qn86.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mazefernandez.uplbtrade",
+            "certificate_hash": "1c5492dd0baa4e0ef594415d005a0b9ecaa3defe"
+          }
+        },
+        {
+          "client_id": "843183298443-4e0i2d1cd2m1fepn65jr9n7e5omgfhnh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBitLW9XdvtT4cgqrp5Jzwcz0tAOpdTMx8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843183298443-4e0i2d1cd2m1fepn65jr9n7e5omgfhnh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
