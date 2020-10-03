@@ -92,7 +92,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
         return offerList.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView offerImg;
         TextView offerName, offerPrice, offerStatus, originalPrice;
         LinearLayout card;

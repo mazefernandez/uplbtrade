@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.activities.ItemActivity;
 import com.mazefernandez.uplbtrade.models.Item;
@@ -30,6 +33,9 @@ import static android.graphics.BitmapFactory.decodeByteArray;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements Filterable {
     private List<Item> itemList;
     private List<Item> itemListFiltered;
+    // Firebase instances
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
 
     public ItemAdapter(List<Item> itemList) {
         this.itemList = itemList;
@@ -56,12 +62,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+        /* Firebase storage */
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
         if(itemListFiltered.get(position).getImage() == null) {
             holder.itemImg.setImageResource(R.drawable.placeholder);
         }
         else {
-            holder.itemImg.setImageBitmap(stringToBitMap(itemListFiltered.get(position).getImage()));
-//            System.out.println(itemListFiltered.get(position).getImage());
+            StorageReference ref = storageReference.child(itemListFiltered.get(position).getImage());
+            final long ONE_MEGABYTE = 1024 *1024;
+            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                System.out.println("Successfully read image");
+                holder.itemImg.setImageBitmap(bitmap);
+            }).addOnFailureListener(fail -> System.out.println("Failed to read image"));
         }
         holder.itemName.setText(itemListFiltered.get(position).getItemName());
         /* Format price into decimal */

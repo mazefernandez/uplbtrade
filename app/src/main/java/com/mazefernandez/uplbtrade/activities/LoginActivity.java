@@ -3,8 +3,11 @@ package com.mazefernandez.uplbtrade.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,15 +23,30 @@ import com.mazefernandez.uplbtrade.models.Customer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import timber.log.Timber;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
-import static com.mazefernandez.uplbtrade.models.RequestCode.LOGIN;
 /* Login Customers through Google Account */
 
 public class LoginActivity extends AppCompatActivity {
     private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
+
+    /* Activity Result Launcher to replace onActivityResult() */
+
+    ActivityResultLauncher<Intent> login = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent intent = result.getData();
+
+            final GoogleSignInAccount account = googleAdapter.getAccount(intent);
+            /* Restrict login to UP mail domain*/
+            if (checkDomain(account)) {
+                onLoggedIn(account);
+            } else {
+                Toast.makeText(this, "Please use UP mail to sign in", Toast.LENGTH_LONG).show();
+                signOut();
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(view -> {
             try {
                 Intent signIn = googleSIC.getSignInIntent();
-                startActivityForResult(signIn, LOGIN);
+                login.launch(signIn);
             }
             catch (Exception e) {
                 e.getStackTrace();
@@ -61,27 +79,10 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             onLoggedIn(account);
         } else {
-            Timber.tag(TAG).d("No user logged in");
+            Log.w(TAG,"No user logged in");
         }
     }
-    /* Fetch requested data from Google account */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK)
-            switch (requestCode) {
-                case 1:
-                    final GoogleSignInAccount account = googleAdapter.getAccount(data);
-                    /* Restrict login to UP mail domain*/
-                    if (checkDomain(account)) {
-                        onLoggedIn(account);
-                    }
-                    else {
-                        Toast.makeText(this, "Please use UP mail to sign in", Toast.LENGTH_LONG).show();
-                        signOut();
-                    }
-            }
-    }
+
     /* Proceed to HOME after sign in */
     private void onLoggedIn(GoogleSignInAccount account) {
         checkCustomer(account);

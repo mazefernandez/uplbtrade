@@ -6,16 +6,12 @@ import com.mazefernandez.uplbtrade.models.Offer;
 
 import java.util.List;
 
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface UPLBTradeApi {
@@ -48,16 +44,8 @@ public interface UPLBTradeApi {
     @GET("/api/items/{item_id}")
     Call<Item> getItem(@Path("item_id") int itemId);
 
-    @Multipart
     @POST("/api/items")
-    Call<Item> addItem(
-            @Part("name") RequestBody name,
-            @Part("description") RequestBody description,
-            @Part("price") RequestBody price,
-            @Part MultipartBody.Part image,
-            @Part("condition") RequestBody condition,
-            @Part("customer_id") RequestBody customer_id
-            );
+    Call<Item> addItem(@Body Item item);
 
     @PUT("/api/items/{item_id}")
     Call<Item> updateItem(@Body Item item, @Path("item_id") int itemId);

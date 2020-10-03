@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Item;
@@ -29,9 +30,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,6 +44,8 @@ public class AddItemActivity extends AppCompatActivity {
     private EditText itemCondition;
     private String imgString;
     private Bitmap bitmap;
+    private Uri filepath;
+    private int count = 0;
 
     /* AR Launchers to replace OnActivityResult */
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -54,13 +54,12 @@ public class AddItemActivity extends AppCompatActivity {
             /* get image */
             if (intent != null) {
                 Uri uri = intent.getData();
+                filepath = uri;
                 String[] filePathColumn = {MediaStore.Images.Media._ID};
                 assert uri != null;
                 Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
                 assert cursor != null;
                 cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                imgString = cursor.getString(columnIndex);
                 cursor.close();
                 try {
                     bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
@@ -71,6 +70,10 @@ public class AddItemActivity extends AppCompatActivity {
             }
         }
     });
+
+    // Firebase instances
+    FirebaseStorage storage;
+    StorageReference storageReference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,9 @@ public class AddItemActivity extends AppCompatActivity {
         itemDesc = findViewById(R.id.item_desc);
         itemPrice = findViewById(R.id.offer);
         itemCondition = findViewById(R.id.item_condition);
+
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         Button addItem = findViewById(R.id.add_item);
         Button cancel = findViewById(R.id.cancel);
@@ -116,18 +122,25 @@ public class AddItemActivity extends AppCompatActivity {
 
             int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
 
-        /* Convert item data to RequestBody for database */
-        RequestBody name = RequestBody.create(MultipartBody.FORM, string_name);
-        RequestBody description = RequestBody.create(MultipartBody.FORM, string_desc);
-        RequestBody price = RequestBody.create(MultipartBody.FORM, String.valueOf(double_price));
-        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part image = MultipartBody.Part.createFormData("image",file.getName(), fileReqBody);
-        RequestBody condition = RequestBody.create(MultipartBody.FORM, string_condition);
-        RequestBody customer_id = RequestBody.create(MultipartBody.FORM, String.valueOf(customerId));
+        /* Upload image to firebase storage*/
+        StorageReference list = storageReference.child("images/uid");
 
-        System.out.println(image);
+        list.listAll().addOnSuccessListener(listResult -> count = listResult.getItems().size()
+        ).addOnFailureListener(failure -> System.out.println("failed to count list"));
+            count = count+1;
+        StorageReference ref = storageReference.child("images/" + count);
+        imgString = "images/" + count;
+        ref.putFile(filepath).addOnSuccessListener(success -> {
+            // Image uploaded successfully
+            System.out.println("image uploaded successfully");
+        }).addOnFailureListener(failure -> {
+            // Image upload fail
+            System.out.println("image failed to upload");
+        });
 
-        UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
+        Item item = new Item(string_name, string_desc, double_price, imgString, string_condition, customerId);
+
+            UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
                 System.out.println("Added Item");
@@ -138,7 +151,7 @@ public class AddItemActivity extends AppCompatActivity {
                 System.out.println("Failed to add item");
                 System.out.println(t.getMessage());
             }
-        }, name, description, price, image, condition, customer_id);
+        }, item);
 
         Intent intent = new Intent();
         intent.putExtra("CHECK", 1);
@@ -165,13 +178,5 @@ public class AddItemActivity extends AppCompatActivity {
             setResult(RESULT_OK,intent);
             finish();
         });
-    }
-
-    public String bitmapToString(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100, byteArrayOutputStream);
-        byte[] b=byteArrayOutputStream.toByteArray();
-
-        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 }

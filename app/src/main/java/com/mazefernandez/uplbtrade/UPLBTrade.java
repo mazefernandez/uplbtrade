@@ -7,13 +7,6 @@ import android.content.Intent;
 import com.mazefernandez.uplbtrade.activities.LoginActivity;
 import com.mazefernandez.uplbtrade.retrofitAPI.RetrofitClient;
 
-import co.chatsdk.core.error.ChatSDKException;
-import co.chatsdk.core.session.ChatSDK;
-import co.chatsdk.core.session.Configuration;
-import co.chatsdk.firebase.FirebaseNetworkAdapter;
-import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
-import co.chatsdk.ui.manager.BaseInterfaceAdapter;
-
 public class UPLBTrade extends Application {
     public Context context;
     public static RetrofitClient retrofitClient;
@@ -26,21 +19,21 @@ public class UPLBTrade extends Application {
         context = getApplicationContext();
 
         // Initialize the Chat SDK
-        try {
-
-            // config for ChatSDK settings
-            Configuration.Builder config = new Configuration.Builder(context);
-            config.firebaseRootPath("prod");
-
-            // Start ChatSDK
-            ChatSDK.initialize(config.build(), new FirebaseNetworkAdapter(), new BaseInterfaceAdapter(context));
-        }
-        catch (ChatSDKException e) {
-            e.printStackTrace();
-        }
+//        try {
+//
+//            // config for ChatSDK settings
+//            Configuration.Builder config = new Configuration.Builder(context);
+//            config.firebaseRootPath("prod");
+//
+//            // Start ChatSDK
+//            ChatSDK.initialize(config.build(), new FirebaseNetworkAdapter(), new BaseInterfaceAdapter(context));
+//        }
+//        catch (ChatSDKException e) {
+//            e.printStackTrace();
+//        }
 
         // File storage for images
-        FirebaseFileStorageModule.activate();
+       // FirebaseFileStorageModule.activate();
 
          // Uncomment this to enable Firebase UI
 //        FirebaseUIModule.activate(EmailAuthProvider.PROVIDER_ID, PhoneAuthProvider.PROVIDER_ID);
