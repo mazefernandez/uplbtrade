@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,29 +26,14 @@ import com.mazefernandez.uplbtrade.models.Item;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.graphics.BitmapFactory.decodeByteArray;
-
 /* Binds values of item information to views */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements Filterable {
     private List<Item> itemList;
     private List<Item> itemListFiltered;
-    // Firebase instances
-    private FirebaseStorage storage;
-    private StorageReference storageReference;
 
     public ItemAdapter(List<Item> itemList) {
         this.itemList = itemList;
         this.itemListFiltered = itemList;
-    }
-
-    private Bitmap stringToBitMap(String encodedString){
-        try{
-            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
-            return decodeByteArray(encodeByte, 0, encodeByte.length);
-        }catch(Exception e){
-            e.getMessage();
-            return null;
-        }
     }
 
     @NonNull
@@ -63,8 +47,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         /* Firebase storage */
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
+        // Firebase instances
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
 
         if(itemListFiltered.get(position).getImage() == null) {
             holder.itemImg.setImageResource(R.drawable.placeholder);
