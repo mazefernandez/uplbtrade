@@ -6,7 +6,7 @@ android {
         config {
             keyAlias 'key0'
             keyPassword 'petrichor11'
-            storeFile file('C:\\Users\\asus\\Documents\\Projects\\uplbtrade\\keystore.jks')
+            storeFile file('\\home\\maze\\StudioProjects\\uplbtrade\\keystore.jks')
             storePassword 'petrichor11'
         }
     }
