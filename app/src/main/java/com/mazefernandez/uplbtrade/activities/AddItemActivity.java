@@ -120,7 +120,7 @@ public class AddItemActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-            int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
+        int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
 
         /* Upload image to firebase storage*/
         StorageReference list = storageReference.child("images/uid");
