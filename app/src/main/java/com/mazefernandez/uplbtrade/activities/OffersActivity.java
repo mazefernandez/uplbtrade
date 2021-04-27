@@ -120,11 +120,11 @@ public class OffersActivity extends AppCompatActivity {
                     profile.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(profile);
                     return true;
-                case R.id.navigation_purchases:
-                    item.setChecked(true);
-                    Intent purchase = new Intent(OffersActivity.this, PurchasesActivity.class);
-                    startActivity(purchase);
-                    return true;
+//                case R.id.navigation_purchases:
+//                    item.setChecked(true);
+//                    Intent purchase = new Intent(OffersActivity.this, PurchasesActivity.class);
+//                    startActivity(purchase);
+//                    return true;
             }
             return false;
         });

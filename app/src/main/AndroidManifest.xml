@@ -21,9 +21,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-        <activity android:name=".activities.TransactionActivity" />
-        <activity android:name=".activities.ReportUserActivity" />
-        <activity android:name=".activities.SettingsActivity" />
+<!--        <activity android:name=".activities.TransactionActivity" />-->
+<!--        <activity android:name=".activities.ReportUserActivity" />-->
+<!--        <activity android:name=".activities.SettingsActivity" />-->
         <activity
             android:name=".activities.LoginActivity"
             android:label="UPLB Trade"
@@ -51,11 +51,11 @@
             android:label="profile"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".activities.PurchasesActivity"
-            android:label="profile"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+<!--        <activity-->
+<!--            android:name=".activities.PurchasesActivity"-->
+<!--            android:label="profile"-->
+<!--            android:theme="@style/AppTheme.NoActionBar"-->
+<!--            android:windowSoftInputMode="adjustPan" />-->
         <activity
             android:name=".activities.ItemActivity"
             android:label="item"
@@ -79,10 +79,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".activities.MeetUpActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.MakeOfferActivity" />
+<!--        <activity-->
+<!--            android:name=".activities.MeetUpActivity"-->
+<!--            android:theme="@style/AppTheme.NoActionBar" />-->
+<!--        <activity android:name=".activities.MakeOfferActivity" />-->
     </application>
 
 </manifest>

@@ -28,7 +28,7 @@ import java.util.List;
 
 /* Binds values of item information to views */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements Filterable {
-    private List<Item> itemList;
+    private final List<Item> itemList;
     private List<Item> itemListFiltered;
 
     public ItemAdapter(List<Item> itemList) {

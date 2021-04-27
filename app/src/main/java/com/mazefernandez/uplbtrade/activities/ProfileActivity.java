@@ -212,11 +212,11 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         }));
 
-        flag.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, ReportUserActivity.class);
-            intent.putExtra("CUSTOMER_ID",customerId);
-            startActivity(intent);
-        });
+//        flag.setOnClickListener(v -> {
+//            Intent intent = new Intent(ProfileActivity.this, ReportUserActivity.class);
+//            intent.putExtra("CUSTOMER_ID",customerId);
+//            startActivity(intent);
+//        });
 
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
@@ -237,11 +237,11 @@ public class ProfileActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_profile:
                 return true;
-            case R.id.navigation_purchases:
-                item.setChecked(true);
-                Intent purchase = new Intent(ProfileActivity.this, PurchasesActivity.class);
-                startActivity(purchase);
-                return true;
+//            case R.id.navigation_purchases:
+//                item.setChecked(true);
+//                Intent purchase = new Intent(ProfileActivity.this, PurchasesActivity.class);
+//                startActivity(purchase);
+//                return true;
         }
         return false;
         });

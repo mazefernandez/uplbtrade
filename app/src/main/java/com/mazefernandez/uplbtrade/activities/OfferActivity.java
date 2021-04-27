@@ -100,16 +100,16 @@ public class OfferActivity extends AppCompatActivity {
         accept.setOnClickListener(v -> confirmAccept());
 
         /* Set Meet Up */
-        meetUp.setOnClickListener(v -> {
-            Intent intent = new Intent(OfferActivity.this, MeetUpActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("customer",offerBuyer.getText().toString());
-            bundle.putString("item",offerName.getText().toString());
-            bundle.putString("price", originalPrice.getText().toString());
-            bundle.putString("offer",offerPrice.getText().toString());
-            intent.putExtra("info",bundle);
-            startActivity(intent);
-        });
+//        meetUp.setOnClickListener(v -> {
+//            Intent intent = new Intent(OfferActivity.this, MeetUpActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("customer",offerBuyer.getText().toString());
+//            bundle.putString("item",offerName.getText().toString());
+//            bundle.putString("price", originalPrice.getText().toString());
+//            bundle.putString("offer",offerPrice.getText().toString());
+//            intent.putExtra("info",bundle);
+//            startActivity(intent);
+//        });
 
         /* Delete Offer */
         deleteOffer.setOnClickListener(v -> confirmDelete());

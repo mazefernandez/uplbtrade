@@ -114,11 +114,11 @@ public class HomeActivity extends AppCompatActivity {
                     profile.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(profile);
                     return true;
-                case R.id.navigation_purchases:
-                    item.setChecked(true);
-                    Intent purchase = new Intent(HomeActivity.this, PurchasesActivity.class);
-                    startActivity(purchase);
-                    return true;
+//                case R.id.navigation_purchases:
+//                    item.setChecked(true);
+//                    Intent purchase = new Intent(HomeActivity.this, PurchasesActivity.class);
+//                    startActivity(purchase);
+//                    return true;
             }
             return false;
         });
