@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="uplbtrade/app" />
-      <module fileurl="file://$PROJECT_DIR$/mysql-connector-java-5.1.47-bin/mysql-connector-java-5.1.47-bin.iml" filepath="$PROJECT_DIR$/mysql-connector-java-5.1.47-bin/mysql-connector-java-5.1.47-bin.iml" group="uplbtrade/mysql-connector-java-5.1.47-bin" />
-      <module fileurl="file://$PROJECT_DIR$/uplbtrade.iml" filepath="$PROJECT_DIR$/uplbtrade.iml" group="uplbtrade" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/uplbtrade.iml" filepath="$PROJECT_DIR$/.idea/uplbtrade.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/uplbtrade.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/uplbtrade.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mysql-connector-java-5.1.47-bin/uplbtrade.mysql-connector-java-5.1.47-bin.iml" filepath="$PROJECT_DIR$/.idea/modules/mysql-connector-java-5.1.47-bin/uplbtrade.mysql-connector-java-5.1.47-bin.iml" />
     </modules>
   </component>
 </project>
