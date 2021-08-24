@@ -7,6 +7,7 @@
     android:id="@+id/relativeLayout2"
     android:background="@color/background">
 
+    <!-- Customer name -->
     <TextView
         android:id="@+id/edit_text"
         android:layout_width="0dp"
@@ -20,6 +21,7 @@
         app:layout_constraintStart_toEndOf="@+id/edit_img"
         app:layout_constraintTop_toTopOf="@+id/edit_img" />
 
+    <!-- Contact number -->
     <EditText
         android:id="@+id/edit_contactNo"
         android:layout_width="0dp"
@@ -37,6 +39,7 @@
         app:layout_constraintStart_toEndOf="@+id/edit_img"
         app:layout_constraintTop_toBottomOf="@+id/edit_address" />
 
+    <!-- Save customer details -->
     <Button
         android:id="@+id/save_customer"
         android:layout_width="71dp"
@@ -48,6 +51,7 @@
         app:layout_constraintEnd_toEndOf="@+id/edit_contactNo"
         app:layout_constraintTop_toBottomOf="@+id/edit_contactNo" />
 
+    <!-- Address -->
     <EditText
         android:id="@+id/edit_address"
         android:layout_width="0dp"
@@ -65,6 +69,7 @@
         app:layout_constraintStart_toEndOf="@+id/edit_img"
         app:layout_constraintTop_toBottomOf="@+id/edit_text" />
 
+    <!-- Profile Picture -->
     <ImageView
         android:id="@+id/edit_img"
         android:layout_width="110dp"

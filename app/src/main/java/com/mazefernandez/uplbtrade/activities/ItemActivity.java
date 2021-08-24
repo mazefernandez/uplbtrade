@@ -50,8 +50,7 @@ public class ItemActivity extends AppCompatActivity {
     private int sellerId;
     private Offer offer;
 
-    /* Activity Result Launcher to replace onActivityResult() */
-
+    /* Edit item details */
     ActivityResultLauncher<Intent> editItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
        if (result.getResultCode() == Activity.RESULT_OK) {
            Intent intent = result.getData();
@@ -74,7 +73,7 @@ public class ItemActivity extends AppCompatActivity {
 
            assert price != null;
            Double double_price = Double.parseDouble(price);
-
+           /* Save to database */
            Item item = new Item(name, desc, double_price, image, condition);
            UPLBTrade.retrofitClient.updateItem(new Callback<Item>() {
                @Override
@@ -91,6 +90,7 @@ public class ItemActivity extends AppCompatActivity {
        }
     });
 
+    /* Create a new offer for item */
     ActivityResultLauncher<Intent> addOffer = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();
@@ -111,11 +111,11 @@ public class ItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
 
-        /*SharedPref to save customer_id*/
+        /* SharedPref to save customer_id */
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         sessionId = pref.getInt("customer_id",-1);
 
-        /*Item activity views */
+        /* Item activity views */
         itemOwner = findViewById(R.id.item_owner);
         itemName = findViewById(R.id.item_name);
         itemDesc = findViewById(R.id.item_desc);
@@ -127,6 +127,7 @@ public class ItemActivity extends AppCompatActivity {
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
 
+        /* Default visibility for offer */
         seeOffer.setVisibility(View.GONE);
         /* Retrieve item data */
         Item item = (Item) getIntent().getSerializableExtra("ITEM");
@@ -220,7 +221,7 @@ public class ItemActivity extends AppCompatActivity {
 
     /* Display Item Details */
     private void displayItem(Customer customer, Item item) {
-        itemOwner.setText(String.format("%s %s", customer.getfirstName(), customer.getlastName()));
+        itemOwner.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
         itemName.setText(item.getItemName());
         itemDesc.setText(item.getDescription());
         String price = item.getPrice().toString();
@@ -239,7 +240,7 @@ public class ItemActivity extends AppCompatActivity {
             byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
             return decodeByteArray(encodeByte, 0, encodeByte.length);
         }catch(Exception e){
-            e.getMessage();
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -262,8 +263,8 @@ public class ItemActivity extends AppCompatActivity {
         }, item.getCustomerId());
     }
 
+    /* Make an offer for the item */
     private void makeOffer(Offer offer) {
-
         UPLBTrade.retrofitClient.addOffer(new Callback<Offer>() {
             @Override
             public void onResponse(@NonNull Call<Offer> call, @NonNull Response<Offer> response) {
@@ -277,6 +278,7 @@ public class ItemActivity extends AppCompatActivity {
         }, offer);
     }
 
+    /* Delete item confirmation */
     private void confirmDelete() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Item");
@@ -299,6 +301,7 @@ public class ItemActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    /* Delete user's item */
     private void deleteItem(){
         UPLBTrade.retrofitClient.deleteItem(new Callback<Item>() {
             @Override
@@ -309,7 +312,7 @@ public class ItemActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
                 System.out.println("Failed to delete item");
-                t.getMessage();
+                System.out.println(t.getMessage());
             }
         }, itemId);
     }

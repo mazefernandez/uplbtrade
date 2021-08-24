@@ -46,15 +46,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        /* Firebase storage */
-        // Firebase instances
+        /* Firebase instances */
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
 
+        /* puts default image if no image */
         if(itemListFiltered.get(position).getImage() == null) {
             holder.itemImg.setImageResource(R.drawable.placeholder);
         }
         else {
+            /* retrieve image from firebase */
             StorageReference ref = storageReference.child(itemListFiltered.get(position).getImage());
             final long ONE_MEGABYTE = 1024 *1024;
             ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
@@ -63,6 +64,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 holder.itemImg.setImageBitmap(bitmap);
             }).addOnFailureListener(fail -> System.out.println("Failed to read image"));
         }
+        /* retrieve item data */
         holder.itemName.setText(itemListFiltered.get(position).getItemName());
         /* Format price into decimal */
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",itemListFiltered.get(position).getPrice());
@@ -107,12 +109,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         };
     }
 
+    /* Holds the values for individual views on the recycler */
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private ImageView itemImg;
-        private TextView itemName, itemPrice;
+        private final ImageView itemImg;
+        private final TextView itemName;
+        private final TextView itemPrice;
         private final Context context;
         private Item item;
 
+        /* View attributes */
         ItemViewHolder(View view) {
             super(view);
             itemImg = view.findViewById(R.id.item_img);
@@ -123,6 +128,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             card.setOnClickListener(this);
         }
 
+        /* Redirects to an item page with the details */
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, ItemActivity.class);

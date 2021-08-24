@@ -21,11 +21,11 @@ public class TransactionTracking {
         this.transactionId = transactionId;
     }
 
-    public Integer gettrackingId() {
+    public Integer getTrackingId() {
         return trackingId;
     }
 
-    public void settrackingId(Integer trackingId) {
+    public void setTrackingId(Integer trackingId) {
         this.trackingId = trackingId;
     }
 
@@ -45,11 +45,11 @@ public class TransactionTracking {
         this.date = date;
     }
 
-    public Integer gettransactionId() {
+    public Integer getTransactionId() {
         return transactionId;
     }
 
-    public void settransactionId(Integer transactionId) {
+    public void setTransactionId(Integer transactionId) {
         this.transactionId = transactionId;
     }
 }

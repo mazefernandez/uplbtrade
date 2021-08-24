@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- map fragment layout -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.MapFragment">
-
+<!-- container for all the details -->
     <androidx.fragment.app.FragmentContainerView
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/map"
         android:layout_height="match_parent"
         android:layout_width="match_parent"/>
-    
+
+    <!-- contains the search bar -->
     <RelativeLayout
         android:id="@+id/address_bar"
         android:layout_width="match_parent"
@@ -19,6 +21,7 @@
         android:elevation="10dp"
         tools:targetApi="lollipop">
 
+        <!-- search bar -->
         <SearchView
             android:id="@+id/search_bar"
             android:autofillHints="@string/search_venue"

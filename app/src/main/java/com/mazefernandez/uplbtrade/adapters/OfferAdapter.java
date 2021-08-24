@@ -32,8 +32,7 @@ import static android.graphics.BitmapFactory.decodeByteArray;
 /* Binds values of offer information to views */
 public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHolder> {
 
-    private ArrayList<Offer> offerList;
-
+    private final ArrayList<Offer> offerList;
     public OfferAdapter(ArrayList<Offer> offerList) {
         this.offerList = offerList;
     }
@@ -43,7 +42,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
             byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
             return decodeByteArray(encodeByte, 0, encodeByte.length);
         }catch(Exception e){
-            e.getMessage();
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -58,13 +57,15 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        getItem(offerList.get(position).getitemId(), holder);
+        /* retrieve offer data */
+        getItem(offerList.get(position).getItemId(), holder);
         holder.offer = offerList.get(position);
         @SuppressLint("DefaultLocale") String price = String.format("%.2f",offerList.get(position).getPrice());
         price = "\u20B1" + price;
         holder.offerPrice.setText(price);
         holder.offerStatus.setText(offerList.get(position).getStatus());
     }
+    /* retrieve item data from the offer */
     private void getItem(int itemId, final ItemViewHolder holder){
         UPLBTrade.retrofitClient.getItem(new Callback<Item>() {
             @Override
@@ -72,9 +73,11 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
                 Item item = response.body();
                 assert item != null;
                 holder.offerName.setText(item.getItemName());
+                /* image set to null if no image */
                 if (item.getImage() == null) {
                     holder.offerImg.setImageResource(R.drawable.placeholder);
                 }
+                /* retrieve image */
                 else {
                     holder.offerImg.setImageBitmap(stringToBitMap(item.getImage()));
                 }
@@ -92,6 +95,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
         return offerList.size();
     }
 
+    /* Holds the values for individual views on the recycler */
     static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView offerImg;
         TextView offerName, offerPrice, offerStatus, originalPrice;
@@ -99,6 +103,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
         private final Context context;
         Offer offer;
 
+        /* View attributes */
         ItemViewHolder(View view) {
             super(view);
             offerImg = view.findViewById(R.id.offer_img);
@@ -110,6 +115,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
             card.setOnClickListener(this);
         }
 
+        /* Redirects to an offer page with the details */
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, OfferActivity.class);

@@ -40,7 +40,7 @@ public class OffersActivity extends AppCompatActivity {
         buying = findViewById(R.id.buying);
         selling = findViewById(R.id.selling);
 
-        /*SharedPref to save customer_id*/
+        /* SharedPref to save customer_id */
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         int sessionId = pref.getInt("customer_id", -1);
 
@@ -85,6 +85,7 @@ public class OffersActivity extends AppCompatActivity {
                 assert offers != null;
                 ArrayList<Offer> sellingArrayList = new ArrayList<>(offers);
 
+                /* Removes declined offers from the list */
                 for (int i=0; i<sellingArrayList.size(); i++) {
                     if (sellingArrayList.get(i).getStatus().equals("Declined")) {
                         sellingArrayList.remove(i);

@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/* shows the map of UPLB and allows a user to choose a meet up venue */
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnPoiClickListener{
-    private SearchView searchView;
     private GoogleMap map;
     private Marker marker;
     private String venue;
@@ -46,7 +46,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mapFragment.getMapAsync(this);
 
         // setup address searching
-        searchView = view.findViewById(R.id.search_bar);
+        SearchView searchView = view.findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -62,6 +62,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         return view;
     }
+
+    /* Search map for user's query */
     private void searchVenue(GoogleMap map, String string) {
         venue = string;
         Geocoder geocoder = new Geocoder(getActivity());
@@ -82,6 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
+    /* shifts camera and pin */
     private void moveCamera(LatLng latLng, float zoom, String title, GoogleMap map){
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
@@ -89,6 +92,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         marker = map.addMarker(new MarkerOptions()
             .position(latLng)
             .title(title));
+        assert marker != null;
         marker.showInfoWindow();
     }
 

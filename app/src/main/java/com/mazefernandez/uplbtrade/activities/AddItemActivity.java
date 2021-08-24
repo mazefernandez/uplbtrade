@@ -120,11 +120,13 @@ public class AddItemActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        /* Get current user */
         int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
 
-        /* Upload image to firebase storage*/
+        /* Upload image to firebase storage */
         StorageReference list = storageReference.child("images/uid");
 
+        /* Rename image to images/count */
         list.listAll().addOnSuccessListener(listResult -> count = listResult.getItems().size()
         ).addOnFailureListener(failure -> System.out.println("failed to count list"));
             count = count+1;
@@ -138,6 +140,7 @@ public class AddItemActivity extends AppCompatActivity {
             System.out.println("image failed to upload");
         });
 
+        /* Add item to database */
         Item item = new Item(string_name, string_desc, double_price, imgString, string_condition, customerId);
 
             UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
@@ -153,6 +156,7 @@ public class AddItemActivity extends AppCompatActivity {
             }
         }, item);
 
+        /* Return to profile */
         Intent intent = new Intent();
         intent.putExtra("CHECK", 1);
         setResult(RESULT_OK,intent);

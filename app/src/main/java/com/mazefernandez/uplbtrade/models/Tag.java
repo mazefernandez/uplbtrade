@@ -16,27 +16,27 @@ public class Tag {
         this.itemId = itemId;
     }
 
-    public Integer gettagId() {
+    public Integer getTagId() {
         return tagId;
     }
 
-    public void settagId(Integer tagId) {
+    public void setTagId(Integer tagId) {
         this.tagId = tagId;
     }
 
-    public String gettagName() {
+    public String getTagName() {
         return tagName;
     }
 
-    public void settagName(String tagName) {
+    public void setTagName(String tagName) {
         this.tagName = tagName;
     }
 
-    public Integer getitemId() {
+    public Integer getItemId() {
         return itemId;
     }
 
-    public void setitemId(Integer itemId) {
+    public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }
 }

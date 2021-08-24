@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/layout/activity_add_item.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/activity_edit_item.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/activity_edit_profile.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/activity_item.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_make_offer.xml" value="0.25745257452574527" />
+        <entry key="app/src/main/res/layout/activity_meetup.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/activity_offer.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/activity_offers.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.268361581920904" />
+        <entry key="app/src/main/res/layout/activity_purchases.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/activity_report_user.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/activity_screenslide.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/activity_transaction.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/fragment_confirm_meet_up.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/fragment_datetime.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/fragment_screenslide.xml" value="0.25677083333333334" />
+        <entry key="app/src/main/res/layout/item_row.xml" value="0.25677083333333334" />
+        <entry key="app/src/main/res/layout/offer_row.xml" value="0.25677083333333334" />
+        <entry key="app/src/main/res/menu/navigation.xml" value="0.19791666666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

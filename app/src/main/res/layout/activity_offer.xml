@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- offer layout -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,6 +8,7 @@
     android:theme="@style/AppTheme.NoActionBar"
     android:background="@color/background">
 
+    <!-- Item image -->
     <ImageView
         android:id="@+id/offer_img"
         android:layout_width="0dp"
@@ -23,6 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Item name -->
     <TextView
         android:id="@+id/offer_name"
         android:layout_width="0dp"
@@ -39,6 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_img" />
 
+    <!-- original offer price -->
     <TextView
         android:id="@+id/original_price"
         android:layout_width="0dp"
@@ -56,6 +60,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_name" />
 
+    <!-- offer price of customer buying -->
     <TextView
         android:id="@+id/offer_price"
         android:layout_width="0dp"
@@ -73,6 +78,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/original_price" />
 
+    <!-- status if pending/declined/accepted -->
     <TextView
         android:id="@+id/offer_status"
         android:layout_width="0dp"
@@ -90,6 +96,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_message" />
 
+    <!-- offer message -->
     <TextView
         android:id="@+id/offer_message"
         android:layout_width="0dp"
@@ -109,6 +116,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_price" />
 
+    <!-- Seller of the item -->
     <TextView
         android:id="@+id/offer_seller"
         android:layout_width="0dp"
@@ -126,6 +134,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_buyer" />
 
+    <!-- buyer of the item -->
     <TextView
         android:id="@+id/offer_buyer"
         android:layout_width="0dp"
@@ -143,6 +152,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_status" />
 
+    <!-- accept button -->
     <Button
         android:id="@+id/accept"
         android:layout_width="83dp"
@@ -154,6 +164,7 @@
         app:layout_constraintEnd_toEndOf="@+id/offer_seller"
         app:layout_constraintTop_toBottomOf="@+id/offer_seller" />
 
+    <!-- declination button -->
     <Button
         android:id="@+id/decline"
         android:layout_width="83dp"
@@ -165,6 +176,7 @@
         app:layout_constraintStart_toStartOf="@+id/offer_seller"
         app:layout_constraintTop_toBottomOf="@+id/offer_seller" />
 
+    <!-- delete offer -->
     <ImageButton
         android:id="@+id/offer_delete"
         android:layout_width="48dp"
@@ -174,11 +186,12 @@
         android:layout_marginTop="8dp"
         android:background="@color/background"
         android:contentDescription="@string/delete_item"
-        android:tint="?attr/colorError"
         app:layout_constraintStart_toStartOf="@+id/offer_seller"
         app:layout_constraintTop_toBottomOf="@+id/offer_seller"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        app:tint="?attr/colorError" />
 
+    <!-- redirects to meetup page -->
     <Button
         android:id="@+id/meet_up"
         android:layout_width="wrap_content"

@@ -54,9 +54,9 @@ public class ProfileActivity extends AppCompatActivity {
     ItemAdapter itemAdapter;
     BottomNavigationView navigation;
 
-    private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
+    private final GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
 
-    /* AR Launchers - used to replace onActivityResults */
+    /* Edit profile details */
     ActivityResultLauncher<Intent> editProfile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();
@@ -91,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     });
 
+    /* Add new item to customer's shop */
     ActivityResultLauncher<Intent> insertItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
        if (result.getResultCode() == Activity.RESULT_OK) {
            Intent intent = result.getData();
@@ -146,9 +147,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 ArrayList<Item> items = (ArrayList<Item>) response.body();
                 assert items != null;
-                ArrayList<Item> itemList = new ArrayList<>();
-                itemList.clear();
-                itemList.addAll(items);
+                ArrayList<Item> itemList = new ArrayList<>(items);
                 itemAdapter = new ItemAdapter(itemList);
                 recyclerView.setAdapter(itemAdapter);
             }
@@ -260,7 +259,7 @@ public class ProfileActivity extends AppCompatActivity {
         Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
         profileName.setText(account.getDisplayName());
 
-        /*SharedPref to save customer_id */
+        /* SharedPref to save customer_id */
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         final SharedPreferences.Editor editor = pref.edit();
 
@@ -271,11 +270,11 @@ public class ProfileActivity extends AppCompatActivity {
                 Customer customer = response.body();
                 assert customer != null;
                 profileAddress.setText(customer.getAddress());
-                contactNo.setText(customer.getcontactNo());
-                double rate = customer.getoverallRating();
+                contactNo.setText(customer.getContactNo());
+                double rate = customer.getOverallRating();
                 float r = (float) rate;
                 rating.setRating(r);
-                customerId = customer.getcustomerId();
+                customerId = customer.getCustomerId();
                 editor.putInt("customer_id", customerId);
                 editor.apply();
             }

@@ -16,11 +16,11 @@ import com.squareup.picasso.Picasso;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 
+/* Files a report regarding a user in the application */
+
 public class ReportUserActivity extends AppCompatActivity {
     private ImageView profileImage;
     private TextView name, contactNo;
-    private EditText report;
-    private Button cancel, send;
     private Bundle userInfo;
     private GoogleSignInAccount account;
 
@@ -33,9 +33,10 @@ public class ReportUserActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.profile_img);
         name = findViewById(R.id.profile_name);
         contactNo = findViewById(R.id.contactNo);
-        report = findViewById(R.id.report);
-        send = findViewById(R.id.send);
-        cancel = findViewById(R.id.cancel);
+
+        EditText report = findViewById(R.id.report);
+        Button send = findViewById(R.id.send);
+        Button cancel = findViewById(R.id.cancel);
 
         Intent profileIntent = getIntent();
 

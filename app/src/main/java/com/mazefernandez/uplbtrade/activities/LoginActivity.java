@@ -29,10 +29,9 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
 /* Login Customers through Google Account */
 
 public class LoginActivity extends AppCompatActivity {
-    private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
+    private final GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
 
-    /* Activity Result Launcher to replace onActivityResult() */
-
+    /* login to the application */
     ActivityResultLauncher<Intent> login = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();

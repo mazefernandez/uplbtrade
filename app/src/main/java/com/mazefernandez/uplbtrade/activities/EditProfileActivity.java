@@ -25,7 +25,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private Bundle userInfo;
     private GoogleSignInAccount account;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

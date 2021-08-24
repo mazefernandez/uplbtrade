@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- offers layout -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Header -->
     <TextView
         android:id="@+id/offers_title"
         android:layout_width="match_parent"
@@ -18,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Buyer -->
     <TextView
         android:id="@+id/buyer"
         android:layout_width="wrap_content"
@@ -29,6 +32,7 @@
         app:layout_constraintTop_toBottomOf="@id/offers_title"
         android:layout_marginStart="8dp" />
 
+    <!-- Seller -->
     <TextView
         android:id="@+id/seller"
         android:layout_width="wrap_content"
@@ -42,6 +46,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buying" />
 
+    <!-- List of offers the customer is buying -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/buying"
         android:layout_width="0dp"
@@ -58,6 +63,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buyer" />
 
+    <!-- List of offers the customer is selling -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selling"
         android:layout_width="0dp"
@@ -74,6 +80,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seller" />
 
+    <!-- nav bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"

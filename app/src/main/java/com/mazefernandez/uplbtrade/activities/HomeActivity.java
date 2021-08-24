@@ -53,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this,3);
         recyclerView.setLayoutManager(layoutManager);
 
-        /* Show customer items */
+        /* Get info from database and display customer items */
         UPLBTrade.retrofitClient.getItems(new Callback<List<Item>>() {
             @Override
             public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
@@ -143,6 +143,7 @@ public class HomeActivity extends AppCompatActivity {
         else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             Log.w(TAG,"checkGoogleServices: Error occurred, but resolvable");
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(HomeActivity.this,available,9001);
+            assert dialog != null;
             dialog.show();
         }
         else {

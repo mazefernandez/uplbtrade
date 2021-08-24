@@ -1,5 +1,6 @@
 package com.mazefernandez.uplbtrade.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -17,10 +18,11 @@ import com.mazefernandez.uplbtrade.R;
 
 import java.util.Calendar;
 
+/* Allows the user to set a time and date for the meetup */
+
 public class DatetimeFragment extends Fragment implements View.OnClickListener{
     private EditText date, time;
     private Button dateButton, timeButton;
-    private TextView itemName, customerName, price, offer;
 
     public DatetimeFragment() {
 
@@ -29,10 +31,11 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_datetime, container, false);
 
-        itemName = view.findViewById(R.id.item_name);
-        customerName = view.findViewById(R.id.customer_name);
-        price = view.findViewById(R.id.price);
-        offer = view.findViewById(R.id.offer);
+        /* datetime views */
+        TextView itemName = view.findViewById(R.id.item_name);
+        TextView customerName = view.findViewById(R.id.customer_name);
+        TextView price = view.findViewById(R.id.price);
+        TextView offer = view.findViewById(R.id.offer);
 
         if (getArguments() != null) {
             Bundle bundle = getArguments();
@@ -53,6 +56,7 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
+    /* allows a user to choose a date and time */
     @Override
     public void onClick(View v) {
         final Calendar calendar = Calendar.getInstance();
@@ -62,7 +66,7 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view, year1, month1, dayOfMonth) -> date.setText(String.format("%d-%d-%d", dayOfMonth, (month1 +1), year1)), year, month, day);
+            @SuppressLint("DefaultLocale") DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view, year1, month1, dayOfMonth) -> date.setText(String.format("%d-%d-%d", dayOfMonth, (month1 +1), year1)), year, month, day);
             datePickerDialog.show();
         }
         else if (v == timeButton) {
@@ -70,11 +74,12 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), (view, hourOfDay, minute1) -> time.setText(String.format("%d:%d", hourOfDay, minute1)), hour, minute, true);
+            @SuppressLint("DefaultLocale") TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), (view, hourOfDay, minute1) -> time.setText(String.format("%d:%d", hourOfDay, minute1)), hour, minute, true);
             timePickerDialog.show();
         }
     }
 
+    /* concatenates date and time */
     public String getDateTime() {
         String timeStr = time.getText().toString();
         timeStr = timeStr.concat(":00");

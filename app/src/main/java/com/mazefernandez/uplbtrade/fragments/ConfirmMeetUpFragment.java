@@ -12,17 +12,10 @@ import androidx.fragment.app.Fragment;
 
 import com.mazefernandez.uplbtrade.R;
 
+/* Finalize meetup details */
+
 public class ConfirmMeetUpFragment extends Fragment implements View.OnClickListener {
-    private TextView buyer;
-    private TextView item;
-    private TextView price;
-    private TextView offer;
-    private TextView date;
-    private TextView time;
-    private TextView venue;
     private Button confirm;
-    private Bundle confirmBundle;
-    private Bundle bundle;
 
     public ConfirmMeetUpFragment() {
 
@@ -31,18 +24,19 @@ public class ConfirmMeetUpFragment extends Fragment implements View.OnClickListe
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_confirm_meet_up, container, false);
 
-        buyer = view.findViewById(R.id.buyer);
-        item = view.findViewById(R.id.item);
-        price = view.findViewById(R.id.price);
-        offer = view.findViewById(R.id.offer);
-        date = view.findViewById(R.id.date);
-        time = view.findViewById(R.id.time);
-        venue = view.findViewById(R.id.venue);
+        /* Meetup views */
+        TextView buyer = view.findViewById(R.id.buyer);
+        TextView item = view.findViewById(R.id.item);
+        TextView price = view.findViewById(R.id.price);
+        TextView offer = view.findViewById(R.id.offer);
+        TextView date = view.findViewById(R.id.date);
+        TextView time = view.findViewById(R.id.time);
+        TextView venue = view.findViewById(R.id.venue);
 
         /* Get Offer Data */
         if (getArguments() != null) {
-            confirmBundle = getArguments();
-            bundle = confirmBundle.getBundle("offer");
+            Bundle confirmBundle = getArguments();
+            Bundle bundle = confirmBundle.getBundle("offer");
 
             assert bundle != null;
             item.setText(bundle.getString("item"));
@@ -55,9 +49,7 @@ public class ConfirmMeetUpFragment extends Fragment implements View.OnClickListe
         }
 
         confirm = view.findViewById(R.id.confirm);
-
         confirm.setOnClickListener(this);
-
         return view;
     }
 

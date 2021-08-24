@@ -32,8 +32,8 @@ public class MakeOfferActivity extends AppCompatActivity {
         TextView offerName = findViewById(R.id.offer_name);
         offerPrice = findViewById(R.id.offer_price);
         offerMessage = findViewById(R.id.offer_message);
-
         TextView offerOwner = findViewById(R.id.offer_owner);
+
         Button makeOffer = findViewById(R.id.make_offer);
         Button cancel = findViewById(R.id.cancel);
 
@@ -55,7 +55,7 @@ public class MakeOfferActivity extends AppCompatActivity {
             /* Save Offer Info */
             String price = offerPrice.getText().toString();
             String message = offerMessage.getText().toString();
-            Double double_price = Double.parseDouble(price);
+            double double_price = Double.parseDouble(price);
             //TODO add image
             Bundle offerInfo = new Bundle();
             offerInfo.putDouble("PRICE", double_price);

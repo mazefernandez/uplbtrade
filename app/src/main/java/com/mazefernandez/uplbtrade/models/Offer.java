@@ -39,14 +39,6 @@ public class Offer implements Serializable{
         this.sellerId = offer.sellerId;
     }
 
-    public Integer getofferId() {
-        return offerId;
-    }
-
-    public void setofferId(Integer offerId) {
-        this.offerId = offerId;
-    }
-
     public Double getPrice() {
         return price;
     }
@@ -69,14 +61,6 @@ public class Offer implements Serializable{
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public Integer getitemId() {
-        return itemId;
-    }
-
-    public void setitemId(Integer itemId) {
-        this.itemId = itemId;
     }
 
     public Integer getOfferId() {

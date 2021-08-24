@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Edit item details -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Item image -->
     <ImageView
         android:id="@+id/item_img"
         android:layout_width="0dp"
@@ -22,6 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Item owner's name -->
     <TextView
         android:id="@+id/item_owner"
         android:layout_width="0dp"
@@ -39,6 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
+    <!-- Item name -->
     <EditText
         android:id="@+id/item_name"
         android:layout_width="match_parent"
@@ -58,6 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_img" />
 
+    <!-- Description -->
     <EditText
         android:id="@+id/item_desc"
         android:layout_width="0dp"
@@ -81,6 +86,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
+        <!-- Offer price -->
     <EditText
         android:id="@+id/offer"
         android:layout_width="0dp"
@@ -101,6 +107,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
+        <!-- Item condition -->
     <EditText
         android:id="@+id/item_condition"
         android:layout_width="0dp"
@@ -121,6 +128,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer" />
 
+        <!-- Save the item's details -->
     <Button
         android:id="@+id/save_item"
         android:layout_width="71dp"
@@ -131,5 +139,7 @@
         android:text="@string/save"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintTop_toBottomOf="@+id/item_owner" />
+
+        <!--TODO: add a cancel button-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

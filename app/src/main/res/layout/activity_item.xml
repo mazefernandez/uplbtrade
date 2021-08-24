@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Item layout -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,6 +8,7 @@
     android:theme="@style/AppTheme.NoActionBar"
     android:background="@color/background">
 
+    <!-- Item image -->
     <ImageView
         android:id="@+id/item_img"
         android:layout_width="0dp"
@@ -23,6 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Owner name -->
     <TextView
         android:id="@+id/item_owner"
         android:layout_width="match_parent"
@@ -40,6 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
+    <!-- Item name -->
     <TextView
         android:id="@+id/item_name"
         android:layout_width="match_parent"
@@ -56,6 +60,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_img" />
 
+    <!-- Description -->
     <TextView
         android:id="@+id/item_desc"
         android:layout_width="match_parent"
@@ -74,6 +79,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
+    <!-- Offer price -->
     <TextView
         android:id="@+id/offer"
         android:layout_width="match_parent"
@@ -90,6 +96,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
+    <!-- Item condition -->
     <TextView
         android:id="@+id/item_condition"
         android:layout_width="match_parent"
@@ -106,6 +113,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer" />
 
+    <!-- Edit button -->
     <ImageButton
         android:id="@+id/item_edit"
         android:layout_width="48dp"
@@ -119,6 +127,7 @@
         app:layout_constraintTop_toBottomOf="@+id/item_owner"
         app:srcCompat="@drawable/edit_button" />
 
+    <!-- Delete item button -->
     <ImageButton
         android:id="@+id/item_delete"
         android:layout_width="48dp"
@@ -128,11 +137,12 @@
         android:layout_marginTop="8dp"
         android:background="@color/background"
         android:contentDescription="@string/delete_item"
-        android:tint="?attr/colorError"
         app:layout_constraintStart_toStartOf="@+id/item_owner"
         app:layout_constraintTop_toBottomOf="@+id/item_owner"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        app:tint="?attr/colorError" />
 
+    <!-- Make offer button -->
     <Button
         android:id="@+id/make_offer"
         android:layout_width="wrap_content"
@@ -143,6 +153,7 @@
         app:layout_constraintStart_toStartOf="@+id/item_owner"
         app:layout_constraintTop_toBottomOf="@+id/item_owner" />
 
+    <!-- See offer button -->
     <Button
         android:id="@+id/see_offer"
         android:layout_width="108dp"

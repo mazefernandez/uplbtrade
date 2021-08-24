@@ -14,8 +14,9 @@ public class UPLBTrade extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        retrofitClient = RetrofitClient.getRetrofitClient();
 
+        /* initialize retrofit client */
+        retrofitClient = RetrofitClient.getRetrofitClient();
         context = getApplicationContext();
 
         // Initialize the Chat SDK
@@ -39,6 +40,7 @@ public class UPLBTrade extends Application {
 //        FirebaseUIModule.activate(EmailAuthProvider.PROVIDER_ID, PhoneAuthProvider.PROVIDER_ID);
 //        InterfaceManager.shared().a.startLoginActivity(context, true);
 
+        /* start the application and login */
         Intent intent = new Intent(context, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

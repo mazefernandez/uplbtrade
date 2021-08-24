@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /* Binds values of transaction information to views */
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>{
 
-    private ArrayList<Transaction> transactionList;
+    private final ArrayList<Transaction> transactionList;
 
     public TransactionAdapter(ArrayList<Transaction> transactionList) {
         this.transactionList = transactionList;
@@ -43,23 +43,23 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return 0;
     }
 
-    public class TransactionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private ImageView itemImg;
-        private TextView itemName, itemPrice;
-        private LinearLayout card;
+    /* Holds the values for individual views on the recycler */
+    public static class TransactionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final Context context;
         private Item item;
 
+        /* View attributes */
         TransactionViewHolder(View view) {
             super(view);
-            itemImg = view.findViewById(R.id.item_img);
-            itemName = view.findViewById(R.id.item_name);
-            itemPrice = view.findViewById(R.id.offer);
-            card = view.findViewById(R.id.card);
+            ImageView itemImg = view.findViewById(R.id.item_img);
+            TextView itemName = view.findViewById(R.id.item_name);
+            TextView itemPrice = view.findViewById(R.id.offer);
+            LinearLayout card = view.findViewById(R.id.card);
             context = view.getContext();
             card.setOnClickListener(this);
         }
 
+        /* Redirects to a transaction page with the details */
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, TransactionActivity.class);

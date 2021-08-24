@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- datetime layout -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.DatetimeFragment">
 
+    <!-- date -->
     <EditText
         android:id="@+id/date"
         android:layout_width="200dp"
@@ -18,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="Autofill,LabelFor,TextFields" />
 
+    <!-- choose date button -->
     <Button
         android:id="@+id/date_button"
         android:layout_width="wrap_content"
@@ -33,6 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- time -->
     <EditText
         android:id="@+id/time"
         android:layout_width="200dp"
@@ -44,6 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/date"
         tools:ignore="Autofill,LabelFor,TextFields" />
 
+    <!-- choose time button -->
     <Button
         android:id="@+id/time_button"
         android:layout_width="wrap_content"
@@ -59,6 +64,7 @@
         app:layout_constraintStart_toStartOf="@+id/date_button"
         app:layout_constraintTop_toBottomOf="@+id/date_button" />
 
+    <!-- container for customer details -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
@@ -74,6 +80,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time">
 
+        <!-- customer name -->
         <TextView
             android:id="@+id/customer_name"
             android:layout_width="328dp"
@@ -89,6 +96,7 @@
             tools:layout_conversion_absoluteHeight="45dp"
             tools:layout_conversion_absoluteWidth="200dp" />
 
+        <!-- item name -->
         <TextView
             android:id="@+id/item_name"
             android:layout_width="327dp"
@@ -105,6 +113,7 @@
             tools:layout_conversion_absoluteHeight="45dp"
             tools:layout_conversion_absoluteWidth="200dp" />
 
+        <!-- offer price -->
         <TextView
             android:id="@+id/offer"
             android:layout_width="326dp"
@@ -122,6 +131,7 @@
             tools:layout_conversion_absoluteHeight="45dp"
             tools:layout_conversion_absoluteWidth="200dp" />
 
+        <!-- late night warning -->
         <TextView
             android:id="@+id/warning"
             android:layout_width="327dp"
@@ -140,6 +150,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/offer" />
 
+        <!-- final offer price -->
         <TextView
             android:id="@+id/price"
             android:layout_width="327dp"

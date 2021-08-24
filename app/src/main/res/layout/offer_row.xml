@@ -11,6 +11,7 @@
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="true">
 
+    <!-- container for offer info -->
     <LinearLayout
         android:id="@+id/card"
         android:layout_width="wrap_content"
@@ -21,6 +22,7 @@
         android:clickable="true"
         android:padding="5dp">
 
+        <!-- item image -->
         <ImageView
             android:id="@+id/offer_img"
             android:layout_width="150dp"
@@ -29,17 +31,21 @@
             android:contentDescription="@string/item_image"
             android:scaleType="centerCrop" />
 
+        <!-- item name -->
         <TextView
             android:id="@+id/offer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+        <!-- offer price -->
         <TextView
             android:id="@+id/offer_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/item_price"
             />
+
+        <!-- offer status -->
         <TextView
             android:id="@+id/offer_status"
             android:layout_width="wrap_content"

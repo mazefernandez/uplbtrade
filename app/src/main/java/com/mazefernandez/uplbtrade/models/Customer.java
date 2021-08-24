@@ -41,27 +41,27 @@ public class Customer {
         this.contactNo = contactNo;
     }
 
-    public Integer getcustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setcustomerId(Integer customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 
-    public String getfirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setfirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getlastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    public void setlastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -81,19 +81,19 @@ public class Customer {
         this.address = address;
     }
 
-    public String getcontactNo() {
+    public String getContactNo() {
         return contactNo;
     }
 
-    public void setcontactNo(String contactNo) {
+    public void setContactNo(String contactNo) {
         this.contactNo = contactNo;
     }
 
-    public Double getoverallRating() {
+    public Double getOverallRating() {
         return overallRating;
     }
 
-    public void setoverallRating(Double overallRating) {
+    public void setOverallRating(Double overallRating) {
         this.overallRating = overallRating;
     }
 }

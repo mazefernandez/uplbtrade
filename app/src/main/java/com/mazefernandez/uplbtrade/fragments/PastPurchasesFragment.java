@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mazefernandez.uplbtrade.adapters.ItemAdapter;
 
+/* Shows the user their past purchases from the application */
 public class PastPurchasesFragment extends Fragment implements View.OnClickListener {
     RecyclerView recyclerView;
     ItemAdapter itemAdapter;

@@ -1,7 +1,7 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +23,8 @@ import com.mazefernandez.uplbtrade.models.Offer;
 import retrofit2.Call;
 import retrofit2.Callback;
 
+/* Offer details */
+
 public class OfferActivity extends AppCompatActivity {
     private ImageView offerImg;
     private TextView offerName;
@@ -32,20 +34,15 @@ public class OfferActivity extends AppCompatActivity {
     private TextView offerMessage;
     private TextView offerSeller;
     private TextView offerBuyer;
-    private Button decline;
-    private Button accept;
-    private Button meetUp;
-    private ImageButton deleteOffer;
     private int itemId;
     private int offerId;
     private String price;
-
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer);
 
-        /*SharedPref to save customer_id*/
+        /* SharedPref to save customer_id */
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         int sessionId = pref.getInt("customer_id", -1);
 
@@ -58,21 +55,21 @@ public class OfferActivity extends AppCompatActivity {
         offerMessage = findViewById(R.id.offer_message);
         offerSeller = findViewById(R.id.offer_seller);
         offerBuyer = findViewById(R.id.offer_buyer);
-        decline = findViewById(R.id.decline);
-        accept = findViewById(R.id.accept);
-        deleteOffer = findViewById(R.id.offer_delete);
-        meetUp = findViewById(R.id.meet_up);
 
+        Button decline = findViewById(R.id.decline);
+        Button accept = findViewById(R.id.accept);
+        ImageButton deleteOffer = findViewById(R.id.offer_delete);
+        Button meetUp = findViewById(R.id.meet_up);
 
         /* Retrieve offer data */
         final Offer offer = (Offer) getIntent().getSerializableExtra("OFFER");
         assert offer != null;
-        itemId = offer.getitemId();
+        itemId = offer.getItemId();
         int buyerId = offer.getBuyerId();
         int sellerId = offer.getSellerId();
-        offerId = offer.getofferId();
+        offerId = offer.getOfferId();
 
-        /* Initialize views */
+        /* Initialize view visibility */
         if (sessionId == buyerId) {
             decline.setVisibility(View.GONE);
             accept.setVisibility(View.GONE);
@@ -119,15 +116,17 @@ public class OfferActivity extends AppCompatActivity {
     public void displayOffer(Offer offer) {
         offerImg.setImageResource(R.drawable.placeholder);
         getItem(itemId);
-        String offer_price = String.format("%.2f",offer.getPrice());
+        @SuppressLint("DefaultLocale") String offer_price = String.format("%.2f",offer.getPrice());
         offer_price = "\u20B1" + offer_price;
         offerPrice.setText(offer_price);
         offerStatus.setText(offer.getStatus());
         offerMessage.setText(offer.getMessage());
     }
 
+    /* Get item details from database */
     private void getItem(int itemId) {
         UPLBTrade.retrofitClient.getItem(new Callback<Item>() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull retrofit2.Response<Item> response) {
                 Item item = response.body();
@@ -145,13 +144,14 @@ public class OfferActivity extends AppCompatActivity {
         }, itemId);
     }
 
+    /* Get customer details from database */
     private void getCustomers(int buyerId, int sellerId) {
         UPLBTrade.retrofitClient.getCustomer(new Callback<Customer>() {
             @Override
             public void onResponse(@NonNull Call<Customer> call, @NonNull retrofit2.Response<Customer> response) {
                 Customer customer = response.body();
                 assert customer != null;
-                offerBuyer.setText(String.format("%s %s", customer.getfirstName(), customer.getlastName()));
+                offerBuyer.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
             }
 
             @Override
@@ -165,7 +165,7 @@ public class OfferActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Customer> call, @NonNull retrofit2.Response<Customer> response) {
                 Customer customer = response.body();
                 assert customer != null;
-                offerSeller.setText(String.format("%s %s", customer.getfirstName(), customer.getlastName()));
+                offerSeller.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
             }
 
             @Override
@@ -175,6 +175,7 @@ public class OfferActivity extends AppCompatActivity {
         }, sellerId);
     }
 
+    /* Confirmation for declination of customer's offer */
     private void confirmDecline() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Decline Offer");
@@ -196,6 +197,7 @@ public class OfferActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    /* Declination of customer's offer to buy the item and add to database */
     private void declineOffer() {
         UPLBTrade.retrofitClient.decline(new Callback<Offer>() {
             @Override
@@ -210,6 +212,7 @@ public class OfferActivity extends AppCompatActivity {
         }, offerId);
     }
 
+    /* Confirmation of accepting customer's offer to buy the item */
     private void confirmAccept() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Accept Offer");
@@ -222,10 +225,10 @@ public class OfferActivity extends AppCompatActivity {
         });
 
         builder.setNegativeButton("No", (dialog, which) -> Toast.makeText(getApplicationContext(), "Accept cancelled", Toast.LENGTH_SHORT).show());
-
         builder.show();
     }
 
+    /* Accept customer's offer to buy the item and add to database */
     private void acceptOffer() {
         UPLBTrade.retrofitClient.accept(new Callback<Offer>() {
             @Override
@@ -240,6 +243,7 @@ public class OfferActivity extends AppCompatActivity {
         }, offerId);
     }
 
+    /* Confirmation of deleting one's offer to buy an item from a user */
     private void confirmDelete() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Offer");
@@ -256,6 +260,7 @@ public class OfferActivity extends AppCompatActivity {
         builder.show();
     }
 
+    /* Delete one's offer to buy an item from a user */
     private void deleteOffer() {
         UPLBTrade.retrofitClient.deleteOffer(new Callback<Offer>() {
             @Override

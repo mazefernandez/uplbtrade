@@ -13,9 +13,11 @@ import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 
+/* Shows a customer's past purchases in the application */
+
 public class PurchasesActivity extends AppCompatActivity {
 
-    private GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
+    private final GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

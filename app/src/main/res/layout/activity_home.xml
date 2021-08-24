@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Home layout -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +8,7 @@
     android:background="@color/off_white"
     tools:context=".activities.HomeActivity">
 
+    <!-- Page Title -->
     <TextView
         android:id="@+id/recommended"
         android:layout_width="0dp"
@@ -20,6 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Search bar -->
     <SearchView
         android:id="@+id/home_search"
         android:layout_width="match_parent"
@@ -40,6 +43,8 @@
         app:layout_constraintTop_toBottomOf="@+id/recommended">
 
     </SearchView>
+
+    <!-- List of items -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
@@ -54,6 +59,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_search" />
 
+    <!-- nav bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"

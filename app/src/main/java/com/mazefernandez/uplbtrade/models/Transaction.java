@@ -31,27 +31,27 @@ public class Transaction {
         this.buyerId = buyerId;
     }
 
-    public Integer gettransactionId() {
+    public Integer getTransactionId() {
         return transactionId;
     }
 
-    public void settransactionId(Integer transactionId) {
+    public void setTransactionId(Integer transactionId) {
         this.transactionId = transactionId;
     }
 
-    public Double getbuyerRating() {
+    public Double getBuyerRating() {
         return buyerRating;
     }
 
-    public void setbuyerRating(Double buyerRating) {
+    public void setBuyerRating(Double buyerRating) {
         this.buyerRating = buyerRating;
     }
 
-    public String getbuyerReview() {
+    public String getBuyerReview() {
         return buyerReview;
     }
 
-    public void setbuyerReview(String buyerReview) {
+    public void setBuyerReview(String buyerReview) {
         this.buyerReview = buyerReview;
     }
 
@@ -63,35 +63,35 @@ public class Transaction {
         this.date = date;
     }
 
-    public Integer getitemId() {
+    public Integer getItemId() {
         return itemId;
     }
 
-    public void setitemId(Integer itemId) {
+    public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }
 
-    public Integer getofferId() {
+    public Integer getOfferId() {
         return offerId;
     }
 
-    public void setofferId(Integer offerId) {
+    public void setOfferId(Integer offerId) {
         this.offerId = offerId;
     }
 
-    public Integer getsellerId() {
+    public Integer getSellerId() {
         return sellerId;
     }
 
-    public void setsellerId(Integer sellerId) {
+    public void setSellerId(Integer sellerId) {
         this.sellerId = sellerId;
     }
 
-    public Integer getbuyerId() {
+    public Integer getBuyerId() {
         return buyerId;
     }
 
-    public void setbuyerId(Integer buyerId) {
+    public void setBuyerId(Integer buyerId) {
         this.buyerId = buyerId;
     }
 }
