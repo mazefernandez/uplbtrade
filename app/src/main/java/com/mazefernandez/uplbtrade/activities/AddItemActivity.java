@@ -143,7 +143,7 @@ public class AddItemActivity extends AppCompatActivity {
         /* Add item to database */
         Item item = new Item(string_name, string_desc, double_price, imgString, string_condition, customerId);
 
-            UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
+        UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
                 System.out.println("Added Item");
@@ -168,9 +168,7 @@ public class AddItemActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.setType("image/*");
             String[] mimeTypes = {"image/jpeg", "image/png"};
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
-            }
+            intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
             intent.setAction(Intent.ACTION_GET_CONTENT);
             selectImage.launch(Intent.createChooser(intent, "Select Picture"));
         });

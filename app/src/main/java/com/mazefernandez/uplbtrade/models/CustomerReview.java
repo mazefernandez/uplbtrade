@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.sql.Date;
 
-public class ApplicationReview {
+public class CustomerReview {
 
     @SerializedName("review_id")
     private Integer reviewId;
@@ -14,14 +14,21 @@ public class ApplicationReview {
     private String review;
     @SerializedName("date")
     private Date date;
+    @SerializedName("rater_id")
+    private Integer raterId;
     @SerializedName("customer_id")
     private Integer customerId;
+    @SerializedName("transaction_id")
+    private Integer transactionId;
 
-    public ApplicationReview(Double rating, String review, Integer customerId) {
+    public CustomerReview(Double rating, String review, Integer raterId, Integer customerId, Integer transactionId) {
         this.rating = rating;
         this.review = review;
+        this.raterId = raterId;
         this.customerId = customerId;
+        this.transactionId = transactionId;
     }
+
     public Integer getReviewId() {
         return reviewId;
     }
@@ -46,19 +53,11 @@ public class ApplicationReview {
         this.review = review;
     }
 
-    public Date getDate() {
-        return date;
+    public Integer getTransactionId() {
+        return transactionId;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Integer getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
+    public void setTransactionId(Integer transactionId) {
+        this.transactionId = transactionId;
     }
 }

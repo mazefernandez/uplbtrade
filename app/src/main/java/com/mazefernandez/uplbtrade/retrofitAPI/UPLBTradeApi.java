@@ -1,8 +1,11 @@
 package com.mazefernandez.uplbtrade.retrofitAPI;
 
+import com.mazefernandez.uplbtrade.models.ApplicationReview;
 import com.mazefernandez.uplbtrade.models.Customer;
+import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
+import com.mazefernandez.uplbtrade.models.Transaction;
 
 import java.util.List;
 
@@ -15,6 +18,39 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface UPLBTradeApi {
+    /* AppReview calls */
+    @GET("/api/application-reviews")
+    Call<List<ApplicationReview>> getAppReviews();
+
+    @GET("/api/application-reviews/{customer_id}")
+    Call<ApplicationReview> getAppReview();
+
+    @POST("/api/application-reviews/")
+    Call<ApplicationReview> addAppReview(@Body ApplicationReview appReview);
+
+    @DELETE("/api/application-reviews/{appReview_id}")
+    Call<ApplicationReview> deleteAppReview(@Path("appReview_id") int appReview_id);
+
+    /* CustomerReview calls */
+
+    @GET("/api/customer-reviews")
+    Call<List<CustomerReview>> getCustomerReviews();
+
+    @GET("/api/customer-reviews/:id")
+    Call<CustomerReview> getCustomerReview();
+
+    @POST("/api/customer-reviews")
+    Call<CustomerReview> addCustomerReview(@Body CustomerReview customerReview);
+
+    @GET("/api/customer-reviews/customer/:id")
+    Call<List<CustomerReview>> getSpecificCustomerReviews();
+
+    @GET("/api/customer-reviews/rating/:id")
+    Call<Double> getCustomerRating();
+
+    @DELETE("/api/customer-reviews/:id")
+    Call<CustomerReview> deleteCustomerReview(@Path("customerReview_id") int customerReview_id);
+
     /* Customer calls */
     @GET("/api/customers")
     Call<List<Customer>> getCustomers();
@@ -77,5 +113,22 @@ public interface UPLBTradeApi {
 
     @PUT("/api/offers/accept/{offer_id}")
     Call<Offer> accept(@Path("offer_id") int offerId);
+
+    /* Transaction Calls */
+    @GET("api/transactions/")
+    Call<List<Transaction>> getTransactions();
+
+    @GET("api/transactions/{transaction_id}")
+    Call<Transaction> getTransaction(@Path("transaction_id") int transactionId);
+
+    @GET("api/transactions/buyer/{buyer_id}")
+    Call<List<Transaction>> getBuyerTransactions(@Path("buyer_id") int buyerId);
+
+    @GET("api/transactions/seller/{seller_id}")
+    Call<List<Transaction>> getSellerTransactions(@Path("seller_id") int sellerId);
+
+    @POST("/api/transactions")
+    Call<Transaction> addTransaction(@Body Transaction transaction);
+
 }
 

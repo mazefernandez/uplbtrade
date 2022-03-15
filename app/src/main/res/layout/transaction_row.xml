@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- card implementation for Transactions -->
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:clickable="true"
+    card_view:cardElevation="2dp"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true">
+
+    <!-- container for transaction info -->
+    <LinearLayout
+        android:id="@+id/card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <!-- Date -->
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             />
+
+        <!-- Time -->
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <!-- Venue -->
+        <TextView
+            android:id="@+id/venue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <!-- item name -->
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- offer price -->
+        <TextView
+            android:id="@+id/offer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/item_price"
+            />
+
+        <!-- buyer name -->
+        <TextView
+            android:id="@+id/buyer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <!-- seller name -->
+        <TextView
+            android:id="@+id/seller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+

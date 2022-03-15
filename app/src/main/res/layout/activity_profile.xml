@@ -15,7 +15,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintEnd_toStartOf="@+id/settings"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
@@ -59,7 +58,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:numStars="5"
         android:stepSize="0.5"
@@ -74,7 +72,6 @@
         android:layout_width="110dp"
         android:layout_height="110dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/app_name"
         app:layout_constraintStart_toStartOf="parent"
@@ -118,21 +115,22 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_address" />
 
     <!-- Report user flag -->
+
+    <!-- Add item to user's shop -->
     <ImageButton
         android:id="@+id/flag"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
         android:background="@color/background"
         android:contentDescription="@string/flag"
         android:scaleType="fitXY"
         android:src="@drawable/flag"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.843"
         app:layout_constraintStart_toEndOf="@+id/contactNo"
         app:layout_constraintTop_toBottomOf="@+id/profile_address" />
 
-    <!-- Add item to user's shop -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addItem"
         android:layout_width="wrap_content"

@@ -101,6 +101,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 return results;
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 itemListFiltered = (List<Item>) results.values;

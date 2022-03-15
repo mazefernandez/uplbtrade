@@ -34,7 +34,6 @@ public class MeetUpActivity extends FragmentActivity {
         Button venue = findViewById(R.id.venue);
         Button confirm = findViewById(R.id.confirm);
 
-        viewPager = findViewById(R.id.viewpager);
         FragmentStateAdapter pagerAdapter = new ScreenSlidePagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);
 

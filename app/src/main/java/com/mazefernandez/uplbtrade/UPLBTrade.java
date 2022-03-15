@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mazefernandez.uplbtrade.activities.LoginActivity;
 import com.mazefernandez.uplbtrade.retrofitAPI.RetrofitClient;
 
@@ -18,6 +19,9 @@ public class UPLBTrade extends Application {
         /* initialize retrofit client */
         retrofitClient = RetrofitClient.getRetrofitClient();
         context = getApplicationContext();
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
 
         // Initialize the Chat SDK
 //        try {

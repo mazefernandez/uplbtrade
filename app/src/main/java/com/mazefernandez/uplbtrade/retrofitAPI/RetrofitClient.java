@@ -1,9 +1,13 @@
 package com.mazefernandez.uplbtrade.retrofitAPI;
 
+import com.mazefernandez.uplbtrade.models.ApplicationReview;
 import com.mazefernandez.uplbtrade.models.Customer;
+import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
+import com.mazefernandez.uplbtrade.models.Transaction;
 
+import java.nio.channels.OverlappingFileLockException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,6 +36,58 @@ public class RetrofitClient {
             retrofitClient = new RetrofitClient();
         }
         return retrofitClient;
+    }
+
+    /* Application Review Calls */
+    public void getAppReviews(Callback<List<ApplicationReview>> callback) {
+        Call<List<ApplicationReview>> getAppReviewsCall = service.getAppReviews();
+        getAppReviewsCall.enqueue(callback);
+    }
+
+    public void getAppReview(Callback<ApplicationReview> callback) {
+        Call<ApplicationReview> getAppReviewCall = service.getAppReview();
+        getAppReviewCall.enqueue(callback);
+    }
+
+    public void addAppReview(Callback<ApplicationReview> callback, ApplicationReview appReview) {
+        Call<ApplicationReview> addAppReviewCall = service.addAppReview(appReview);
+        addAppReviewCall.enqueue(callback);
+    }
+
+    public void deleteAppReview(Callback<ApplicationReview> callback, int appReview_id) {
+        Call<ApplicationReview> deleteAppReviewCall = service.deleteAppReview(appReview_id);
+        deleteAppReviewCall.enqueue(callback);
+    }
+
+    /* Customer Review Calls */
+    public void getCustomerReviews(Callback<List<CustomerReview>> callback) {
+        Call<List<CustomerReview>> getCustomerReviewsCall = service.getCustomerReviews();
+        getCustomerReviewsCall.enqueue(callback);
+    }
+
+    public void getCustomerReview(Callback<CustomerReview> callback) {
+        Call<CustomerReview> getCustomerReviewCall = service.getCustomerReview();
+        getCustomerReviewCall.enqueue(callback);
+    }
+
+    public void addCustomerReview(Callback<CustomerReview> callback, CustomerReview customerReview) {
+        Call<CustomerReview> addCustomerReviewCall = service.addCustomerReview(customerReview);
+        addCustomerReviewCall.enqueue(callback);
+    }
+
+    public void getSpecificCustomerReviews(Callback<List<CustomerReview>> callback) {
+        Call<List<CustomerReview>> getSpecificCustomerReviewsCall = service.getSpecificCustomerReviews();
+        getSpecificCustomerReviewsCall.enqueue(callback);
+    }
+
+    public void getCustomerRating(Callback<Double> callback) {
+        Call<Double> getCustomerRatingCall = service.getCustomerRating();
+        getCustomerRatingCall.enqueue(callback);
+    }
+
+    public void deleteCustomerReview(Callback<CustomerReview> callback, int customerReview_id) {
+        Call<CustomerReview> deleteCustomerReviewCall = service.deleteCustomerReview(customerReview_id);
+        deleteCustomerReviewCall.enqueue(callback);
     }
 
     /* Customer Calls */
@@ -120,6 +176,29 @@ public class RetrofitClient {
     public void accept(Callback<Offer> callback, int offer_id) {
         Call<Offer> acceptCall = service.accept(offer_id);
         acceptCall.enqueue(callback);
+    }
+
+    /* Transaction Calls */
+
+    public void getTransactions(Callback<List<Transaction>> callback) {
+        Call<List<Transaction>> getTransactionsCall = service.getTransactions();
+        getTransactionsCall.enqueue(callback);
+    }
+    public void getTransaction(Callback<Transaction> callback, int transaction_id) {
+        Call<Transaction> getTransactionCall = service.getTransaction(transaction_id);
+        getTransactionCall.enqueue(callback);
+    }
+    public void getBuyerTransactions(Callback<List<Transaction>> callback, int buyer_id) {
+        Call<List<Transaction>> getBuyerTransactionsCall = service.getBuyerTransactions(buyer_id);
+        getBuyerTransactionsCall.enqueue(callback);
+    }
+    public void getSellerTransactions(Callback<List<Transaction>> callback, int seller_id) {
+        Call<List<Transaction>> getSellerTransactionsCall = service.getSellerTransactions(seller_id);
+        getSellerTransactionsCall.enqueue(callback);
+    }
+    public void addTransaction(Callback<Transaction> callback, Transaction transaction) {
+        Call<Transaction> addTransactionCall = service.addTransaction(transaction);
+        addTransactionCall.enqueue(callback);
     }
 }
 
