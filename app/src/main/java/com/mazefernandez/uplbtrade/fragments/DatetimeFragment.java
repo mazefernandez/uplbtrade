@@ -3,17 +3,22 @@ package com.mazefernandez.uplbtrade.fragments;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 
 import java.util.Calendar;
@@ -23,6 +28,9 @@ import java.util.Calendar;
 public class DatetimeFragment extends Fragment implements View.OnClickListener{
     private EditText date, time;
     private Button dateButton, timeButton;
+    private ImageView itemImg;
+    private String imgString;
+
 
     public DatetimeFragment() {
 
@@ -36,6 +44,7 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
         TextView customerName = view.findViewById(R.id.customer_name);
         TextView price = view.findViewById(R.id.price);
         TextView offer = view.findViewById(R.id.offer);
+        itemImg = view.findViewById(R.id.item_img);
 
         if (getArguments() != null) {
             Bundle bundle = getArguments();
@@ -43,7 +52,23 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
             customerName.setText(getArguments().getString("customer"));
             price.setText(getArguments().getString("price"));
             offer.setText(getArguments().getString("offer"));
+            imgString = getArguments().getString("image");
         }
+
+        /* Firebase instances */
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+
+        /* retrieve image from firebase */
+        StorageReference ref = storageReference.child("images/"+imgString);
+
+        final long ONE_MEGABYTE = 1024 * 1024 * 5;
+        ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            System.out.println("Successfully read image");
+            itemImg.setImageBitmap(bitmap);
+        }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+
 
         date = view.findViewById(R.id.date);
         time = view.findViewById(R.id.time);
@@ -66,7 +91,7 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            @SuppressLint("DefaultLocale") DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view, year1, month1, dayOfMonth) -> date.setText(String.format("%d-%d-%d", dayOfMonth, (month1 +1), year1)), year, month, day);
+            @SuppressLint("DefaultLocale") DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view, year1, month1, dayOfMonth) -> date.setText(String.format("%d-%d-%d", year1, (month1 +1), dayOfMonth)), year, month, day);
             datePickerDialog.show();
         }
         else if (v == timeButton) {

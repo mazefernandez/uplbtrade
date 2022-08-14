@@ -10,7 +10,7 @@
     <!-- Item image -->
     <ImageView
         android:id="@+id/item_img"
-        android:layout_width="0dp"
+        android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -24,11 +24,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Edit Item FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_item_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="@string/edit_item"
+        android:focusable="true"
+        android:tint="@color/off_white"
+        android:src="@android:drawable/ic_menu_camera"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/item_img"
+        app:layout_constraintEnd_toEndOf="@+id/item_name"
+        app:layout_constraintStart_toEndOf="@+id/item_img" />
+
     <!-- Item owner's name -->
     <TextView
         android:id="@+id/item_owner"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -40,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_condition" />
+        app:layout_constraintTop_toBottomOf="@+id/tags" />
 
     <!-- Item name -->
     <EditText
@@ -90,7 +105,7 @@
     <EditText
         android:id="@+id/offer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -107,32 +122,86 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
-        <!-- Item condition -->
-    <EditText
+    <!-- Item condition -->
+    <Spinner
         android:id="@+id/item_condition"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:autofillHints="condition"
+        android:contentDescription="@string/item_condition"
+        app:layout_constraintTop_toBottomOf="@+id/offer" />
+
+    <!-- Item tags -->
+    <EditText
+        android:id="@+id/add_tags"
+        android:layout_width="290dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:hint="Tags"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_condition" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tags"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/white"
-        android:gravity="center"
-        android:hint="@string/item_condition"
-        android:inputType="text"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:autofillHints="@string/item_condition"
+        android:scrollbars="horizontal"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/offer" />
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/add_tags" />
+
+    <!-- add tag -->
+    <Button
+        android:id="@+id/add_tag"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/orange"
+        android:foreground="@android:drawable/ic_input_add"
+        android:foregroundTint="@color/white"
+        android:textAlignment="center"
+        android:contentDescription="add tag"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toEndOf="@+id/add_tags"
+        app:layout_constraintTop_toBottomOf="@+id/item_condition"/>
+
+    <!-- delete tag -->
+    <Button
+        android:id="@+id/delete_tag"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/maroon"
+        android:fontFamily="sans-serif"
+        android:foreground="@android:drawable/ic_delete"
+        android:foregroundTint="@color/white"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:textSize="8sp"
+        android:typeface="sans"
+        android:contentDescription="delete tag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/add_tag"
+        app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
         <!-- Save the item's details -->
     <Button
         android:id="@+id/save_item"
         android:layout_width="71dp"
-        android:layout_height="37dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
@@ -140,6 +209,14 @@
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintTop_toBottomOf="@+id/item_owner" />
 
-        <!--TODO: add a cancel button-->
+        <!-- Cancel button -->
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="90dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/cancel"
+        app:layout_constraintStart_toStartOf="@+id/item_owner"
+        app:layout_constraintTop_toBottomOf="@+id/item_owner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

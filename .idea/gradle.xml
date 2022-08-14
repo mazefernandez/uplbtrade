@@ -14,7 +14,6 @@
             <option value="$PROJECT_DIR$/mysql-connector-java-5.1.47-bin" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

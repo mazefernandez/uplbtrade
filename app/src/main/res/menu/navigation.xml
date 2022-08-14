@@ -23,7 +23,7 @@
         android:title="@string/profile" />
 
     <item
-        android:id="@+id/navigation_purchases"
+        android:id="@+id/navigation_transactions"
         android:icon="@drawable/purchase"
         android:title="@string/purchases"/>
 </menu>

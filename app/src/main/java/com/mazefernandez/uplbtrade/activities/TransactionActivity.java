@@ -1,18 +1,179 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.UPLBTrade;
+import com.mazefernandez.uplbtrade.models.Customer;
+import com.mazefernandez.uplbtrade.models.CustomerReview;
+import com.mazefernandez.uplbtrade.models.Item;
+import com.mazefernandez.uplbtrade.models.Offer;
+import com.mazefernandez.uplbtrade.models.Transaction;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /* Shows the user the progress of their transaction */
 
 public class TransactionActivity extends AppCompatActivity {
 
+    TextView date;
+    TextView time;
+    TextView venue;
+    TextView itemName;
+    TextView buyer;
+    TextView seller;
+    TextView price;
+
+    private int itemId;
+    private int offerId;
+    private int sellerId;
+    private int buyerId;
+    private int sessionId;
+    private int transactionId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction);
+
+        /* SharedPref to save customer_id */
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        sessionId = pref.getInt("customer_id",-1);
+
+        date = findViewById(R.id.date);
+        time = findViewById(R.id.time);
+        venue = findViewById(R.id.venue);
+        itemName = findViewById(R.id.item);
+        buyer = findViewById(R.id.buyer);
+        seller = findViewById(R.id.seller);
+        price = findViewById(R.id.price);
+        Button rate = findViewById(R.id.rate);
+
+        Transaction transaction = (Transaction) getIntent().getSerializableExtra("TRANSACTION");
+        assert transaction != null;
+        transactionId = transaction.getTransactionId();
+        getTransaction();
+
+        // go to rating page for transaction
+        rate.setOnClickListener(v -> {
+            Intent review = new Intent(TransactionActivity.this, CustomerReview.class);
+            startActivity(review);
+        });
+
+    }
+
+    /* retrieve transaction information */
+    private void getTransactionInfo(Transaction transaction) {
+        date.setText(transaction.getDate());
+        time.setText(transaction.getTime());
+        venue.setText(transaction.getVenue());
+
+        itemId = transaction.getItemId();
+        offerId = transaction.getOfferId();
+        sellerId = transaction.getSellerId();
+        buyerId = transaction.getBuyerId();
+
+        getItemName();
+        getPrice();
+        getSellerAndBuyer();
+    }
+
+    /* Retrieve transaction */
+    private void getTransaction() {
+        UPLBTrade.retrofitClient.getTransaction(new Callback<Transaction>() {
+            @Override
+            public void onResponse(@NonNull Call<Transaction> call, @NonNull Response<Transaction> response) {
+                Transaction transaction = response.body();
+                assert transaction != null;
+                getTransactionInfo(transaction);
+                System.out.println("Retrieved transaction");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Transaction> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, transactionId);
+    }
+
+    /* get item name */
+    private void getItemName() {
+        UPLBTrade.retrofitClient.getItem(new Callback<Item>() {
+            @Override
+            public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
+                Item item = response.body();
+                assert item != null;
+                // retrieve item name from database
+                itemName.setText(item.getItemName());
+                System.out.println("retrieved item");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, itemId);
+    }
+
+    /* get offer price */
+    private void getPrice(){
+        UPLBTrade.retrofitClient.getOffer(new Callback<Offer>() {
+            @Override
+            public void onResponse(@NonNull Call<Offer> call, @NonNull Response<Offer> response) {
+                Offer offer = response.body();
+                assert offer != null;
+                // retrieve offer price from database
+                String string_price = offer.getPrice().toString();
+                price.setText(string_price);
+                System.out.println("retrieved offer");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Offer> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, offerId);
+    }
+
+    /* get seller and buyer */
+    private void getSellerAndBuyer(){
+        UPLBTrade.retrofitClient.getCustomer(new Callback<Customer>() {
+            @Override
+            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
+                Customer customer = response.body();
+                assert customer != null;
+                //retrieve seller
+                seller.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, sellerId);
+
+        UPLBTrade.retrofitClient.getCustomer(new Callback<Customer>() {
+            @Override
+            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
+                Customer customer = response.body();
+                assert customer != null;
+                //retrieve buyer
+                buyer.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        }, buyerId);
     }
 }

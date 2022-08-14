@@ -2,15 +2,17 @@ package com.mazefernandez.uplbtrade.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Transaction {
+import java.io.Serializable;
+
+public class Transaction implements Serializable {
     @SerializedName("transaction_id")
     private Integer transactionId;
-    @SerializedName("buyer_rating")
-    private Double buyerRating;
-    @SerializedName("buyer_review")
-    private String buyerReview;
     @SerializedName("date")
-    private java.sql.Date date;
+    private String date;
+    @SerializedName("time")
+    private String time;
+    @SerializedName("venue")
+    private String venue;
     @SerializedName("item_id")
     private Integer itemId;
     @SerializedName("offer_id")
@@ -20,11 +22,10 @@ public class Transaction {
     @SerializedName("buyer_id")
     private Integer buyerId;
 
-    public Transaction(Integer transactionId, Double buyerRating, String buyerReview, java.sql.Date date, Integer itemId, Integer offerId, Integer sellerId, Integer buyerId) {
-        this.transactionId = transactionId;
-        this.buyerRating = buyerRating;
-        this.buyerReview = buyerReview;
+    public Transaction(String date, String time, String venue, Integer itemId, Integer offerId, Integer sellerId, Integer buyerId) {
         this.date = date;
+        this.time = time;
+        this.venue = venue;
         this.itemId = itemId;
         this.offerId = offerId;
         this.sellerId = sellerId;
@@ -39,29 +40,21 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    public Double getBuyerRating() {
-        return buyerRating;
-    }
-
-    public void setBuyerRating(Double buyerRating) {
-        this.buyerRating = buyerRating;
-    }
-
-    public String getBuyerReview() {
-        return buyerReview;
-    }
-
-    public void setBuyerReview(String buyerReview) {
-        this.buyerReview = buyerReview;
-    }
-
-    public java.sql.Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(java.sql.Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
+
+    public String getTime() { return time; }
+
+    public void setTime(String time) { this.time = time; }
+
+    public String getVenue() { return venue; }
+
+    public void setVenue(String venue) { this.venue = venue; }
 
     public Integer getItemId() {
         return itemId;

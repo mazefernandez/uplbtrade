@@ -113,6 +113,12 @@ public class OffersActivity extends AppCompatActivity {
                     home.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(home);
                     return true;
+                case R.id.navigation_inbox:
+                    item.setChecked(true);
+                    Intent inbox = new Intent(OffersActivity.this, MessagesActivity.class);
+                    inbox.putExtra(GOOGLE_ACCOUNT,account);
+                    startActivity(inbox);
+                    return true;
                 case R.id.navigation_offers:
                     return true;
                 case R.id.navigation_profile:
@@ -121,11 +127,11 @@ public class OffersActivity extends AppCompatActivity {
                     profile.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(profile);
                     return true;
-//                case R.id.navigation_purchases:
-//                    item.setChecked(true);
-//                    Intent purchase = new Intent(OffersActivity.this, PurchasesActivity.class);
-//                    startActivity(purchase);
-//                    return true;
+                case R.id.navigation_transactions:
+                    item.setChecked(true);
+                    Intent purchase = new Intent(OffersActivity.this, TransactionsActivity.class);
+                    startActivity(purchase);
+                    return true;
             }
             return false;
         });

@@ -23,6 +23,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
@@ -48,48 +50,15 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 public class ProfileActivity extends AppCompatActivity {
     private TextView profileName, profileAddress, contactNo;
     private ImageView profileImg;
+    private ImageButton message;
     private RatingBar rating;
-    private int customerId;
+    private int sessionId;
     RecyclerView recyclerView;
     ItemAdapter itemAdapter;
     BottomNavigationView navigation;
+    DatabaseReference databaseReference;
 
     private final GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
-
-    /* Edit profile details */
-    ActivityResultLauncher<Intent> editProfile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            Intent intent = result.getData();
-
-            assert intent != null;
-            Bundle editInfo = intent.getExtras();
-            assert editInfo != null;
-            String editAddress = editInfo.getString("NEW_ADDRESS");
-            String editContactNo = editInfo.getString("NEW_CONTACT");
-
-            TextView profileAddress = findViewById(R.id.profile_address);
-            TextView contactNo = findViewById(R.id.contactNo);
-            profileAddress.setText(editAddress);
-            contactNo.setText(editContactNo);
-            Customer customer = new Customer(editAddress, editContactNo);
-
-            /* UPDATE customer info in database */
-            UPLBTrade.retrofitClient.updateCustomer(new Callback<Customer>() {
-                @Override
-                public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
-                    System.out.println("Updated Customer");
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
-                    System.out.println("Failed to update customer");
-                    System.out.println(t.getMessage());
-                }
-            }, customer, customerId);
-            finish();
-            startActivity(getIntent());
-        }
-    });
 
     /* Add new item to customer's shop */
     ActivityResultLauncher<Intent> insertItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -105,6 +74,20 @@ public class ProfileActivity extends AppCompatActivity {
        }
     });
 
+    /* Edit profile details */
+    ActivityResultLauncher<Intent> editProfile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent intent = result.getData();
+
+            assert intent != null;
+            if (intent.getIntExtra("CHECK",-1) == 1) {
+                Toast.makeText(this, "Edited profile", Toast.LENGTH_SHORT).show();
+            }
+            finish();
+            startActivity(getIntent());
+        }
+    });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,12 +99,12 @@ public class ProfileActivity extends AppCompatActivity {
         contactNo = findViewById(R.id.contactNo);
         profileImg = findViewById(R.id.profile_img);
         rating = findViewById(R.id.rating);
+        message = findViewById(R.id.message);
 
         SearchView profileSearch = findViewById(R.id.profile_search);
         Button editCustomer = findViewById(R.id.editCustomer);
         FloatingActionButton addItem = findViewById(R.id.addItem);
         ImageButton settings = findViewById(R.id.settings);
-        ImageButton flag = findViewById(R.id.flag);
         recyclerView = findViewById(R.id.recycler_view);
 
         /* Configure Google Sign in */
@@ -129,35 +112,16 @@ public class ProfileActivity extends AppCompatActivity {
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
         assert account != null;
 
+        /* Initialize Firebase database */
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        /* SharedPref to get customer_id */
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        sessionId = pref.getInt("customer_id", -1);
+        displayCustomerItems(sessionId);
+
         /* Display current Customer */
         displayCustomer(account);
-
-        /*SharedPref to save customer_id*/
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        customerId = pref.getInt("customer_id", -1);
-
-        /* TODO: Fix different view Own profile vs Another profile */
-        /* TODO: Change Customer Name from Google Sign in to from database */
-
-
-        /* Show customer items */
-        UPLBTrade.retrofitClient.getCustomerItems(new Callback<List<Item>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
-
-                ArrayList<Item> items = (ArrayList<Item>) response.body();
-                assert items != null;
-                ArrayList<Item> itemList = new ArrayList<>(items);
-                itemAdapter = new ItemAdapter(itemList);
-                recyclerView.setAdapter(itemAdapter);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
-                System.out.println("Get Items Failed");
-                System.out.println(t.getMessage());
-            }
-        }, customerId);
 
         /* Setup profile items */
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
@@ -192,6 +156,7 @@ public class ProfileActivity extends AppCompatActivity {
             userInfo.putParcelable(GOOGLE_ACCOUNT,account);
             userInfo.putString("ADDRESS",address);
             userInfo.putString("CONTACT",contact);
+            userInfo.putInt("ID", sessionId);
 
             intent.putExtras(userInfo);
             editProfile.launch(intent);
@@ -200,7 +165,7 @@ public class ProfileActivity extends AppCompatActivity {
         /* Upload Item */
         addItem.setOnClickListener(view -> {
             Intent intent = new Intent(ProfileActivity.this, AddItemActivity.class);
-            intent.putExtra("CUSTOMER_ID",customerId);
+            intent.putExtra("CUSTOMER_ID",sessionId);
             insertItem.launch(intent);
         });
 
@@ -211,11 +176,14 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         }));
 
-//        flag.setOnClickListener(v -> {
-//            Intent intent = new Intent(ProfileActivity.this, ReportUserActivity.class);
-//            intent.putExtra("CUSTOMER_ID",customerId);
-//            startActivity(intent);
-//        });
+        /* Message User */
+        message.setOnClickListener(v -> {
+            /* Add user to list of friends */
+
+            Intent intent = new Intent(ProfileActivity.this, MessagesActivity.class);
+            startActivity(intent);
+        });
+
 
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
@@ -228,6 +196,12 @@ public class ProfileActivity extends AppCompatActivity {
                 home.putExtra(GOOGLE_ACCOUNT, account);
                 startActivity(home);
                 return true;
+            case R.id.navigation_inbox:
+                item.setChecked(true);
+                Intent inbox = new Intent(ProfileActivity.this, MessagesActivity.class);
+                inbox.putExtra(GOOGLE_ACCOUNT,account);
+                startActivity(inbox);
+                return true;
             case R.id.navigation_offers:
                 item.setChecked(true);
                 Intent offer = new Intent(ProfileActivity.this, OffersActivity.class);
@@ -236,11 +210,12 @@ public class ProfileActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_profile:
                 return true;
-//            case R.id.navigation_purchases:
-//                item.setChecked(true);
-//                Intent purchase = new Intent(ProfileActivity.this, PurchasesActivity.class);
-//                startActivity(purchase);
-//                return true;
+            case R.id.navigation_transactions:
+                item.setChecked(true);
+                Intent purchase = new Intent(ProfileActivity.this, TransactionsActivity.class);
+                purchase.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(purchase);
+                return true;
         }
         return false;
         });
@@ -256,7 +231,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     /* Display current customer data */
     private void displayCustomer(@NotNull GoogleSignInAccount account) {
-        Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
+        if (account.getPhotoUrl() == null) {
+            Picasso.get().load(R.drawable.placeholder).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
+        }
+        else {
+            Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
+        }
         profileName.setText(account.getDisplayName());
 
         /* SharedPref to save customer_id */
@@ -274,8 +254,8 @@ public class ProfileActivity extends AppCompatActivity {
                 double rate = customer.getOverallRating();
                 float r = (float) rate;
                 rating.setRating(r);
-                customerId = customer.getCustomerId();
-                editor.putInt("customer_id", customerId);
+                sessionId = customer.getCustomerId();
+                editor.putInt("customer_id", sessionId);
                 editor.apply();
             }
 
@@ -285,5 +265,25 @@ public class ProfileActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, account.getEmail() );
+    }
+    public void displayCustomerItems(int customerId){
+        /* Show customer items */
+        UPLBTrade.retrofitClient.getCustomerItems(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
+
+                ArrayList<Item> items = (ArrayList<Item>) response.body();
+                assert items != null;
+                ArrayList<Item> itemList = new ArrayList<>(items);
+                itemAdapter = new ItemAdapter(itemList);
+                recyclerView.setAdapter(itemAdapter);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable t) {
+                System.out.println("Get Items Failed");
+                System.out.println(t.getMessage());
+            }
+        }, customerId);
     }
 }

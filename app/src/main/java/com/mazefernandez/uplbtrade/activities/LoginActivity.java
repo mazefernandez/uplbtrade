@@ -2,7 +2,12 @@ package com.mazefernandez.uplbtrade.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,10 +20,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.SignInButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
 import com.mazefernandez.uplbtrade.models.Customer;
+import com.mazefernandez.uplbtrade.models.User;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,10 +36,17 @@ import retrofit2.Response;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 /* Login Customers through Google Account */
 
 public class LoginActivity extends AppCompatActivity {
     private final GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
+    // Firebase instances
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageReference = storage.getReference();
+    DatabaseReference database;
 
     /* login to the application */
     ActivityResultLauncher<Intent> login = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -85,6 +102,16 @@ public class LoginActivity extends AppCompatActivity {
     /* Proceed to HOME after sign in */
     private void onLoggedIn(GoogleSignInAccount account) {
         checkCustomer(account);
+
+        /* SharedPref to save email */
+        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = pref.edit();
+
+        String email = account.getEmail().replace("@up.edu.ph","");
+        editor.putString("customer_email", email);
+        editor.putString("customer_name", account.getGivenName() + " " + account.getFamilyName());
+        editor.apply();
+
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(GOOGLE_ACCOUNT, account);
         startActivity(intent);
@@ -115,7 +142,42 @@ public class LoginActivity extends AppCompatActivity {
 
     /* Add new customer */
     private void addCustomer(GoogleSignInAccount account) {
-        Customer customer = new Customer(account.getGivenName(), account.getFamilyName(), account.getEmail());
+
+        /* Upload image to firebase storage */
+        Uri filepath = account.getPhotoUrl();
+        String image;
+        if (filepath == null) {
+            image = "placeholder";
+        }
+        else {
+            image = "profiles/" + account.getEmail();
+            Bitmap bitmap;
+            byte[] bitmapData;
+            /* convert uri to bitmap */
+            try {
+                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(filepath));
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,30, bos);
+                bitmapData = bos.toByteArray();
+                StorageReference ref = storageReference.child(image);
+                ref.putBytes(bitmapData).addOnSuccessListener(success -> {
+                    // Image uploaded successfully
+                    System.out.println("image uploaded successfully");
+                }).addOnFailureListener(failure -> {
+                    // Image upload fail
+                    System.out.println("image failed to upload");
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Customer customer = new Customer(image,account.getGivenName(), account.getFamilyName(), account.getEmail());
+
+        // firebase database to save user for messaging
+        database = FirebaseDatabase.getInstance().getReference();
+        String email = account.getEmail().replace("@up.edu.ph","");
+        writeNewUser(email, account.getGivenName() + " " + account.getFamilyName());
 
         UPLBTrade.retrofitClient.addCustomer(new Callback<Customer>() {
             @Override
@@ -152,5 +214,11 @@ public class LoginActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
+    }
+
+    public void writeNewUser(String email, String name) {
+        User user = new User(name);
+
+        database.child("users").child(email).setValue(user);
     }
 }

@@ -1,9 +1,18 @@
 package com.mazefernandez.uplbtrade;
 
+import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mazefernandez.uplbtrade.activities.LoginActivity;
 import com.mazefernandez.uplbtrade.retrofitAPI.RetrofitClient;
 
@@ -19,26 +28,7 @@ public class UPLBTrade extends Application {
         retrofitClient = RetrofitClient.getRetrofitClient();
         context = getApplicationContext();
 
-        // Initialize the Chat SDK
-//        try {
-//
-//            // config for ChatSDK settings
-//            Configuration.Builder config = new Configuration.Builder(context);
-//            config.firebaseRootPath("prod");
-//
-//            // Start ChatSDK
-//            ChatSDK.initialize(config.build(), new FirebaseNetworkAdapter(), new BaseInterfaceAdapter(context));
-//        }
-//        catch (ChatSDKException e) {
-//            e.printStackTrace();
-//        }
-
-        // File storage for images
-       // FirebaseFileStorageModule.activate();
-
-         // Uncomment this to enable Firebase UI
-//        FirebaseUIModule.activate(EmailAuthProvider.PROVIDER_ID, PhoneAuthProvider.PROVIDER_ID);
-//        InterfaceManager.shared().a.startLoginActivity(context, true);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         /* start the application and login */
         Intent intent = new Intent(context, LoginActivity.class);

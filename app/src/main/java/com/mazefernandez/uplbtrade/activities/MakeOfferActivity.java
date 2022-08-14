@@ -1,15 +1,26 @@
 package com.mazefernandez.uplbtrade.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.UPLBTrade;
+import com.mazefernandez.uplbtrade.models.Offer;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /* Create new offer */
 
@@ -24,8 +35,14 @@ public class MakeOfferActivity extends AppCompatActivity {
 
         /* Get offer info */
         Intent intent = getIntent();
-        String owner = intent.getStringExtra("OWNER");
-        String name = intent.getStringExtra("NAME");
+        Bundle offerInfo = intent.getExtras();
+        String owner = offerInfo.getString("OWNER");
+        String name = offerInfo.getString("NAME");
+        String image = offerInfo.getString("IMAGE");
+        int itemId = offerInfo.getInt("ITEM");
+        int sessionId = offerInfo.getInt("SESSION");
+        int sellerId = offerInfo.getInt("SELLER");
+
 
         /*Make Offer views */
         ImageView offerImg = findViewById(R.id.offer_img);
@@ -37,10 +54,24 @@ public class MakeOfferActivity extends AppCompatActivity {
         Button makeOffer = findViewById(R.id.make_offer);
         Button cancel = findViewById(R.id.cancel);
 
+        /* Firebase instances */
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+
         /* Initialize offer views */
         offerOwner.setText(owner);
         offerName.setText(name);
-        offerImg.setImageResource(R.drawable.placeholder);
+
+        /* retrieve image from firebase */
+        StorageReference ref = storageReference.child("images/"+image);
+
+        final long ONE_MEGABYTE = 1024 * 1024 * 5;
+        ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            System.out.println("Successfully read image");
+            offerImg.setImageBitmap(bitmap);
+        }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+
 
         /* Cancel and return to item */
         cancel.setOnClickListener(v -> {
@@ -51,18 +82,26 @@ public class MakeOfferActivity extends AppCompatActivity {
 
         /* Add Offer */
         makeOffer.setOnClickListener(v -> {
-            Intent intent12 = new Intent();
+            Intent intent2 = new Intent();
             /* Save Offer Info */
+
             String price = offerPrice.getText().toString();
             String message = offerMessage.getText().toString();
             double double_price = Double.parseDouble(price);
-            //TODO add image
-            Bundle offerInfo = new Bundle();
-            offerInfo.putDouble("PRICE", double_price);
-            offerInfo.putString("MESSAGE",message);
-            intent12.putExtras(offerInfo);
-            setResult(RESULT_OK, intent12);
-            finish();
+            Offer offer = new Offer(double_price, "Pending", message, itemId, sessionId, sellerId);
+
+
+            UPLBTrade.retrofitClient.addOffer(new Callback<Offer>() {
+                @Override
+                public void onResponse(@NonNull Call<Offer> call, @NonNull Response<Offer> response) {
+                    System.out.println("Created new offer");
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Offer> call, @NonNull Throwable t) {
+                    System.out.println(t.getMessage());
+                }
+            }, offer);
         });
     }
 }

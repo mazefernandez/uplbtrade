@@ -16,16 +16,11 @@ public class ApplicationReview {
     private Date date;
     @SerializedName("customer_id")
     private Integer customerId;
-    @SerializedName("rater_id")
-    private Integer raterId;
 
-    public ApplicationReview(Integer reviewId, Double rating, String review, Date date, Integer customerId, Integer raterId) {
-        this.reviewId = reviewId;
+    public ApplicationReview(Double rating, String review, Integer customerId) {
         this.rating = rating;
         this.review = review;
-        this.date = date;
         this.customerId = customerId;
-        this.raterId = raterId;
     }
     public Integer getReviewId() {
         return reviewId;
@@ -65,13 +60,5 @@ public class ApplicationReview {
 
     public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
-    }
-
-    public Integer getRaterId() {
-        return raterId;
-    }
-
-    public void setRaterId(Integer raterId) {
-        this.raterId = raterId;
     }
 }

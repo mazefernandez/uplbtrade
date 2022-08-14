@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Search bar -->
-    <SearchView
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/home_search"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -42,7 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recommended">
 
-    </SearchView>
+    </androidx.appcompat.widget.SearchView>
 
     <!-- List of items -->
     <androidx.recyclerview.widget.RecyclerView
