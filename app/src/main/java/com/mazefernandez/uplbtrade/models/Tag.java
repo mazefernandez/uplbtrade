@@ -10,8 +10,7 @@ public class Tag {
     @SerializedName("item_id")
     private Integer itemId;
 
-    public Tag(Integer tagId, String tagName, Integer itemId) {
-        this.tagId = tagId;
+    public Tag(String tagName, Integer itemId) {
         this.tagName = tagName;
         this.itemId = itemId;
     }
