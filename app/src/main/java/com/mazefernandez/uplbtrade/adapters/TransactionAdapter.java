@@ -38,17 +38,17 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.item_row, parent, false);
+        View view = layoutInflater.inflate(R.layout.transaction_row, parent, false);
         return new TransactionViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         /* Insert transaction details */
-
+        String date = transactionList.get(position).getDate().toString();
         holder.transaction = transactionList.get(position);
-        holder.date.setText(transactionList.get(position).getDate().toString());
-        holder.time.setText(transactionList.get(position).getTime().toString());
+        holder.date.setText(date);
+        holder.time.setText(transactionList.get(position).getTime());
         holder.venue.setText(transactionList.get(position).getVenue());
         getItem(transactionList.get(position).getItemId(), holder);
         getOffer(transactionList.get(position).getOfferId(), holder);
@@ -58,7 +58,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public int getItemCount() {
-        return 0;
+        return transactionList.size();
     }
 
     /* retrieve item data */
@@ -108,7 +108,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 if (buyer) { holder.buyer.setText(customerName); }
                 else { holder.seller.setText(customerName); }
 
-                holder.buyer.setText(customerName);
                 System.out.println("Retrieved offer");
             }
             @Override

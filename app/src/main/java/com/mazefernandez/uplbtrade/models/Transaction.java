@@ -8,9 +8,9 @@ public class Transaction implements Serializable {
     @SerializedName("transaction_id")
     private Integer transactionId;
     @SerializedName("date")
-    private java.sql.Date date;
+    private String date;
     @SerializedName("time")
-    private java.sql.Time time;
+    private String time;
     @SerializedName("venue")
     private String venue;
     @SerializedName("item_id")
@@ -22,8 +22,7 @@ public class Transaction implements Serializable {
     @SerializedName("buyer_id")
     private Integer buyerId;
 
-    public Transaction(Integer transactionId, Double buyerRating, String buyerReview, java.sql.Date date, java.sql.Time time, String venue, Integer itemId, Integer offerId, Integer sellerId, Integer buyerId) {
-        this.transactionId = transactionId;
+    public Transaction(String date, String time, String venue, Integer itemId, Integer offerId, Integer sellerId, Integer buyerId) {
         this.date = date;
         this.time = time;
         this.venue = venue;
@@ -41,17 +40,17 @@ public class Transaction implements Serializable {
         this.transactionId = transactionId;
     }
 
-    public java.sql.Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(java.sql.Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public java.sql.Time getTime() { return time; }
+    public String getTime() { return time; }
 
-    public void setTime(java.sql.Time time) { this.time = time; }
+    public void setTime(String time) { this.time = time; }
 
     public String getVenue() { return venue; }
 

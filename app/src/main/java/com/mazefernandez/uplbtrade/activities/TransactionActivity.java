@@ -73,8 +73,8 @@ public class TransactionActivity extends AppCompatActivity {
 
     /* retrieve transaction information */
     private void getTransactionInfo(Transaction transaction) {
-        date.setText(transaction.getDate().toString());
-        time.setText(transaction.getTime().toString());
+        date.setText(transaction.getDate());
+        time.setText(transaction.getTime());
         venue.setText(transaction.getVenue());
 
         itemId = transaction.getItemId();
