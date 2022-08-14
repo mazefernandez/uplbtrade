@@ -77,6 +77,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Message user button -->
+
+    <ImageButton
+        android:id="@+id/message"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="18dp"
+        android:background="@color/background"
+        android:contentDescription="@string/message"
+        app:layout_constraintBottom_toTopOf="@id/recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/profile_search"
+        app:layout_constraintTop_toBottomOf="@+id/profile_img"
+        app:tint="@color/orange"
+        tools:src="@android:drawable/ic_dialog_email" />
+
     <!-- Search bar for items -->
     <SearchView
         android:id="@+id/profile_search"
@@ -94,7 +113,6 @@
         android:queryHint="@string/search"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/recycler_view"
-        app:layout_constraintEnd_toEndOf="@+id/profile_address"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_img" />
@@ -114,29 +132,12 @@
         app:layout_constraintStart_toEndOf="@+id/contactNo"
         app:layout_constraintTop_toBottomOf="@+id/profile_address" />
 
-    <!-- Report user flag -->
-
     <!-- Add item to user's shop -->
-    <ImageButton
-        android:id="@+id/flag"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="32dp"
-        android:background="@color/background"
-        android:contentDescription="@string/flag"
-        android:scaleType="fitXY"
-        android:src="@drawable/flag"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.843"
-        app:layout_constraintStart_toEndOf="@+id/contactNo"
-        app:layout_constraintTop_toBottomOf="@+id/profile_address" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="32dp"
         android:clickable="true"
         android:focusable="true"

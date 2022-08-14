@@ -5,6 +5,7 @@ import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
+import com.mazefernandez.uplbtrade.models.Tag;
 import com.mazefernandez.uplbtrade.models.Transaction;
 
 import java.util.List;
@@ -36,19 +37,19 @@ public interface UPLBTradeApi {
     @GET("/api/customer-reviews")
     Call<List<CustomerReview>> getCustomerReviews();
 
-    @GET("/api/customer-reviews/:id")
+    @GET("/api/customer-reviews/{id}")
     Call<CustomerReview> getCustomerReview();
 
     @POST("/api/customer-reviews")
     Call<CustomerReview> addCustomerReview(@Body CustomerReview customerReview);
 
-    @GET("/api/customer-reviews/customer/:id")
+    @GET("/api/customer-reviews/customer/{id}")
     Call<List<CustomerReview>> getSpecificCustomerReviews();
 
-    @GET("/api/customer-reviews/rating/:id")
+    @GET("/api/customer-reviews/rating/{id}")
     Call<Double> getCustomerRating();
 
-    @DELETE("/api/customer-reviews/:id")
+    @DELETE("/api/customer-reviews/{id}")
     Call<CustomerReview> deleteCustomerReview(@Path("customerReview_id") int customerReview_id);
 
     /* Customer calls */
@@ -80,6 +81,9 @@ public interface UPLBTradeApi {
     @GET("/api/items/{item_id}")
     Call<Item> getItem(@Path("item_id") int itemId);
 
+    @GET("/api/items/id/{img}")
+    Call<Item> getItemByImg(@Path("img") String image);
+
     @POST("/api/items")
     Call<Item> addItem(@Body Item item);
 
@@ -88,6 +92,13 @@ public interface UPLBTradeApi {
 
     @DELETE("/api/items/{item_id}")
     Call<Item> deleteItem(@Path("item_id") int itemId);
+
+    /* Tag Calls */
+    @POST("/api/tags")
+    Call<List<Tag>> addTags(@Body List<Tag> tags);
+
+    @GET("/api/tags/item/{item_id}")
+    Call<List<Tag>> getTagsFromItem(@Path("item_id") int itemId);
 
     /* Offer Calls */
     @GET("/api/offers")

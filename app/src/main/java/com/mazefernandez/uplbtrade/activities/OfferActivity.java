@@ -2,7 +2,10 @@ package com.mazefernandez.uplbtrade.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Customer;
@@ -37,6 +42,7 @@ public class OfferActivity extends AppCompatActivity {
     private int itemId;
     private int offerId;
     private String price;
+    private String imgString;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,17 +102,22 @@ public class OfferActivity extends AppCompatActivity {
         /* Accept Offer */
         accept.setOnClickListener(v -> confirmAccept());
 
-        /* Set Meet Up */
-//        meetUp.setOnClickListener(v -> {
-//            Intent intent = new Intent(OfferActivity.this, MeetUpActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putString("customer",offerBuyer.getText().toString());
-//            bundle.putString("item",offerName.getText().toString());
-//            bundle.putString("price", originalPrice.getText().toString());
-//            bundle.putString("offer",offerPrice.getText().toString());
-//            intent.putExtra("info",bundle);
-//            startActivity(intent);
-//        });
+        // Set Meet Up
+        meetUp.setOnClickListener(v -> {
+            Intent intent = new Intent(OfferActivity.this, MeetUpActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("customer",offerBuyer.getText().toString());
+            bundle.putString("item",offerName.getText().toString());
+            bundle.putString("price", originalPrice.getText().toString());
+            bundle.putString("offer",offerPrice.getText().toString());
+            bundle.putString("image", imgString);
+            bundle.putInt("item_id", itemId);
+            bundle.putInt("offer_id", offerId);
+            bundle.putInt("seller_id", sellerId);
+            bundle.putInt("buyer_id",buyerId);
+            intent.putExtra("info",bundle);
+            startActivity(intent);
+        });
 
         /* Delete Offer */
         deleteOffer.setOnClickListener(v -> confirmDelete());
@@ -114,7 +125,6 @@ public class OfferActivity extends AppCompatActivity {
 
     /* Display offer details */
     public void displayOffer(Offer offer) {
-        offerImg.setImageResource(R.drawable.placeholder);
         getItem(itemId);
         @SuppressLint("DefaultLocale") String offer_price = String.format("%.2f",offer.getPrice());
         offer_price = "\u20B1" + offer_price;
@@ -135,6 +145,22 @@ public class OfferActivity extends AppCompatActivity {
                 price = String.format("%.2f",item.getPrice());
                 price = "\u20B1" + price;
                 originalPrice.setText(price);
+                imgString = item.getImage();
+
+                /* Firebase instances */
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageReference = storage.getReference();
+
+                /* retrieve image from firebase */
+                StorageReference ref = storageReference.child("images/"+imgString);
+
+                final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    System.out.println("Successfully read image");
+                    offerImg.setImageBitmap(bitmap);
+                }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+
             }
 
             @Override

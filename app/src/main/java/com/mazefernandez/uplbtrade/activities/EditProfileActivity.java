@@ -7,14 +7,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.UPLBTrade;
+import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
 import com.squareup.picasso.Picasso;
 
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /* Edit Customer Information */
 
@@ -24,6 +31,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private ImageView editImg;
     private Bundle userInfo;
     private GoogleSignInAccount account;
+    private int customerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,7 @@ public class EditProfileActivity extends AppCompatActivity {
         userInfo = profileIntent.getExtras();
         assert userInfo != null;
         account = userInfo.getParcelable(GOOGLE_ACCOUNT);
+        customerId = userInfo.getInt("ID");
         displayUser();
 
         /* save new info to Customer */
@@ -50,11 +59,25 @@ public class EditProfileActivity extends AppCompatActivity {
             String address = editAddress.getText().toString();
             String contactNo = editContactNo.getText().toString();
 
+            Customer customer = new Customer(address, contactNo);
+
+            /* UPDATE customer info in database */
+            UPLBTrade.retrofitClient.updateCustomer(new Callback<Customer>() {
+                @Override
+                public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
+                    System.out.println("Updated Customer");
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+                    System.out.println("Failed to update customer");
+                    System.out.println(t.getMessage());
+                }
+            }, customer, customerId);
+
+            /* Return to profile */
             Intent intent = new Intent();
-            Bundle editInfo = new Bundle();
-            editInfo.putString("NEW_ADDRESS",address);
-            editInfo.putString("NEW_CONTACT",contactNo);
-            intent.putExtras(editInfo);
+            intent.putExtra("CHECK", 1);
             setResult(RESULT_OK,intent);
             finish();
         });

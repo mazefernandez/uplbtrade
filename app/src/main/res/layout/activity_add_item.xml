@@ -1,136 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Add Item Layout-->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Item image -->
-    <ImageView
-        android:id="@+id/item_img"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/item_image"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Add an item image -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_item_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@android:drawable/ic_menu_camera"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@+id/item_name"
-        app:layout_constraintEnd_toEndOf="@+id/item_name"
-        android:contentDescription="@string/add_item" />
-
-    <!-- Item name -->
-    <EditText
-        android:id="@+id/item_name"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/item_name"
-        android:inputType="text"
-        android:autofillHints="@string/item_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_img" />
+        android:layout_height="wrap_content">
 
-    <!-- item description -->
-    <EditText
-        android:id="@+id/item_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/item_desc"
-        android:inputType="textMultiLine"
-        android:lines="4"
-        android:minLines="4"
-        android:maxLines="4"
-        android:gravity="top"
-        android:autofillHints="@string/item_desc"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_name" />
+        <!-- Item image -->
+        <ImageView
+            android:id="@+id/item_img"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/item_image"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Offer price -->
-    <EditText
-        android:id="@+id/offer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/item_price"
-        android:inputType="numberDecimal"
-        android:autofillHints="@string/price"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_desc" />
+        <!-- Add an item image -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_item_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:clickable="true"
+            android:contentDescription="@string/add_item"
+            android:focusable="true"
+            android:tint="@color/off_white"
+            android:src="@android:drawable/ic_menu_camera"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toTopOf="@+id/item_name"
+            app:layout_constraintEnd_toEndOf="@+id/item_name" />
 
-    <!-- Item condition -->
-    <EditText
-        android:id="@+id/item_condition"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/item_condition"
-        android:inputType="text"
-        android:autofillHints="@string/item_condition"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/offer" />
+        <!-- Item name -->
+        <EditText
+            android:id="@+id/item_name"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:hint="@string/item_name"
+            android:inputType="text"
+            android:autofillHints="@string/item_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_img" />
 
-    <!-- Save/add item -->
-    <Button
-        android:id="@+id/add_item"
-        android:layout_width="72dp"
-        android:layout_height="37dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:text="@string/add"
-        app:layout_constraintEnd_toEndOf="@+id/item_condition"
-        app:layout_constraintTop_toBottomOf="@+id/item_condition" />
+        <!-- item description -->
+        <EditText
+            android:id="@+id/item_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:hint="@string/item_desc"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:minLines="4"
+            android:maxLines="4"
+            android:gravity="top"
+            android:autofillHints="@string/item_desc"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
-    <!-- Cancel button -->
-    <Button
-        android:id="@+id/cancel"
-        android:layout_width="90dp"
-        android:layout_height="37dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:text="@string/cancel"
-        app:layout_constraintStart_toStartOf="@+id/item_condition"
-        app:layout_constraintTop_toBottomOf="@+id/item_condition" />
+        <!-- Offer price -->
+        <EditText
+            android:id="@+id/offer"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:hint="@string/item_price"
+            android:inputType="numberDecimal"
+            android:autofillHints="@string/price"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Item condition -->
+        <Spinner
+            android:id="@+id/item_condition"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/item_condition"
+            android:autofillHints="condition"
+            app:layout_constraintBottom_toTopOf="@+id/tags"
+            app:layout_constraintTop_toBottomOf="@+id/offer"
+            tools:layout_editor_absoluteX="8dp" />
+
+        <!-- Item tags -->
+        <EditText
+            android:id="@+id/tags"
+            android:layout_width="290dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:hint="Tags"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_condition" />
+
+        <!-- add tag -->
+        <Button
+            android:id="@+id/add_tag"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/orange"
+            android:foreground="@android:drawable/ic_input_add"
+            android:foregroundTint="@color/white"
+            android:textAlignment="center"
+            android:contentDescription="add tag"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintStart_toEndOf="@+id/tags"
+            app:layout_constraintTop_toBottomOf="@+id/item_condition" />
+
+        <!-- delete tag -->
+        <Button
+            android:id="@+id/delete_tag"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/maroon"
+            android:fontFamily="sans-serif"
+            android:foreground="@android:drawable/ic_delete"
+            android:foregroundTint="@color/white"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/white"
+            android:textSize="8sp"
+            android:typeface="sans"
+            android:contentDescription="delete tag"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/add_tag"
+            app:layout_constraintTop_toBottomOf="@+id/item_condition" />
+
+        <!-- Tag list -->
+        <ListView
+            android:id="@+id/tag_list"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tags"
+            app:layout_constraintVertical_bias="0.076" />
+
+        <!-- Save/add item -->
+        <Button
+            android:id="@+id/add_item"
+            android:layout_width="80dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/submit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/item_condition"
+            app:layout_constraintTop_toBottomOf="@+id/tag_list" />
+
+        <!-- Cancel button -->
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="90dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/item_condition"
+            app:layout_constraintTop_toBottomOf="@+id/tag_list" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

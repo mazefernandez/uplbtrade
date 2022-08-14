@@ -58,10 +58,11 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> response) {
                 ArrayList<Item> items = (ArrayList<Item>) response.body();
-                assert items != null;
-                ArrayList<Item> itemList = new ArrayList<>(items);
-                itemAdapter = new ItemAdapter(itemList);
-                recyclerView.setAdapter(itemAdapter);
+                if (items != null) {
+                    ArrayList<Item> itemList = new ArrayList<>(items);
+                    itemAdapter = new ItemAdapter(itemList);
+                    recyclerView.setAdapter(itemAdapter);
+                }
             }
 
             @Override
@@ -102,6 +103,12 @@ public class HomeActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     return true;
+                case R.id.navigation_inbox:
+                    item.setChecked(true);
+                    Intent inbox = new Intent(HomeActivity.this, MessagesActivity.class);
+                    inbox.putExtra(GOOGLE_ACCOUNT,account);
+                    startActivity(inbox);
+                    return true;
                 case R.id.navigation_offers:
                     item.setChecked(true);
                     Intent offer = new Intent(HomeActivity.this, OffersActivity.class);
@@ -114,11 +121,12 @@ public class HomeActivity extends AppCompatActivity {
                     profile.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(profile);
                     return true;
-//                case R.id.navigation_purchases:
-//                    item.setChecked(true);
-//                    Intent purchase = new Intent(HomeActivity.this, PurchasesActivity.class);
-//                    startActivity(purchase);
-//                    return true;
+                case R.id.navigation_transactions:
+                    item.setChecked(true);
+                    Intent purchase = new Intent(HomeActivity.this, TransactionsActivity.class);
+                    purchase.putExtra(GOOGLE_ACCOUNT, account);
+                    startActivity(purchase);
+                    return true;
             }
             return false;
         });

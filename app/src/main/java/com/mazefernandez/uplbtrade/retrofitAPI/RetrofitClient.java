@@ -5,6 +5,7 @@ import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
+import com.mazefernandez.uplbtrade.models.Tag;
 import com.mazefernandez.uplbtrade.models.Transaction;
 
 import java.nio.channels.OverlappingFileLockException;
@@ -18,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /* Handles Retrofit Calls */
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://ec2-18-141-138-6.ap-southeast-1.compute.amazonaws.com:8000";
+    private static final String BASE_URL = "http://uplbtrade.com";
     private static UPLBTradeApi service;
     private static RetrofitClient retrofitClient;
 
@@ -129,6 +130,12 @@ public class RetrofitClient {
         Call<Item> getItemCall = service.getItem(item_id);
         getItemCall.enqueue(callback);
     }
+
+    public void getItemByImg(Callback<Item> callback, String image) {
+        Call<Item> getItemByImgCall = service.getItemByImg(image);
+        getItemByImgCall.enqueue(callback);
+    }
+
     public void addItem(Callback<Item> callback, Item item) {
         Call<Item> addItemCall = service.addItem(item);
         addItemCall.enqueue(callback);
@@ -142,6 +149,17 @@ public class RetrofitClient {
     public void deleteItem(Callback<Item> callback, int item_id) {
         Call<Item> deleteItemCall = service.deleteItem(item_id);
         deleteItemCall.enqueue(callback);
+    }
+
+    /* Tag Calls */
+    public void addTags(Callback<List<Tag>> callback, List<Tag> tags) {
+        Call<List<Tag>> addTagsCall = service.addTags(tags);
+        addTagsCall.enqueue(callback);
+    }
+
+    public void getTagsFromItem(Callback<List<Tag>> callback, int item_id) {
+        Call<List<Tag>> getTagsFromItemCall = service.getTagsFromItem(item_id);
+        getTagsFromItemCall.enqueue(callback);
     }
 
     /* Offer Calls */

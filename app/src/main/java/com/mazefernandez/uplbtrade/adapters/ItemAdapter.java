@@ -31,6 +31,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private final List<Item> itemList;
     private List<Item> itemListFiltered;
 
+
     public ItemAdapter(List<Item> itemList) {
         this.itemList = itemList;
         this.itemListFiltered = itemList;
@@ -56,13 +57,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         }
         else {
             /* retrieve image from firebase */
-            StorageReference ref = storageReference.child(itemListFiltered.get(position).getImage());
-            final long ONE_MEGABYTE = 1024 *1024;
+            StorageReference ref = storageReference.child("images/"+itemListFiltered.get(position).getImage());
+
+            final long ONE_MEGABYTE = 1024 * 1024 * 5;
             ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 System.out.println("Successfully read image");
                 holder.itemImg.setImageBitmap(bitmap);
-            }).addOnFailureListener(fail -> System.out.println("Failed to read image"));
+            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }
         /* retrieve item data */
         holder.itemName.setText(itemListFiltered.get(position).getItemName());

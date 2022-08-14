@@ -2,9 +2,13 @@ package com.mazefernandez.uplbtrade.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
     @SerializedName("customer_id")
     private Integer customerId;
+    @SerializedName("image")
+    private String image;
     @SerializedName("first_name")
     private String firstName;
     @SerializedName("last_name")
@@ -20,8 +24,9 @@ public class Customer {
 
     public Customer(){}
 
-    public Customer(Integer customerId, String firstName, String lastName, String email, String address, String contactNo, Double overallRating) {
+    public Customer(Integer customerId, String image, String firstName, String lastName, String email, String address, String contactNo, Double overallRating) {
         this.customerId = customerId;
+        this.image = image;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -30,7 +35,8 @@ public class Customer {
         this.overallRating = overallRating;
     }
 
-    public Customer(String firstName, String lastName, String email) {
+    public Customer(String image, String firstName, String lastName, String email) {
+        this.image = image;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -96,4 +102,8 @@ public class Customer {
     public void setOverallRating(Double overallRating) {
         this.overallRating = overallRating;
     }
+
+    public void setImage(String image) { this.image = image; }
+
+    public String getImage() { return image; }
 }

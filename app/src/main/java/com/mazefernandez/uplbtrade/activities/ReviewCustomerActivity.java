@@ -1,7 +1,5 @@
 package com.mazefernandez.uplbtrade.activities;
 
-import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,8 +13,6 @@ import android.widget.TextView;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.models.ApplicationReview;
-import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
 
 import retrofit2.Call;
@@ -77,7 +73,7 @@ public class ReviewCustomerActivity extends AppCompatActivity {
                     System.out.println(t.getMessage());
                 }
             }, customerReview);
-            Intent intent = new Intent(ReviewCustomerActivity.this,PurchasesActivity.class);
+            Intent intent = new Intent(ReviewCustomerActivity.this, TransactionsActivity.class);
             startActivity(intent);
         });
 

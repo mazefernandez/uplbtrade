@@ -5,8 +5,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,12 +19,20 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
+import com.mazefernandez.uplbtrade.adapters.TagAdapter;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
+import com.mazefernandez.uplbtrade.models.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +40,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.graphics.BitmapFactory.decodeByteArray;
 
 /* Item details */
 
@@ -49,44 +56,21 @@ public class ItemActivity extends AppCompatActivity {
     private int sessionId;
     private int sellerId;
     private Offer offer;
+    private Customer seller;
+    private RecyclerView recyclerView;
+    private TagAdapter tagAdapter;
 
     /* Edit item details */
     ActivityResultLauncher<Intent> editItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
        if (result.getResultCode() == Activity.RESULT_OK) {
            Intent intent = result.getData();
+
            assert intent != null;
-           Bundle editInfo = intent.getExtras();
-           assert editInfo != null;
-           String name = editInfo.getString("NAME");
-           String desc = editInfo.getString("DESC");
-           String price = editInfo.getString("PRICE");
-           String condition = editInfo.getString("CONDITION");
-           String image = editInfo.getString("IMAGE");
-
-           Bitmap bm = stringToBitMap(image);
-
-           itemName.setText(name);
-           itemDesc.setText(desc);
-           itemPrice.setText(price);
-           itemCondition.setText(condition);
-           itemImg.setImageBitmap(bm);
-
-           assert price != null;
-           Double double_price = Double.parseDouble(price);
-           /* Save to database */
-           Item item = new Item(name, desc, double_price, image, condition);
-           UPLBTrade.retrofitClient.updateItem(new Callback<Item>() {
-               @Override
-               public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                   System.out.println("Updated Item");
-               }
-
-               @Override
-               public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
-                   System.out.println("Failed to update Item");
-                   System.out.println(t.getMessage());
-               }
-           }, item, itemId);
+           if (intent.getIntExtra("CHECK",-1) == 1) {
+               Toast.makeText(this, "Edited item", Toast.LENGTH_SHORT).show();
+           }
+           finish();
+           startActivity(getIntent());
        }
     });
 
@@ -126,6 +110,10 @@ public class ItemActivity extends AppCompatActivity {
         ImageButton itemDelete = findViewById(R.id.item_delete);
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
+        recyclerView = findViewById(R.id.tags);
+
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3,RecyclerView.VERTICAL,false);
+        recyclerView.setLayoutManager(layoutManager);
 
         /* Default visibility for offer */
         seeOffer.setVisibility(View.GONE);
@@ -135,6 +123,7 @@ public class ItemActivity extends AppCompatActivity {
         itemId = item.getItemId();
         sellerId = item.getCustomerId();
         getOwner(item);
+        getTags(itemId);
 
         /* Set View Visibilities */
         UPLBTrade.retrofitClient.getOfferBuying(new Callback<List<Offer>>() {
@@ -180,14 +169,16 @@ public class ItemActivity extends AppCompatActivity {
             String name = itemName.getText().toString();
             String desc = itemDesc.getText().toString();
             String price = itemPrice.getText().toString();
-            /* TODO FIX ITEM IMG */
+            String image = item.getImage();
             String condition = itemCondition.getText().toString();
 
             itemInfo.putString("OWNER",owner);
             itemInfo.putString("NAME",name);
             itemInfo.putString("DESC",desc);
             itemInfo.putString("PRICE",price);
+            itemInfo.putString("IMAGE", image);
             itemInfo.putString("CONDITION",condition);
+            itemInfo.putInt("ID", itemId);
 
             intent.putExtras(itemInfo);
             editItem.launch(intent);
@@ -203,11 +194,15 @@ public class ItemActivity extends AppCompatActivity {
             Bundle offerInfo = new Bundle();
             String owner = itemOwner.getText().toString();
             String name = itemName.getText().toString();
+            String image = item.getImage();
 
             offerInfo.putString("OWNER", owner);
             offerInfo.putString("NAME", name);
+            offerInfo.putString("IMAGE", image);
+            offerInfo.putInt("ITEM", itemId);
+            offerInfo.putInt("SESSION", sessionId);
+            offerInfo.putInt("SELLER", sellerId);
             intent.putExtras(offerInfo);
-            // TODO pass image as well
             addOffer.launch(intent);
         });
 
@@ -217,10 +212,23 @@ public class ItemActivity extends AppCompatActivity {
             intent.putExtra("OFFER",offer);
             startActivity(intent);
         });
+
+        if (sessionId != sellerId) {
+            itemOwner.setOnClickListener(v -> {
+                Intent intent = new Intent(ItemActivity.this, CustomerProfileActivity.class);
+                intent.putExtra("CUSTOMER",seller);
+                startActivity(intent);
+            });
+            itemOwner.setTextColor(Color.BLUE);
+        }
     }
 
     /* Display Item Details */
     private void displayItem(Customer customer, Item item) {
+        /* Firebase instances */
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+
         itemOwner.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
         itemName.setText(item.getItemName());
         itemDesc.setText(item.getDescription());
@@ -230,19 +238,20 @@ public class ItemActivity extends AppCompatActivity {
             itemImg.setImageResource(R.drawable.placeholder);
         }
         else {
-            itemImg.setImageBitmap(stringToBitMap(item.getImage()));
+            /* retrieve image from firebase */
+            StorageReference ref = storageReference.child("images/" + item.getImage());
+
+            final long ONE_MEGABYTE = 1024 * 1024 * 5;
+            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                System.out.println("Successfully read image");
+                itemImg.setImageBitmap(bitmap);
+            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }
         itemCondition.setText(item.getCondition());
-    }
 
-    public Bitmap stringToBitMap(String encodedString){
-        try{
-            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
-            return decodeByteArray(encodeByte, 0, encodeByte.length);
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-            return null;
-        }
+        seller = new Customer(customer.getCustomerId(), customer.getImage(),customer.getFirstName(),customer.getLastName(),
+                customer.getEmail(),customer.getAddress(),customer.getContactNo(),customer.getOverallRating());
     }
 
     /* Retrieve owner of item */
@@ -261,6 +270,25 @@ public class ItemActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, item.getCustomerId());
+    }
+
+    /* Retrieve the tags of the item */
+    private void getTags(int itemId) {
+        UPLBTrade.retrofitClient.getTagsFromItem(new Callback<List<Tag>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
+                ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
+                assert tags != null;
+                ArrayList<Tag> tagList = new ArrayList<>(tags);
+                tagAdapter = new TagAdapter(tagList);
+                recyclerView.setAdapter(tagAdapter);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
+
+            }
+        }, itemId);
     }
 
     /* Make an offer for the item */

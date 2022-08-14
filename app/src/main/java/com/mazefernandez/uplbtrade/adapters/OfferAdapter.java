@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.activities.OfferActivity;
@@ -29,22 +32,13 @@ import retrofit2.Response;
 
 import static android.graphics.BitmapFactory.decodeByteArray;
 
+
 /* Binds values of offer information to views */
 public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHolder> {
-
+    private String imgString;
     private final ArrayList<Offer> offerList;
     public OfferAdapter(ArrayList<Offer> offerList) {
         this.offerList = offerList;
-    }
-
-    private Bitmap stringToBitMap(String encodedString){
-        try{
-            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
-            return decodeByteArray(encodeByte, 0, encodeByte.length);
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-            return null;
-        }
     }
 
     @NonNull
@@ -73,14 +67,21 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
                 Item item = response.body();
                 assert item != null;
                 holder.offerName.setText(item.getItemName());
-                /* image set to null if no image */
-                if (item.getImage() == null) {
-                    holder.offerImg.setImageResource(R.drawable.placeholder);
-                }
-                /* retrieve image */
-                else {
-                    holder.offerImg.setImageBitmap(stringToBitMap(item.getImage()));
-                }
+                imgString = item.getImage();
+
+                /* Firebase instances */
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageReference = storage.getReference();
+
+                /* retrieve image from firebase */
+                StorageReference ref = storageReference.child("images/"+imgString);
+                final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    System.out.println("Successfully read image");
+                    holder.offerImg.setImageBitmap(bitmap);
+                }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+
                 System.out.println("Retrieved item from offer");
             }
             @Override
