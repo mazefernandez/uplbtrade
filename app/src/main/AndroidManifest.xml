@@ -50,8 +50,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.TransactionActivity"
-            android:theme="@style/AppTheme.NoActionBar" /> <!-- <activity android:name=".activities.ReportUserActivity" /> -->
-        <!-- <activity android:name=".activities.SettingsActivity" /> -->
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.ReportUserActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true"

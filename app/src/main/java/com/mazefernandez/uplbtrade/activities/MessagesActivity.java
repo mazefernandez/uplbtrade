@@ -73,7 +73,7 @@ public class MessagesActivity extends AppCompatActivity {
 
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
-        navigation.setSelectedItemId(R.id.navigation_home);
+        navigation.setSelectedItemId(R.id.navigation_inbox);
         navigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home:

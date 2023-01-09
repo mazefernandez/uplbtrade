@@ -41,7 +41,7 @@ public class OffersActivity extends AppCompatActivity {
         selling = findViewById(R.id.selling);
 
         /* SharedPref to save customer_id */
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         int sessionId = pref.getInt("customer_id", -1);
 
         /* Get Google Account */

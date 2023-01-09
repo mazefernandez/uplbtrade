@@ -76,13 +76,13 @@ public class MakeOfferActivity extends AppCompatActivity {
         /* Cancel and return to item */
         cancel.setOnClickListener(v -> {
             Intent intent1 = new Intent();
-            setResult(RESULT_OK, intent1);
+            intent1.putExtra("CHECK", 0);
+            setResult(RESULT_OK,intent1);
             finish();
         });
 
         /* Add Offer */
         makeOffer.setOnClickListener(v -> {
-            Intent intent2 = new Intent();
             /* Save Offer Info */
 
             String price = offerPrice.getText().toString();
@@ -102,6 +102,12 @@ public class MakeOfferActivity extends AppCompatActivity {
                     System.out.println(t.getMessage());
                 }
             }, offer);
+
+            Intent intent2 = new Intent();
+            intent2.putExtra("CHECK", 1);
+
+            setResult(RESULT_OK,intent2);
+            finish();
         });
     }
 }
