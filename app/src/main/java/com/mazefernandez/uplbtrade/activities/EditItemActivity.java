@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -19,15 +20,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.adapters.TagAdapter;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Tag;
 
@@ -58,11 +56,12 @@ public class EditItemActivity extends AppCompatActivity {
     private Uri filepath;
     private int itemId;
     private EditText addTags;
-    private TagAdapter tagAdapter;
-    private RecyclerView tagsList;
+    private ListView tagsList;
     private final ArrayList<Tag> tags = new ArrayList<>();
     private final ArrayList<Tag> newTags = new ArrayList<>();
     private final ArrayList<Tag> deleteTags = new ArrayList<>();
+    private final ArrayList<String> tagStrings = new ArrayList<>();
+
 
     /* AR Launchers to replace OnActivityResult */
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -96,6 +95,8 @@ public class EditItemActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
 
+
+
         /* Edit Item Views */
         FloatingActionButton addItemImg = findViewById(R.id.add_item_img);
         itemOwner = findViewById(R.id.item_owner);
@@ -112,13 +113,14 @@ public class EditItemActivity extends AppCompatActivity {
         Button deleteTag = findViewById(R.id.delete_tag);
         Button cancel = findViewById(R.id.cancel);
 
+        /* listview for tags */
+        ArrayAdapter<String> stringAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, tagStrings);
+        tagsList.setAdapter(stringAdapter);
+
         /* ArrayAdapter for condition spinner */
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         itemCondition.setAdapter(spinnerAdapter);
-
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3,RecyclerView.VERTICAL,false);
-        tagsList.setLayoutManager(layoutManager);
 
         /* Display Item Details */
         Intent itemIntent = getIntent();
@@ -235,7 +237,7 @@ public class EditItemActivity extends AppCompatActivity {
             {
                 Tag tag = new Tag(newTag, itemId);
                 tags.add(tag);
-                tagAdapter.notifyDataSetChanged();
+                stringAdapter.add(newTag);
 
                 newTags.add(tag);
             }
@@ -248,7 +250,7 @@ public class EditItemActivity extends AppCompatActivity {
             {
                 Tag tag = new Tag(newTag, itemId);
                 tags.remove(tag);
-                tagAdapter.notifyDataSetChanged();
+                stringAdapter.remove(newTag);
 
                 deleteTags.add(tag);
             }
@@ -281,8 +283,9 @@ public class EditItemActivity extends AppCompatActivity {
                 ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
                 assert tags != null;
                 ArrayList<Tag> tagList = new ArrayList<>(tags);
-                tagAdapter = new TagAdapter(tagList);
-                tagsList.setAdapter(tagAdapter);
+                for (Tag tag: tagList) {
+                    tagStrings.add(tag.getTagName());
+                }
             }
 
             @Override

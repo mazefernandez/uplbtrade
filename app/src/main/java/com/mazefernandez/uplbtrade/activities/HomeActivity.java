@@ -2,6 +2,7 @@ package com.mazefernandez.uplbtrade.activities;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -44,6 +45,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         checkGoogleServices();
+
+        /* SharedPref to save customer_id */
+        final SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
+        int sessionId = pref.getInt("customer_id",-1);
 
         /* Home Views */
         SearchView homeSearch = findViewById(R.id.home_search);

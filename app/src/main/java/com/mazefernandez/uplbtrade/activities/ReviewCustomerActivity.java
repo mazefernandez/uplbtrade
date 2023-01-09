@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
@@ -36,7 +37,7 @@ public class ReviewCustomerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_review_customer);
 
         /*SharedPref to save customer_id*/
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         raterId = pref.getInt("customer_id", -1);
 
         /* Get info from transaction page */
@@ -50,12 +51,13 @@ public class ReviewCustomerActivity extends AppCompatActivity {
         ratingBar = findViewById(R.id.rating_bar);
         feedbackPrompt = findViewById(R.id.feedback_prompt);
         review = findViewById(R.id.review);
-        submit = findViewById(R.id.submit);
+        submit = findViewById(R.id.submit_button);
 
         submit.setOnClickListener(v -> {
             /* Add Customer Review to database*/
-            Float float_rating = ratingBar.getRating();
-            Double rating = float_rating.doubleValue();
+            float float_rating;
+            float_rating = ratingBar.getRating();
+            Double rating = (double) float_rating;
             String string_review = review.getText().toString();
 
             /* Add Customer review to database */
@@ -73,6 +75,9 @@ public class ReviewCustomerActivity extends AppCompatActivity {
                     System.out.println(t.getMessage());
                 }
             }, customerReview);
+
+            Toast.makeText(this, "Your review has been sent!", Toast.LENGTH_SHORT).show();
+
             Intent intent = new Intent(ReviewCustomerActivity.this, TransactionsActivity.class);
             startActivity(intent);
         });

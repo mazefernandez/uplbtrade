@@ -1,16 +1,20 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import static java.lang.System.out;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -48,17 +50,18 @@ public class ItemActivity extends AppCompatActivity {
     private TextView itemName;
     private TextView itemDesc;
     private TextView itemPrice;
-    private ImageView itemImg;
+    private ImageSwitcher itemImg;
     private TextView itemCondition;
     private Button makeOffer;
     private Button seeOffer;
     private int itemId;
-    private int sessionId;
     private int sellerId;
+    private int position = 0;
     private Offer offer;
     private Customer seller;
     private RecyclerView recyclerView;
     private TagAdapter tagAdapter;
+    private final ArrayList<Uri> uriArrayList = new ArrayList<>();
 
     /* Edit item details */
     ActivityResultLauncher<Intent> editItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -79,14 +82,11 @@ public class ItemActivity extends AppCompatActivity {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();
             assert intent != null;
-            Bundle offerInfo = intent.getExtras();
-            if (offerInfo != null) {
-                double offerPrice = offerInfo.getDouble("PRICE");
-                String offerMessage = offerInfo.getString("MESSAGE");
-
-                Offer offer = new Offer(offerPrice, "Pending", offerMessage, itemId, sessionId, sellerId);
-                makeOffer(offer);
+            if (intent.getIntExtra("CHECK",-1) == 1) {
+                Toast.makeText(this, "made offer", Toast.LENGTH_SHORT).show();
             }
+            finish();
+            startActivity(getIntent());
         }
     });
 
@@ -96,8 +96,8 @@ public class ItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item);
 
         /* SharedPref to save customer_id */
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        sessionId = pref.getInt("customer_id",-1);
+        final SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
+        int sessionId = pref.getInt("customer_id",-1);
 
         /* Item activity views */
         itemOwner = findViewById(R.id.item_owner);
@@ -111,9 +111,20 @@ public class ItemActivity extends AppCompatActivity {
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
         recyclerView = findViewById(R.id.tags);
+        Button previous = findViewById(R.id.previous);
+        Button next = findViewById(R.id.next);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3,RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
+
+        /* Show all images in ImageSwitcher */
+        itemImg.setFactory(() -> new ImageView(getApplicationContext()));
+
+        /* Initialize ImageSwitcher with animations */
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
+        itemImg.setInAnimation(in);
+        itemImg.setOutAnimation(out);
 
         /* Default visibility for offer */
         seeOffer.setVisibility(View.GONE);
@@ -171,6 +182,7 @@ public class ItemActivity extends AppCompatActivity {
             String price = itemPrice.getText().toString();
             String image = item.getImage();
             String condition = itemCondition.getText().toString();
+            int itemId = item.getItemId();
 
             itemInfo.putString("OWNER",owner);
             itemInfo.putString("NAME",name);
@@ -221,6 +233,25 @@ public class ItemActivity extends AppCompatActivity {
             });
             itemOwner.setTextColor(Color.BLUE);
         }
+
+        /* Select next image */
+        next.setOnClickListener(view -> {
+            if (position < uriArrayList.size() - 1) {
+                position = position + 1;
+                itemImg.setImageURI(uriArrayList.get(position));
+            }
+            else {
+                Toast.makeText(ItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /* Select previous image */
+        previous.setOnClickListener(view -> {
+            if (position > 0) {
+                position = position - 1;
+                itemImg.setImageURI(uriArrayList.get(position));
+            }
+        });
     }
 
     /* Display Item Details */
@@ -239,14 +270,19 @@ public class ItemActivity extends AppCompatActivity {
         }
         else {
             /* retrieve image from firebase */
-            StorageReference ref = storageReference.child("images/" + item.getImage());
+            String[] split = item.getImage().split("-");
+            String image = split[split.length-1];
+            int size = Integer.parseInt(image);
 
-            final long ONE_MEGABYTE = 1024 * 1024 * 5;
-            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                System.out.println("Successfully read image");
-                itemImg.setImageBitmap(bitmap);
-            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+            for (int i = 0; i<size; i++){
+                StorageReference ref = storageReference.child("images/" + item.getImage() + "/" + i);
+                ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                    uriArrayList.add(uri);
+                    System.out.println("Successfully read image");
+
+
+                }).addOnFailureListener(fail -> out.println("Failed to read image" + fail));
+            }
         }
         itemCondition.setText(item.getCondition());
 
@@ -262,12 +298,12 @@ public class ItemActivity extends AppCompatActivity {
                 Customer customer = response.body();
                 assert customer != null;
                 displayItem(customer,item);
-                System.out.println("Retrieved owner of item");
+                out.println("Retrieved owner of item");
             }
 
             @Override
             public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
-                System.out.println(t.getMessage());
+                out.println(t.getMessage());
             }
         }, item.getCustomerId());
     }
@@ -289,21 +325,6 @@ public class ItemActivity extends AppCompatActivity {
 
             }
         }, itemId);
-    }
-
-    /* Make an offer for the item */
-    private void makeOffer(Offer offer) {
-        UPLBTrade.retrofitClient.addOffer(new Callback<Offer>() {
-            @Override
-            public void onResponse(@NonNull Call<Offer> call, @NonNull Response<Offer> response) {
-                System.out.println("Created new offer");
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Offer> call, @NonNull Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, offer);
     }
 
     /* Delete item confirmation */
@@ -334,13 +355,13 @@ public class ItemActivity extends AppCompatActivity {
         UPLBTrade.retrofitClient.deleteItem(new Callback<Item>() {
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                System.out.println("Deleted Item");
+                out.println("Deleted Item");
             }
 
             @Override
             public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
-                System.out.println("Failed to delete item");
-                System.out.println(t.getMessage());
+                out.println("Failed to delete item");
+                out.println(t.getMessage());
             }
         }, itemId);
     }

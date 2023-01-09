@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
@@ -39,6 +40,7 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 /* Login Customers through Google Account */
 
 public class LoginActivity extends AppCompatActivity {
@@ -102,15 +104,31 @@ public class LoginActivity extends AppCompatActivity {
     /* Proceed to HOME after sign in */
     private void onLoggedIn(GoogleSignInAccount account) {
         checkCustomer(account);
-
         /* SharedPref to save email */
-        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
-        String email = account.getEmail().replace("@up.edu.ph","");
+        String email = Objects.requireNonNull(account.getEmail()).replace("@up.edu.ph","");
         editor.putString("customer_email", email);
         editor.putString("customer_name", account.getGivenName() + " " + account.getFamilyName());
         editor.apply();
+
+        /* Get customer data */
+        UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
+            @Override
+            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
+                Customer customer = response.body();
+                assert customer != null;
+                int customerId = customer.getCustomerId();
+                saveSessionId(customerId);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+                System.out.println("Get Customer by email Failed");
+                System.out.println(t.getMessage());
+            }
+        }, account.getEmail() );
 
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(GOOGLE_ACCOUNT, account);
@@ -150,33 +168,14 @@ public class LoginActivity extends AppCompatActivity {
             image = "placeholder";
         }
         else {
-            image = "profiles/" + account.getEmail();
-            Bitmap bitmap;
-            byte[] bitmapData;
-            /* convert uri to bitmap */
-            try {
-                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(filepath));
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG,30, bos);
-                bitmapData = bos.toByteArray();
-                StorageReference ref = storageReference.child(image);
-                ref.putBytes(bitmapData).addOnSuccessListener(success -> {
-                    // Image uploaded successfully
-                    System.out.println("image uploaded successfully");
-                }).addOnFailureListener(failure -> {
-                    // Image upload fail
-                    System.out.println("image failed to upload");
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            image = filepath.toString();
         }
-
         Customer customer = new Customer(image,account.getGivenName(), account.getFamilyName(), account.getEmail());
+
 
         // firebase database to save user for messaging
         database = FirebaseDatabase.getInstance().getReference();
-        String email = account.getEmail().replace("@up.edu.ph","");
+        String email = Objects.requireNonNull(account.getEmail()).replace("@up.edu.ph","");
         writeNewUser(email, account.getGivenName() + " " + account.getFamilyName());
 
         UPLBTrade.retrofitClient.addCustomer(new Callback<Customer>() {
@@ -220,5 +219,12 @@ public class LoginActivity extends AppCompatActivity {
         User user = new User(name);
 
         database.child("users").child(email).setValue(user);
+    }
+
+    public void saveSessionId(int sessionId) {
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("customer_id", sessionId);
+        editor.apply();
     }
 }

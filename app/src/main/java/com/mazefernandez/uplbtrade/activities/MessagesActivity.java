@@ -55,8 +55,8 @@ public class MessagesActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         /* SharedPref to get customer email */
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        customerEmail = sharedPreferences.getString("customer_email", "-1");
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
+        customerEmail = pref.getString("customer_email", "-1");
 
         /* Messages activity views */
         profileImg = findViewById(R.id.profile_img);
@@ -73,7 +73,7 @@ public class MessagesActivity extends AppCompatActivity {
 
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
-        navigation.setSelectedItemId(R.id.navigation_home);
+        navigation.setSelectedItemId(R.id.navigation_inbox);
         navigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
@@ -123,7 +123,7 @@ public class MessagesActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     // iterate through customer's friends
                     for (DataSnapshot dataSnapshot : snapshot.child(customerEmail).child("friends").getChildren()) {
-                        String tempEmail = Objects.requireNonNull(dataSnapshot.getKey());
+                        String tempEmail = (Objects.requireNonNull(dataSnapshot.getKey()));
                         User user = new User(tempEmail);
                         users.add(user);
                     }

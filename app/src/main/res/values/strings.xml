@@ -73,4 +73,5 @@
     <string name="add_friend">add friend</string>
     <string name="chat_image">chat image</string>
     <string name="enter_message">Enter Message</string>
+    <string name="cancel_order">cancel order</string>
 </resources>

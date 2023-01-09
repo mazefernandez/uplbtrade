@@ -52,7 +52,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ItemViewHolder
         holder.user = userList.get(position);
         holder.lastMessage.setText(userList.get(position).getLastMessage());
         if (userList.get(position).getTime() != null) {
-            holder.time.setText(String.format(userList.get(position).getTime()));
+            holder.time.setText(String.format("%tc",userList.get(position).getTime()));
         }
         holder.customerEmail.setText(userList.get(position).getEmail());
     }

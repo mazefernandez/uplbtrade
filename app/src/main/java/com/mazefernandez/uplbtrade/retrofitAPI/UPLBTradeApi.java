@@ -41,7 +41,7 @@ public interface UPLBTradeApi {
     @GET("/api/customer-reviews/{id}")
     Call<CustomerReview> getCustomerReview();
 
-    @POST("/api/customer-reviews")
+    @POST("/api/customer-reviews/")
     Call<CustomerReview> addCustomerReview(@Body CustomerReview customerReview);
 
     @GET("/api/customer-reviews/customer/{id}")

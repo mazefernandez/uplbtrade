@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <!-- Item image -->
-        <ImageView
+        <ImageSwitcher
             android:id="@+id/item_img"
             android:layout_width="200dp"
             android:layout_height="200dp"
@@ -28,7 +28,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Add an item image -->
+        <Button
+            android:id="@+id/previous"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/previous"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_item_img">
+        </Button>
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/next"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_item_img" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_item_img"
             android:layout_width="wrap_content"
@@ -41,7 +67,7 @@
             android:tint="@color/off_white"
             android:src="@android:drawable/ic_menu_camera"
             app:fabSize="normal"
-            app:layout_constraintBottom_toTopOf="@+id/item_name"
+            app:layout_constraintTop_toBottomOf="@+id/item_img"
             app:layout_constraintEnd_toEndOf="@+id/item_name" />
 
         <!-- Item name -->
@@ -59,7 +85,7 @@
             android:autofillHints="@string/item_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_img" />
+            app:layout_constraintTop_toBottomOf="@+id/next" />
 
         <!-- item description -->
         <EditText
@@ -169,7 +195,7 @@
         <ListView
             android:id="@+id/tag_list"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="160dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"

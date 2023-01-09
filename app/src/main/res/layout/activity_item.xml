@@ -9,9 +9,9 @@
     android:background="@color/background">
 
     <!-- Item image -->
-    <ImageView
+    <ImageSwitcher
         android:id="@+id/item_img"
-        android:layout_width="0dp"
+        android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -21,9 +21,37 @@
         android:background="?attr/colorBackgroundFloating"
         android:contentDescription="@string/item_image"
         android:foregroundGravity="center"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/previous"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/previous"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_img">
+    </Button>
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_img" />
 
     <!-- Owner name -->
     <TextView
@@ -58,7 +86,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_img" />
+        app:layout_constraintTop_toBottomOf="@+id/previous" />
 
     <!-- Description -->
     <TextView

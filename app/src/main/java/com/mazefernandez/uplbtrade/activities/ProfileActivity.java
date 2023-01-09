@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -50,7 +54,6 @@ import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_A
 public class ProfileActivity extends AppCompatActivity {
     private TextView profileName, profileAddress, contactNo;
     private ImageView profileImg;
-    private ImageButton message;
     private RatingBar rating;
     private int sessionId;
     RecyclerView recyclerView;
@@ -99,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
         contactNo = findViewById(R.id.contactNo);
         profileImg = findViewById(R.id.profile_img);
         rating = findViewById(R.id.rating);
-        message = findViewById(R.id.message);
+        ImageButton message = findViewById(R.id.message);
 
         SearchView profileSearch = findViewById(R.id.profile_search);
         Button editCustomer = findViewById(R.id.editCustomer);
@@ -112,16 +115,16 @@ public class ProfileActivity extends AppCompatActivity {
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
         assert account != null;
 
+        /* SharedPref to save customer_id */
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
+        int sessionId = pref.getInt("customer_id", -1);
+
         /* Initialize Firebase database */
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        /* SharedPref to get customer_id */
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        sessionId = pref.getInt("customer_id", -1);
-        displayCustomerItems(sessionId);
-
         /* Display current Customer */
         displayCustomer(account);
+        displayCustomerItems(sessionId);
 
         /* Setup profile items */
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
@@ -147,6 +150,39 @@ public class ProfileActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        /* Dropdown menu for settings */
+        final PopupMenu settingsMenu = new PopupMenu(this, settings);
+        final Menu menu = settingsMenu.getMenu();
+
+        menu.add(0,0,0, "Rate App");
+        menu.add(0,1,0, "Chat with Admin");
+        menu.add(0,2,0,"Sign Out");
+
+        settingsMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                /* Review application */
+                case 0:
+                    Intent review = new Intent(ProfileActivity.this, ReviewAppActivity.class);
+                    startActivity(review);
+                    return true;
+                /* Admin Chat */
+                case 1:
+                    Intent chat = new Intent(ProfileActivity.this, AdminChatActivity.class);
+                    startActivity(chat);
+                    return true;
+                /* Sign out */
+                case 2:
+                    googleSIC.signOut().addOnCompleteListener(task -> {
+                        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    });
+                    return true;
+            }
+            return false;
+        });
+
         /* Edit Customer info */
         editCustomer.setOnClickListener(view -> {
             Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
@@ -170,11 +206,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         /* Sign Out */
-        settings.setOnClickListener(v -> googleSIC.signOut().addOnCompleteListener(task -> {
-            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }));
+        settings.setOnClickListener(view -> settingsMenu.show());
 
         /* Message User */
         message.setOnClickListener(v -> {
@@ -236,15 +268,16 @@ public class ProfileActivity extends AppCompatActivity {
         }
         else {
             Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
+            System.out.println(account.getPhotoUrl());
         }
         profileName.setText(account.getDisplayName());
 
-        /* SharedPref to save customer_id */
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        final SharedPreferences.Editor editor = pref.edit();
+        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = pref.edit();
 
         /* Get customer data */
         UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
+
             @Override
             public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
                 Customer customer = response.body();

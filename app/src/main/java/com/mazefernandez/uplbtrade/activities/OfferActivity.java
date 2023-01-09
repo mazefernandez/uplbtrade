@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -49,7 +50,7 @@ public class OfferActivity extends AppCompatActivity {
         setContentView(R.layout.activity_offer);
 
         /* SharedPref to save customer_id */
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         int sessionId = pref.getInt("customer_id", -1);
 
         /* Offer Views */
