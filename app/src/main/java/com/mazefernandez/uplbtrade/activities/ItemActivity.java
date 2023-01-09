@@ -79,14 +79,11 @@ public class ItemActivity extends AppCompatActivity {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();
             assert intent != null;
-            Bundle offerInfo = intent.getExtras();
-            if (offerInfo != null) {
-                double offerPrice = offerInfo.getDouble("PRICE");
-                String offerMessage = offerInfo.getString("MESSAGE");
-
-                Offer offer = new Offer(offerPrice, "Pending", offerMessage, itemId, sessionId, sellerId);
-                makeOffer(offer);
+            if (intent.getIntExtra("CHECK",-1) == 1) {
+                Toast.makeText(this, "made offer", Toast.LENGTH_SHORT).show();
             }
+            finish();
+            startActivity(getIntent());
         }
     });
 
@@ -96,8 +93,8 @@ public class ItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item);
 
         /* SharedPref to save customer_id */
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        sessionId = pref.getInt("customer_id",-1);
+        final SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
+        int sessionId = pref.getInt("customer_id",-1);
 
         /* Item activity views */
         itemOwner = findViewById(R.id.item_owner);
@@ -171,6 +168,7 @@ public class ItemActivity extends AppCompatActivity {
             String price = itemPrice.getText().toString();
             String image = item.getImage();
             String condition = itemCondition.getText().toString();
+            int itemId = item.getItemId();
 
             itemInfo.putString("OWNER",owner);
             itemInfo.putString("NAME",name);
@@ -289,21 +287,6 @@ public class ItemActivity extends AppCompatActivity {
 
             }
         }, itemId);
-    }
-
-    /* Make an offer for the item */
-    private void makeOffer(Offer offer) {
-        UPLBTrade.retrofitClient.addOffer(new Callback<Offer>() {
-            @Override
-            public void onResponse(@NonNull Call<Offer> call, @NonNull Response<Offer> response) {
-                System.out.println("Created new offer");
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Offer> call, @NonNull Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        }, offer);
     }
 
     /* Delete item confirmation */

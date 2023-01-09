@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/flat_alt.xml" value="0.664" />
         <entry key="app/src/main/res/drawable/uplbtrade_icon2_background.xml" value="0.1035" />
         <entry key="app/src/main/res/drawable/uplbtrade_icon_background.xml" value="0.356" />
         <entry key="app/src/main/res/layout/activity_add_item.xml" value="0.44000000000000006" />
@@ -21,7 +22,7 @@
         <entry key="app/src/main/res/layout/activity_profile.xml" value="0.268361581920904" />
         <entry key="app/src/main/res/layout/activity_purchases.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/activity_report_user.xml" value="0.35572916666666665" />
-        <entry key="app/src/main/res/layout/activity_review_app.xml" value="0.3047091412742382" />
+        <entry key="app/src/main/res/layout/activity_review_app.xml" value="0.19756838905775076" />
         <entry key="app/src/main/res/layout/activity_review_customer.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/layout/activity_screenslide.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.19791666666666666" />

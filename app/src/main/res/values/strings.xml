@@ -70,4 +70,7 @@
     <string name="customer_review_prompt">From 1 to 5 how satisfied are you with this transaction?</string>
     <string name="original_offer">Original Offer:</string>
     <string name="customer_offer">Customer\'s Offer:</string>
+    <string name="add_friend">add friend</string>
+    <string name="chat_image">chat image</string>
+    <string name="enter_message">Enter Message</string>
 </resources>

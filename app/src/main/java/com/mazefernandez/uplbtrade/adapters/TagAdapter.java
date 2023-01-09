@@ -1,37 +1,18 @@
 package com.mazefernandez.uplbtrade.adapters;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.mazefernandez.uplbtrade.R;
-import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.activities.OfferActivity;
-import com.mazefernandez.uplbtrade.models.Item;
-import com.mazefernandez.uplbtrade.models.Offer;
-import com.mazefernandez.uplbtrade.models.Tag;
 
+import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.models.Tag;
 import java.util.ArrayList;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.graphics.BitmapFactory.decodeByteArray;
 
 
 /* Binds values of offer information to views */

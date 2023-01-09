@@ -50,7 +50,6 @@ public class AddItemActivity extends AppCompatActivity {
     private EditText itemPrice;
     private Spinner itemCondition;
     private EditText itemTags;
-    private ListView tagsList;
     private String imgString;
     private Integer itemId;
     private Bitmap bitmap;
@@ -96,7 +95,7 @@ public class AddItemActivity extends AppCompatActivity {
         itemPrice = findViewById(R.id.offer);
         itemCondition = findViewById(R.id.item_condition);
         itemTags = findViewById(R.id.tags);
-        tagsList = findViewById(R.id.tag_list);
+        ListView tagsList = findViewById(R.id.tag_list);
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -194,6 +193,7 @@ public class AddItemActivity extends AppCompatActivity {
         /* Return to profile */
         Intent intent = new Intent();
         intent.putExtra("CHECK", 1);
+
         setResult(RESULT_OK,intent);
         finish();
         });

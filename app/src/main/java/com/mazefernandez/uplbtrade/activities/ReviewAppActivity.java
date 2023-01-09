@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
@@ -22,11 +23,8 @@ import retrofit2.Response;
 
 public class ReviewAppActivity extends AppCompatActivity {
 
-    private TextView ratePrompt;
     private RatingBar ratingBar;
-    private TextView feedbackPrompt;
     private EditText review;
-    private Button submit;
     private int customerId;
 
     @Override
@@ -39,15 +37,16 @@ public class ReviewAppActivity extends AppCompatActivity {
         customerId = pref.getInt("customer_id", -1);
 
         /* Review App Views */
-        ratePrompt = findViewById(R.id.rate_prompt);
+        TextView ratePrompt = findViewById(R.id.rate_prompt);
         ratingBar = findViewById(R.id.rating_bar);
-        feedbackPrompt = findViewById(R.id.feedback_prompt);
+        TextView feedbackPrompt = findViewById(R.id.feedback_prompt);
         review = findViewById(R.id.review);
-        submit = findViewById(R.id.submit_button);
+        Button submit = findViewById(R.id.submit_button);
 
         submit.setOnClickListener(v -> {
-            Float float_rating = ratingBar.getRating();
-            Double rating = float_rating.doubleValue();
+            float float_rating;
+            float_rating = ratingBar.getRating();
+            Double rating = (double) float_rating;
             String string_review = review.getText().toString();
 
             /* Add application review to database */
@@ -65,6 +64,8 @@ public class ReviewAppActivity extends AppCompatActivity {
                     System.out.println(t.getMessage());
                 }
             }, applicationReview);
+
+            Toast.makeText(this, "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(ReviewAppActivity.this,HomeActivity.class);
             startActivity(intent);

@@ -2,6 +2,7 @@ package com.mazefernandez.uplbtrade.retrofitAPI;
 
 import com.mazefernandez.uplbtrade.models.ApplicationReview;
 import com.mazefernandez.uplbtrade.models.Customer;
+import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -51,6 +52,11 @@ public interface UPLBTradeApi {
 
     @DELETE("/api/customer-reviews/{id}")
     Call<CustomerReview> deleteCustomerReview(@Path("customerReview_id") int customerReview_id);
+
+    /* Customer Report calls */
+
+    @POST("/api/customer-reports")
+    Call<CustomerReport> addCustomerReport(@Body CustomerReport customerReport);
 
     /* Customer calls */
     @GET("/api/customers")

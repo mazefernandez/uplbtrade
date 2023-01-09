@@ -2,29 +2,26 @@ package com.mazefernandez.uplbtrade.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.ItemAdapter;
@@ -41,14 +38,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 /* Other Customer's Profile */
 
 public class CustomerProfileActivity extends AppCompatActivity {
     private TextView profileName, profileAddress, contactNo;
     private ImageView profileImg;
     private RatingBar rating;
-    private String customerEmail, customerName;
+    private String customerEmail;
+    ImageButton addFriend, flag;
+    SearchView profileSearch;
     RecyclerView recyclerView;
     ItemAdapter itemAdapter;
     DatabaseReference databaseReference;
@@ -64,16 +62,15 @@ public class CustomerProfileActivity extends AppCompatActivity {
         contactNo = findViewById(R.id.contactNo);
         profileImg = findViewById(R.id.profile_img);
         rating = findViewById(R.id.rating);
-        ImageButton message = findViewById(R.id.messageButton);
-
-        SearchView profileSearch = findViewById(R.id.profile_search);
-        ImageButton flag = findViewById(R.id.flag);
+        addFriend = findViewById(R.id.add_friend);
+        profileSearch = findViewById(R.id.profile_search);
+        flag = findViewById(R.id.flag);
         recyclerView = findViewById(R.id.recycler_view);
 
         /* SharedPref to get customer email */
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         customerEmail = sharedPreferences.getString("customer_email", "-1");
-        customerName = sharedPreferences.getString("customer_name", "-1");
+        String customerName = sharedPreferences.getString("customer_name", "-1");
 
         /* Initialize Firebase database */
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -82,6 +79,22 @@ public class CustomerProfileActivity extends AppCompatActivity {
         Customer customer = (Customer) getIntent().getSerializableExtra("CUSTOMER");
         displayCustomerItems(customer.getCustomerId());
         displayCustomer(customer);
+
+        /* Check if users are already friends */
+        databaseReference.child("users").child(customerEmail).child("friends").child(customerEmail).get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.e("firebase", "Error getting data", task.getException());
+            }
+            else {
+                Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                // users are not friends, set addFriend as visible
+                if (String.valueOf(task.getResult().getValue()).equals("null")) {
+                    addFriend.setVisibility(View.VISIBLE);
+                }
+                // users are friends, set addFriend as not visible
+                else addFriend.setVisibility(View.GONE);
+            }
+        });
 
         /* Setup profile items */
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(CustomerProfileActivity.this,3);
@@ -109,36 +122,17 @@ public class CustomerProfileActivity extends AppCompatActivity {
         });
 
         /* Message User */
-        message.setOnClickListener(v -> {
+        addFriend.setOnClickListener(v -> {
             String email = customer.getEmail().replace("@up.edu.ph","");
             /* Add user to list of friends */
 
-            User user = new User(customer.getFirstName() + " " + customer.getLastName());
+            User user = new User(email);
             databaseReference.child("users").child(customerEmail).child("friends").child(email).setValue(user);
-            User user2 = new User(customerName);
+            User user2 = new User(customerEmail);
             databaseReference.child("users").child(email).child("friends").child(customerEmail).setValue(user2);
 
-            /* Create chat room */
-            String chatRoomKey = databaseReference.child("chats").push().getKey();
-            assert chatRoomKey != null;
-            String memberKey1 = databaseReference.child("chats").child(chatRoomKey).child("members").push().getKey();
-            assert memberKey1 != null;
-            databaseReference.child("chats").child(chatRoomKey).child("members").child(memberKey1).setValue(customerEmail);
-            String memberKey2 = databaseReference.child("chats").child(chatRoomKey).child("members").push().getKey();
-            assert memberKey2 != null;
-            databaseReference.child("chats").child(chatRoomKey).child("members").child(memberKey2).setValue(email);
-
-            /* Add chat to list of chats for user */
-            String chatKey = databaseReference.child("users").child(customerEmail).child("chats").push().getKey();
-            assert chatKey != null;
-            String chatKey2 = databaseReference.child("users").child(email).child("chats").push().getKey();
-            assert chatKey2 != null;
-
-            databaseReference.child("users").child(customerEmail).child("chats").child(chatKey).setValue(chatRoomKey);
-            databaseReference.child("users").child(email).child("chats").child(chatKey2).setValue(chatRoomKey);
-
-            Intent intent = new Intent(CustomerProfileActivity.this, MessagesActivity.class);
-            startActivity(intent);
+            Toast.makeText(this, "Added Friend", Toast.LENGTH_SHORT).show();
+            addFriend.setVisibility(View.GONE);
         });
 
         flag.setOnClickListener(v -> {
@@ -162,20 +156,7 @@ public class CustomerProfileActivity extends AppCompatActivity {
             Picasso.get().load(R.drawable.placeholder).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
         }
         else {
-            /* Firebase instances */
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageReference = storage.getReference();
-
-            /* retrieve image from firebase */
-            StorageReference ref = storageReference.child("profiles/" + customer.getImage());
-
-            final long ONE_MEGABYTE = 1024 * 1024 * 5;
-            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                System.out.println("Successfully read image");
-                profileImg.setImageBitmap(bitmap);
-            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
-
+            Picasso.get().load(customer.getImage()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
         }
         String name = customer.getFirstName() + " " + customer.getLastName();
         profileAddress.setText(customer.getAddress());

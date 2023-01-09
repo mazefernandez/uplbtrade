@@ -2,6 +2,7 @@ package com.mazefernandez.uplbtrade.retrofitAPI;
 
 import com.mazefernandez.uplbtrade.models.ApplicationReview;
 import com.mazefernandez.uplbtrade.models.Customer;
+import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -19,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /* Handles Retrofit Calls */
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://uplbtrade.com";
+    private static final String BASE_URL = "https://uplbtrade.com/";
     private static UPLBTradeApi service;
     private static RetrofitClient retrofitClient;
 
@@ -89,6 +90,13 @@ public class RetrofitClient {
     public void deleteCustomerReview(Callback<CustomerReview> callback, int customerReview_id) {
         Call<CustomerReview> deleteCustomerReviewCall = service.deleteCustomerReview(customerReview_id);
         deleteCustomerReviewCall.enqueue(callback);
+    }
+
+    /* Customer Report Calls */
+
+    public void addCustomerReport(Callback<CustomerReport> callback, CustomerReport customerReport) {
+        Call<CustomerReport> addCustomerReportCall = service.addCustomerReport(customerReport);
+        addCustomerReportCall.enqueue(callback);
     }
 
     /* Customer Calls */

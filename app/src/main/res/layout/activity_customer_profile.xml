@@ -11,21 +11,21 @@
 
     <!-- Search bar for items -->
     <ImageButton
-        android:id="@+id/messageButton"
+        android:id="@+id/add_friend"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:contentDescription="@string/message"
+        android:padding="3dp"
+        android:background="@color/background"
+        android:contentDescription="@string/add_friend"
         android:scaleType="centerCrop"
+        android:src="@drawable/add_friend"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/profile_search"
         app:layout_constraintTop_toBottomOf="@+id/profile_img"
-        app:tint="@color/orange"
-        android:src="@drawable/ic_email_white_18dp" />
+        app:tint="@color/orange" />
 
     <!-- User name -->
     <TextView
@@ -98,16 +98,12 @@
     <!-- Message user button -->
 
 
-
-    <SearchView
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/profile_search"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="43dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/border"
         android:iconifiedByDefault="false"
@@ -115,6 +111,7 @@
         android:queryHint="@string/search"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+        app:layout_constraintEnd_toStartOf="@+id/flag"
         app:layout_constraintStart_toStartOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_img" />
 
@@ -123,14 +120,15 @@
         android:id="@+id/flag"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@color/background"
-        android:contentDescription="@string/flag"
-        android:scaleType="fitXY"
-        android:src="@drawable/flag"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:background="@color/background"
+        android:contentDescription="@string/flag"
+        android:scaleType="fitXY"
+        android:src="@drawable/flag_alt"
+        android:tint="@color/maroon"
         app:layout_constraintBottom_toBottomOf="@+id/rating"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_address" />
