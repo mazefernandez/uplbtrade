@@ -26,19 +26,24 @@
         tools:targetApi="s">
         <activity
             android:name=".activities.CustomerProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activities.MessageActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activities.MessagesActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activities.ReviewCustomerActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:exported="true" />
         <activity
             android:name=".activities.ReviewAppActivity"
             android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/title_activity_review_app" />
         <activity
             android:name=".activities.TransactionsActivity"
