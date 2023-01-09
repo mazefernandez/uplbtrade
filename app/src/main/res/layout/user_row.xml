@@ -24,24 +24,25 @@
 
         <!-- customer name -->
         <TextView
-            android:id="@+id/customer_name"
+            android:id="@+id/customer_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <!-- customer's message -->
+        <TextView
+            android:id="@+id/message_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- customer's message -->
-<!--        <TextView-->
-<!--            android:id="@+id/message_text"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"/>-->
-
 
         <!-- message time -->
-<!--        <TextView-->
-<!--            android:id="@+id/time"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:contentDescription="@string/time"-->
-<!--            />-->
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/time"
+            />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

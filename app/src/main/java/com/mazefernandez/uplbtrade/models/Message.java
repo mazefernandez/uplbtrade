@@ -3,30 +3,45 @@ package com.mazefernandez.uplbtrade.models;
 import java.util.Date;
 
 public class Message {
-    private String name;
+    private String sender;
+    private String receiver;
     private String messageText;
-    private String email;
     private Long time;
 
     public Message() {}  // Needed for Firebase
 
-    public Message(String name, String messageText, String email) {
-        this.name = name;
+    public Message(String sender, String receiver, String messageText) {
+        this.sender = sender;
+        this.receiver = receiver;
         this.messageText = messageText;
-        this.email = email;
         this.time = new Date().getTime();
     }
 
+    public String getReceiver() {
+        return receiver;
+    }
 
-    public String getName() { return name; }
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public String getSender() {
+        return sender;
+    }
 
-    public String getMessage() { return messageText; }
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
 
-    public void setMessage(String messageText) { this.messageText = messageText; }
+    public String getMessageText() {
+        return messageText;
+    }
 
-    public String getEmail() { return email; }
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
 
-    public Long getTime() { return time; }
+    public Long getTime(){
+        return time;
+    }
 }

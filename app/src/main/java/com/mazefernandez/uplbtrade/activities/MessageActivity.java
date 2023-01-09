@@ -1,65 +1,139 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.view.View;
+import android.preference.PreferenceManager;
+
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mazefernandez.uplbtrade.R;
-import com.mazefernandez.uplbtrade.models.Message;
+
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class MessageActivity extends AppCompatActivity {
     ListView chatHistory;
-    FirebaseListAdapter<Message> messageAdapter;
+    ArrayAdapter arrayAdapter;
+    ArrayList<String> messages = new ArrayList<>();
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        ImageView chatImg = findViewById(R.id.chat_img);
-        TextView chatName = findViewById(R.id.chat_name);
+        reference = FirebaseDatabase.getInstance().getReference();
+
+        TextView chatEmail = findViewById(R.id.chat_email);
         ImageButton send = findViewById(R.id.send_button);
+        EditText chatInput = findViewById(R.id.input);
         chatHistory = findViewById(R.id.chat_history);
 
-        Message message = (Message) getIntent().getSerializableExtra("MESSAGE");
-        assert message != null;
-        chatName.setText(message.getName());
+        /* SharedPref to get customer email */
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String customerEmail = sharedPreferences.getString("customer_email", "-1");
 
-        displayMessages();
+        /* Get message info from messages activity */
+        Intent intent = getIntent();
+        Bundle userInfo = intent.getBundleExtra("MESSAGE");
+        String chatterEmail = userInfo.getString("EMAIL");
+        if (!userInfo.getString("TIME").isEmpty()) {
+            Long time = Long.valueOf(userInfo.getString("TIME"));
+        }
+        chatEmail.setText(chatterEmail);
 
-        send.setOnClickListener(new View.OnClickListener() {
-            EditText chatInput = findViewById(R.id.input);
-            @Override
-            public void onClick(View view) {
-                FirebaseDatabase.getInstance().getReference().push().setValue(new Message(message.getName(),chatInput.getText().toString(),message.getEmail()));
-                chatInput.setText("");
+
+        send.setOnClickListener(view -> {
+            if (chatInput.getText().toString().isEmpty()) {
+                Toast.makeText(MessageActivity.this,"Write a message!", Toast.LENGTH_SHORT).show();
+            }
+            /* create a message when sent */
+            else {
+                Map<String, Object> chatData = new HashMap<>();
+                chatData.put("sender", customerEmail);
+                chatData.put("receiver", chatterEmail);
+                chatData.put("message", chatInput.getText().toString());
+                chatData.put("time", new Date().getTime());
+
+                reference.child("chats").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int count;
+                        if (snapshot.exists()) {
+                            count = (int) snapshot.getChildrenCount() + 1;
+                        }
+                        else {
+                            count = 1;
+                        }
+                        reference.child("chats").child(String.valueOf(count)).setValue(chatData).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()){
+                                chatInput.setText("");
+                            }
+                        }).addOnFailureListener(e -> System.out.println("Error in sending message" + e.getMessage()));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
-    }
 
-    private void displayMessages() {
-        messageAdapter = new FirebaseListAdapter<Message>(this, Message.class, R.layout.user_row, FirebaseDatabase.getInstance().getReference()) {
+        reference.child("chats").addValueEventListener(new ValueEventListener() {
             @Override
-            protected void populateView(View v, Message model, int position) {
-                TextView customerName = findViewById(R.id.customer_name);
-                TextView messageText = findViewById(R.id.message_text);
-                TextView time = findViewById(R.id.time);
-
-                customerName.setText(model.getName());
-                messageText.setText(model.getMessage());
-                time.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",model.getTime()));
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    messages.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        /* check if the sender and receiver are either the user or the person they are chatting */
+                        if ((Objects.equals(dataSnapshot.child("sender").getValue(), customerEmail) || (Objects.equals(dataSnapshot.child("receiver").getValue(), customerEmail))
+                        & (Objects.equals(dataSnapshot.child("sender").getValue(), chatterEmail) || Objects.equals(dataSnapshot.child("sender").getValue(), chatterEmail))))
+                        {
+                            String message = Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString();
+                            /* check if the sender is not the user */
+                            if (Objects.requireNonNull(dataSnapshot.child("sender").getValue()).toString().equals(chatterEmail)) {
+                                message = "> " + message;
+                            }
+                            messages.add(message);
+                        }
+                    }
+                    arrayAdapter = new ArrayAdapter(MessageActivity.this, android.R.layout.simple_list_item_1, messages);
+                    chatHistory.setAdapter(arrayAdapter);
+                }
             }
-        };
-        chatHistory.setAdapter(messageAdapter);
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 }

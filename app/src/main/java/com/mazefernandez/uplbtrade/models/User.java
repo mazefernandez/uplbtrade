@@ -2,19 +2,17 @@ package com.mazefernandez.uplbtrade.models;
 
 public class User {
 
-    public String name;
+    public String email;
     public Long time;
     public String lastMessage;
 
     public User() {} //Needed for firebase
 
-    public User(String name) {
-        this.name = name;
+    public User(String email) {
+        this.email = email;
     }
 
-    public String getName(){
-        return name;
-    }
+    public String getEmail() { return email; }
 
     public Long getTime() { return time; }
 

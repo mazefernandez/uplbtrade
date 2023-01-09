@@ -49,7 +49,7 @@ public class MessagesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_messages);
 
         /* Get Google Account */
-//        final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
+        final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
         /* Initialize Firebase database */
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -60,25 +60,74 @@ public class MessagesActivity extends AppCompatActivity {
 
         /* Messages activity views */
         profileImg = findViewById(R.id.profile_img);
-        profileName = findViewById(R.id.profile_name);
+        profileName = findViewById( R.id.profile_name);
         userList = findViewById(R.id.userList);
 
         /* Set up recyclerview chats */
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(MessagesActivity.this,1);
         userList.setLayoutManager(layoutManager);
 
-//        displayCustomer(account);
+        /* retrieve customer and friends data */
+        displayCustomer(account);
+        getUsers();
 
+        /* Navigation bar */
+        navigation = findViewById(R.id.navigation);
+        navigation.setSelectedItemId(R.id.navigation_home);
+        navigation.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    item.setChecked(true);
+                    Intent home = new Intent(MessagesActivity.this, HomeActivity.class);
+                    home.putExtra(GOOGLE_ACCOUNT,account);
+                    startActivity(home);
+                    return true;
+                case R.id.navigation_inbox:
+                    return true;
+                case R.id.navigation_offers:
+                    item.setChecked(true);
+                    Intent offer = new Intent(MessagesActivity.this, OffersActivity.class);
+                    offer.putExtra(GOOGLE_ACCOUNT,account);
+                    startActivity(offer);
+                    return true;
+                case R.id.navigation_profile:
+                    item.setChecked(true);
+                    Intent profile = new Intent(MessagesActivity.this,ProfileActivity.class);
+                    profile.putExtra(GOOGLE_ACCOUNT, account);
+                    startActivity(profile);
+                    return true;
+                case R.id.navigation_transactions:
+                    item.setChecked(true);
+                    Intent purchase = new Intent(MessagesActivity.this, TransactionsActivity.class);
+                    purchase.putExtra(GOOGLE_ACCOUNT, account);
+                    startActivity(purchase);
+                    return true;
+            }
+            return false;
+        });
+    }
+
+    private void displayCustomer(@NotNull GoogleSignInAccount account) {
+        if (account.getPhotoUrl() == null) {
+            Picasso.get().load(R.drawable.placeholder).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
+        } else {
+            Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
+        }
+        profileName.setText(account.getDisplayName());
+    }
+
+    private void getUsers() {
         databaseReference.child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     // iterate through customer's friends
                     for (DataSnapshot dataSnapshot : snapshot.child(customerEmail).child("friends").getChildren()) {
-                        String tempEmail = Objects.requireNonNull(dataSnapshot.getValue()).toString();
+                        String tempEmail = Objects.requireNonNull(dataSnapshot.getKey());
                         User user = new User(tempEmail);
                         users.add(user);
                     }
+                    /*TODO: work out how to get all the info from user last message time and email */
                     userAdapter = new UserAdapter(users);
                     userList.setAdapter(userAdapter);
                 }
@@ -89,49 +138,5 @@ public class MessagesActivity extends AppCompatActivity {
                 System.out.println("Failed to load users" + error.getMessage());
             }
         });
-
-        /* Navigation bar */
-//        navigation = findViewById(R.id.navigation);
-//        navigation.setSelectedItemId(R.id.navigation_home);
-//        navigation.setOnNavigationItemSelectedListener(item -> {
-//            switch (item.getItemId()) {
-//                case R.id.navigation_home:
-//                    item.setChecked(true);
-//                    Intent home = new Intent(MessagesActivity.this, HomeActivity.class);
-//                    home.putExtra(GOOGLE_ACCOUNT,account);
-//                    startActivity(home);
-//                    return true;
-//                case R.id.navigation_inbox:
-//                    return true;
-//                case R.id.navigation_offers:
-//                    item.setChecked(true);
-//                    Intent offer = new Intent(MessagesActivity.this, OffersActivity.class);
-//                    offer.putExtra(GOOGLE_ACCOUNT,account);
-//                    startActivity(offer);
-//                    return true;
-//                case R.id.navigation_profile:
-//                    item.setChecked(true);
-//                    Intent profile = new Intent(MessagesActivity.this,ProfileActivity.class);
-//                    profile.putExtra(GOOGLE_ACCOUNT, account);
-//                    startActivity(profile);
-//                    return true;
-//                case R.id.navigation_transactions:
-//                    item.setChecked(true);
-//                    Intent purchase = new Intent(MessagesActivity.this, TransactionsActivity.class);
-//                    purchase.putExtra(GOOGLE_ACCOUNT, account);
-//                    startActivity(purchase);
-//                    return true;
-//            }
-//            return false;
-//        });
-    }
-
-    private void displayCustomer(@NotNull GoogleSignInAccount account) {
-        if (account.getPhotoUrl() == null) {
-            Picasso.get().load(R.drawable.placeholder).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
-        } else {
-            Picasso.get().load(account.getPhotoUrl()).centerInside().fit().transform(new CircleTransformation()).into(profileImg);
-        }
-        profileName.setText(account.getDisplayName());
     }
 }

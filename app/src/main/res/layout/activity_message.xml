@@ -6,28 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".activities.MessageActivity">
 
-    <!-- customer profile picture -->
-    <ImageView
-        android:id="@+id/chat_img"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        />
-
-    <!-- customer name -->
+    <!-- customer email -->
     <TextView
-        android:id="@+id/chat_name"
+        android:id="@+id/chat_email"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/chat_img"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
@@ -35,13 +23,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/input"
-        app:layout_constraintTop_toBottomOf="@id/chat_img"
-        app:layout_constraintHorizontal_bias="1.0"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+     />
 
     <!-- user message input -->
     <EditText
@@ -52,6 +38,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
+        android:autofillHints="message"
+        android:inputType="textMultiLine"
+        android:hint="@string/enter_message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/send_button"
         app:layout_constraintStart_toStartOf="parent">

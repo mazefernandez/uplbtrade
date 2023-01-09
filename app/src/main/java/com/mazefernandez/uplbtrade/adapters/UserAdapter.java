@@ -2,6 +2,7 @@ package com.mazefernandez.uplbtrade.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.activities.MessageActivity;
+import com.mazefernandez.uplbtrade.activities.OfferActivity;
 import com.mazefernandez.uplbtrade.models.Message;
 import com.mazefernandez.uplbtrade.models.User;
 
@@ -47,7 +49,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ItemViewHolder
 
 
         /* retrieve customer data */
-        holder.customerName.setText(userList.get(position).getName());
+        holder.user = userList.get(position);
+        holder.lastMessage.setText(userList.get(position).getLastMessage());
+        if (userList.get(position).getTime() != null) {
+            holder.time.setText(String.format(userList.get(position).getTime()));
+        }
+        holder.customerEmail.setText(userList.get(position).getEmail());
     }
 
     @Override
@@ -57,25 +64,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ItemViewHolder
 
     /* Holds the values for individual views on the recycler */
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView customerName;
-        private final Context context;
+        TextView customerEmail, lastMessage, time;
+        Context context;
+        LinearLayout card;
+        User user;
 
 
     /* View attributes */
         ItemViewHolder(View view) {
             super(view);
-            customerName = view.findViewById(R.id.customer_name);
-            LinearLayout card = view.findViewById(R.id.card);
+            customerEmail = view.findViewById(R.id.customer_email);
+            lastMessage = view.findViewById(R.id.message_text);
+            time = view.findViewById(R.id.time);
+            card = view.findViewById(R.id.card);
             context = view.getContext();
             card.setOnClickListener(this);
         }
 
-
-/* Redirects to an item page with the details */
+/* Redirects to the message page with the details */
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, MessageActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Bundle userInfo = new Bundle();
+            userInfo.putString("TEXT", lastMessage.getText().toString());
+            userInfo.putString("TIME", time.getText().toString());
+            userInfo.putString("EMAIL", customerEmail.getText().toString());
+            intent.putExtra("MESSAGE", userInfo);
             context.startActivity(intent);
         }
     }
