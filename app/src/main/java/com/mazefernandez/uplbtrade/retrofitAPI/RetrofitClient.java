@@ -5,11 +5,11 @@ import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
+import com.mazefernandez.uplbtrade.models.ItemReport;
 import com.mazefernandez.uplbtrade.models.Offer;
 import com.mazefernandez.uplbtrade.models.Tag;
 import com.mazefernandez.uplbtrade.models.Transaction;
 
-import java.nio.channels.OverlappingFileLockException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -157,6 +157,12 @@ public class RetrofitClient {
     public void deleteItem(Callback<Item> callback, int item_id) {
         Call<Item> deleteItemCall = service.deleteItem(item_id);
         deleteItemCall.enqueue(callback);
+    }
+
+    /* Item Report Calls */
+    public void addItemReport(Callback<ItemReport> callback, ItemReport itemReport) {
+        Call<ItemReport> addItemReportCall = service.addItemReport(itemReport);
+        addItemReportCall.enqueue(callback);
     }
 
     /* Tag Calls */

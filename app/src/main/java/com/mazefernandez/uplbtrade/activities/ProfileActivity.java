@@ -1,12 +1,11 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -132,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         /* Set up search view */
         profileSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (itemAdapter != null) {
@@ -141,6 +141,7 @@ public class ProfileActivity extends AppCompatActivity {
                 return false;
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextChange(String query) {
                 if (itemAdapter != null) {
@@ -272,7 +273,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
         profileName.setText(account.getDisplayName());
 
-        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
         /* Get customer data */

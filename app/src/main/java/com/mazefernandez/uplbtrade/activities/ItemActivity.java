@@ -108,6 +108,7 @@ public class ItemActivity extends AppCompatActivity {
         itemCondition = findViewById(R.id.item_condition);
         ImageButton itemEdit = findViewById(R.id.item_edit);
         ImageButton itemDelete = findViewById(R.id.item_delete);
+        ImageButton flag = findViewById(R.id.flag);
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
         recyclerView = findViewById(R.id.tags);
@@ -146,6 +147,7 @@ public class ItemActivity extends AppCompatActivity {
                     if (offers.get(i).getItemId() == itemId) {
                         offer = new Offer(offers.get(i),offers.get(i).getOfferId());
                         seeOffer.setVisibility(View.VISIBLE);
+                        seeOffer.isClickable();
                         makeOffer.setVisibility(View.GONE);
                         break;
                     }
@@ -165,9 +167,12 @@ public class ItemActivity extends AppCompatActivity {
         if (sessionId == sellerId) {
             makeOffer.setVisibility(View.GONE);
             seeOffer.setVisibility(View.GONE);
+            flag.setVisibility(View.GONE);
         }
         else {
             makeOffer.setVisibility(View.VISIBLE);
+            flag.setVisibility(View.VISIBLE);
+            flag.isClickable();
             itemEdit.setVisibility(View.GONE);
             itemDelete.setVisibility(View.GONE);
         }
@@ -252,6 +257,19 @@ public class ItemActivity extends AppCompatActivity {
                 itemImg.setImageURI(uriArrayList.get(position));
             }
         });
+
+        flag.setOnClickListener(v -> {
+            Intent intent = new Intent(ItemActivity.this, ReportUserActivity.class);
+            intent.putExtra("ITEM", item);
+            startActivity(intent);
+        });
+    }
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     /* Display Item Details */

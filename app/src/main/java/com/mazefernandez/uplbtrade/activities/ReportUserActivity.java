@@ -9,17 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
 import com.squareup.picasso.Picasso;
-
-import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,13 +64,13 @@ public class ReportUserActivity extends AppCompatActivity {
 
             UPLBTrade.retrofitClient.addCustomerReport(new Callback<CustomerReport>() {
                 @Override
-                public void onResponse(Call<CustomerReport> call, Response<CustomerReport> response) {
+                public void onResponse(@NonNull Call<CustomerReport> call, @NonNull Response<CustomerReport> response) {
                     System.out.println("Added Customer Report");
                     System.out.println(response.body());
                 }
 
                 @Override
-                public void onFailure(Call<CustomerReport> call, Throwable t) {
+                public void onFailure(@NonNull Call<CustomerReport> call, @NonNull Throwable t) {
                     System.out.println("Failed to add Customer Report");
                     System.out.println(t.getMessage());
                 }

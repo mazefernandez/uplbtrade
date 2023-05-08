@@ -1,47 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Report user layout -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ReportUserActivity">
+    tools:context=".activities.ReportItemActivity">
 
-    <!-- Profile picture -->
+    <!-- Item Image -->
     <ImageView
-        android:id="@+id/profile_img"
+        android:id="@+id/item_image"
         android:layout_width="110dp"
         android:layout_height="110dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:contentDescription="@string/profile"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/item_image"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent">
+    </ImageView>
 
-    <!-- User name -->
+    <!-- Item name -->
     <TextView
-        android:id="@+id/profile_name"
+        android:id="@+id/item_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profile_img"
-        app:layout_constraintTop_toTopOf="@+id/profile_img" />
+        app:layout_constraintStart_toEndOf="@+id/item_image"
+        app:layout_constraintTop_toTopOf="@+id/item_image"
+        >
+    </TextView>
 
-    <!-- User contact number -->
+    <!-- Item Owner -->
     <TextView
-        android:id="@+id/contactNo"
+        android:id="@+id/item_owner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profile_img"
-        app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+        app:layout_constraintStart_toEndOf="@+id/item_image"
+        app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
     <!-- Complaint -->
     <EditText
@@ -60,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_img"
+        app:layout_constraintTop_toBottomOf="@+id/item_image"
         android:autofillHints="no" />
 
     <!-- Send report button -->
@@ -82,6 +87,5 @@
         android:text="@string/cancel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/report" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

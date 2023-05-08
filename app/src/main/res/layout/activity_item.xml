@@ -3,6 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme.NoActionBar"
@@ -176,15 +177,34 @@
         android:id="@+id/item_delete"
         android:layout_width="48dp"
         android:layout_height="53dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@color/background"
         android:contentDescription="@string/delete_item"
-        app:layout_constraintStart_toStartOf="@+id/item_owner"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_owner"
         app:srcCompat="@android:drawable/ic_menu_delete"
-        app:tint="?attr/colorError" />
+        app:tint="@color/orange"
+        tools:ignore="ImageContrastCheck,VisualLintBounds" />
+
+    <!-- Report user flag -->
+    <ImageButton
+        android:id="@+id/flag"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/background"
+        android:contentDescription="@string/flag"
+        android:scaleType="fitXY"
+        android:clickable="false"
+        android:src="@drawable/flag_alt"
+        app:tint="@color/maroon"
+        app:layout_constraintTop_toBottomOf="@id/item_owner"
+        app:layout_constraintEnd_toEndOf="@id/item_owner"
+        />
 
     <!-- Make offer button -->
     <Button
@@ -195,7 +215,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintStart_toStartOf="@+id/item_owner"
-        app:layout_constraintTop_toBottomOf="@+id/item_owner" />
+        app:layout_constraintTop_toBottomOf="@+id/item_owner"
+        tools:ignore="VisualLintOverlap" />
 
     <!-- See offer button -->
     <Button
@@ -203,9 +224,11 @@
         android:layout_width="108dp"
         android:layout_height="48dp"
         android:text="@string/see_offer"
+        android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintStart_toStartOf="@+id/item_owner"
-        app:layout_constraintTop_toBottomOf="@+id/item_owner" />
+        app:layout_constraintTop_toBottomOf="@+id/item_owner"
+        tools:ignore="VisualLintOverlap"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
