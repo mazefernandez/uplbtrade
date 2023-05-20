@@ -74,4 +74,8 @@
     <string name="chat_image">chat image</string>
     <string name="enter_message">Enter Message</string>
     <string name="cancel_order">cancel order</string>
+    <string name="rotate_picture">rotate picture</string>
+    <string name="add_tag">add tag</string>
+    <string name="delete_tag">delete tag</string>
+    <string name="write_a_tag">Write a Tag...</string>
 </resources>

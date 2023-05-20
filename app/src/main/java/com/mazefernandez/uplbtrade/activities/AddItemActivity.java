@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -50,6 +51,7 @@ public class AddItemActivity extends AppCompatActivity {
     private Integer itemId;
     private ImageSwitcher itemImg;
     private int position = 0;
+    private int rotation = 0;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
     private final ArrayList<String> tagList = new ArrayList<>();
 
@@ -106,8 +108,9 @@ public class AddItemActivity extends AppCompatActivity {
         Button previous = findViewById(R.id.previous);
         Button next = findViewById(R.id.next);
 
-        Button addTag = findViewById(R.id.add_tag);
-        Button deleteTag = findViewById(R.id.delete_tag);
+        ImageButton addTag = findViewById(R.id.add_tag);
+        ImageButton deleteTag = findViewById(R.id.delete_tag);
+        ImageButton rotate = findViewById(R.id.rotate);
 
         Button addItem = findViewById(R.id.add_item);
         Button cancel = findViewById(R.id.cancel);
@@ -116,8 +119,8 @@ public class AddItemActivity extends AppCompatActivity {
         itemImg.setFactory(() -> new ImageView(getApplicationContext()));
 
         /* Initialize ImageSwitcher with animations */
-        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
-        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.fade_out);
         itemImg.setInAnimation(in);
         itemImg.setOutAnimation(out);
 
@@ -237,6 +240,14 @@ public class AddItemActivity extends AppCompatActivity {
                 position = position - 1;
                 itemImg.setImageURI(uriArrayList.get(position));
             }
+        });
+
+        /* Rotate Image */
+        rotate.setOnClickListener(view -> {
+            rotation = (rotation + 90)%360;
+            itemImg.setRotation(rotation);
+            Uri image = uriArrayList.get(position);
+
         });
 
         /* Upload image to item */
