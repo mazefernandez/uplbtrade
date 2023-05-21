@@ -1,16 +1,20 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import static java.lang.System.out;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -48,17 +50,18 @@ public class ItemActivity extends AppCompatActivity {
     private TextView itemName;
     private TextView itemDesc;
     private TextView itemPrice;
-    private ImageView itemImg;
+    private ImageSwitcher itemImg;
     private TextView itemCondition;
     private Button makeOffer;
     private Button seeOffer;
     private int itemId;
-    private int sessionId;
     private int sellerId;
+    private int position = 0;
     private Offer offer;
     private Customer seller;
     private RecyclerView recyclerView;
     private TagAdapter tagAdapter;
+    private final ArrayList<Uri> uriArrayList = new ArrayList<>();
 
     /* Edit item details */
     ActivityResultLauncher<Intent> editItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -105,12 +108,24 @@ public class ItemActivity extends AppCompatActivity {
         itemCondition = findViewById(R.id.item_condition);
         ImageButton itemEdit = findViewById(R.id.item_edit);
         ImageButton itemDelete = findViewById(R.id.item_delete);
+        ImageButton flag = findViewById(R.id.flag);
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
         recyclerView = findViewById(R.id.tags);
+        Button previous = findViewById(R.id.previous);
+        Button next = findViewById(R.id.next);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3,RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
+
+        /* Show all images in ImageSwitcher */
+        itemImg.setFactory(() -> new ImageView(getApplicationContext()));
+
+        /* Initialize ImageSwitcher with animations */
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
+        itemImg.setInAnimation(in);
+        itemImg.setOutAnimation(out);
 
         /* Default visibility for offer */
         seeOffer.setVisibility(View.GONE);
@@ -132,6 +147,7 @@ public class ItemActivity extends AppCompatActivity {
                     if (offers.get(i).getItemId() == itemId) {
                         offer = new Offer(offers.get(i),offers.get(i).getOfferId());
                         seeOffer.setVisibility(View.VISIBLE);
+                        seeOffer.isClickable();
                         makeOffer.setVisibility(View.GONE);
                         break;
                     }
@@ -151,9 +167,12 @@ public class ItemActivity extends AppCompatActivity {
         if (sessionId == sellerId) {
             makeOffer.setVisibility(View.GONE);
             seeOffer.setVisibility(View.GONE);
+            flag.setVisibility(View.GONE);
         }
         else {
             makeOffer.setVisibility(View.VISIBLE);
+            flag.setVisibility(View.VISIBLE);
+            flag.isClickable();
             itemEdit.setVisibility(View.GONE);
             itemDelete.setVisibility(View.GONE);
         }
@@ -219,6 +238,38 @@ public class ItemActivity extends AppCompatActivity {
             });
             itemOwner.setTextColor(Color.BLUE);
         }
+
+        /* Select next image */
+        next.setOnClickListener(view -> {
+            if (position < uriArrayList.size() - 1) {
+                position = position + 1;
+                itemImg.setImageURI(uriArrayList.get(position));
+            }
+            else {
+                Toast.makeText(ItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /* Select previous image */
+        previous.setOnClickListener(view -> {
+            if (position > 0) {
+                position = position - 1;
+                itemImg.setImageURI(uriArrayList.get(position));
+            }
+        });
+
+        flag.setOnClickListener(v -> {
+            Intent intent = new Intent(ItemActivity.this, ReportUserActivity.class);
+            intent.putExtra("ITEM", item);
+            startActivity(intent);
+        });
+    }
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     /* Display Item Details */
@@ -237,14 +288,19 @@ public class ItemActivity extends AppCompatActivity {
         }
         else {
             /* retrieve image from firebase */
-            StorageReference ref = storageReference.child("images/" + item.getImage());
+            String[] split = item.getImage().split("-");
+            String image = split[split.length-1];
+            int size = Integer.parseInt(image);
 
-            final long ONE_MEGABYTE = 1024 * 1024 * 5;
-            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                System.out.println("Successfully read image");
-                itemImg.setImageBitmap(bitmap);
-            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+            for (int i = 0; i<size; i++){
+                StorageReference ref = storageReference.child("images/" + item.getImage() + "/" + i);
+                ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                    uriArrayList.add(uri);
+                    System.out.println("Successfully read image");
+
+
+                }).addOnFailureListener(fail -> out.println("Failed to read image" + fail));
+            }
         }
         itemCondition.setText(item.getCondition());
 
@@ -260,12 +316,12 @@ public class ItemActivity extends AppCompatActivity {
                 Customer customer = response.body();
                 assert customer != null;
                 displayItem(customer,item);
-                System.out.println("Retrieved owner of item");
+                out.println("Retrieved owner of item");
             }
 
             @Override
             public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
-                System.out.println(t.getMessage());
+                out.println(t.getMessage());
             }
         }, item.getCustomerId());
     }
@@ -317,13 +373,13 @@ public class ItemActivity extends AppCompatActivity {
         UPLBTrade.retrofitClient.deleteItem(new Callback<Item>() {
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                System.out.println("Deleted Item");
+                out.println("Deleted Item");
             }
 
             @Override
             public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
-                System.out.println("Failed to delete item");
-                System.out.println(t.getMessage());
+                out.println("Failed to delete item");
+                out.println(t.getMessage());
             }
         }, itemId);
     }

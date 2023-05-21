@@ -49,7 +49,7 @@ public class TransactionsActivity extends AppCompatActivity {
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
         /* SharedPref to save customer_id */
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         int sessionId = pref.getInt("customer_id", -1);
 
         ArrayList<Transaction> transactions = new ArrayList<>();

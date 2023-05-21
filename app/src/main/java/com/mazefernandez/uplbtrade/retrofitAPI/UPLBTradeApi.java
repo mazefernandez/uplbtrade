@@ -5,6 +5,7 @@ import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
+import com.mazefernandez.uplbtrade.models.ItemReport;
 import com.mazefernandez.uplbtrade.models.Offer;
 import com.mazefernandez.uplbtrade.models.Tag;
 import com.mazefernandez.uplbtrade.models.Transaction;
@@ -41,7 +42,7 @@ public interface UPLBTradeApi {
     @GET("/api/customer-reviews/{id}")
     Call<CustomerReview> getCustomerReview();
 
-    @POST("/api/customer-reviews")
+    @POST("/api/customer-reviews/")
     Call<CustomerReview> addCustomerReview(@Body CustomerReview customerReview);
 
     @GET("/api/customer-reviews/customer/{id}")
@@ -98,6 +99,10 @@ public interface UPLBTradeApi {
 
     @DELETE("/api/items/{item_id}")
     Call<Item> deleteItem(@Path("item_id") int itemId);
+
+    /* Item Report Calls */
+    @POST("/api/item-reports")
+    Call<ItemReport> addItemReport(@Body ItemReport itemReport);
 
     /* Tag Calls */
     @POST("/api/tags")

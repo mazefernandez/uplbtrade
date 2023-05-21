@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -20,15 +21,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.adapters.TagAdapter;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Tag;
 
@@ -59,7 +57,6 @@ public class EditItemActivity extends AppCompatActivity {
     private Uri filepath;
     private int itemId;
     private EditText addTags;
-    private ListView tagsList;
     private final ArrayList<Tag> tags = new ArrayList<>();
     private final ArrayList<Tag> newTags = new ArrayList<>();
     private final ArrayList<Tag> deleteTags = new ArrayList<>();
@@ -109,12 +106,14 @@ public class EditItemActivity extends AppCompatActivity {
         itemImg = findViewById(R.id.item_img);
         itemCondition = findViewById(R.id.item_condition);
         addTags = findViewById(R.id.add_tags);
-        tagsList = findViewById(R.id.tags);
+        ListView tagsList = findViewById(R.id.tags);
 
         Button saveItem = findViewById(R.id.save_item);
-        Button addTag = findViewById(R.id.add_tag);
-        Button deleteTag = findViewById(R.id.delete_tag);
         Button cancel = findViewById(R.id.cancel);
+
+        ImageButton addTag = findViewById(R.id.add_tag);
+        ImageButton deleteTag = findViewById(R.id.delete_tag);
+        ImageButton rotate = findViewById(R.id.rotate);
 
         /* listview for tags */
         ArrayAdapter<String> stringAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, tagStrings);
@@ -257,6 +256,11 @@ public class EditItemActivity extends AppCompatActivity {
 
                 deleteTags.add(tag);
             }
+        });
+
+        /* Rotate Image */
+        rotate.setOnClickListener(v -> {
+            itemImg.setRotation(90);
         });
 
         /* Upload image to item */

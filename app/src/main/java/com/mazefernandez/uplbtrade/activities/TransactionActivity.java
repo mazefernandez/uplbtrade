@@ -3,6 +3,7 @@ package com.mazefernandez.uplbtrade.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -46,7 +47,7 @@ public class TransactionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_transaction);
 
         /* SharedPref to save customer_id */
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         sessionId = pref.getInt("customer_id",-1);
 
         date = findViewById(R.id.date);
@@ -57,16 +58,40 @@ public class TransactionActivity extends AppCompatActivity {
         seller = findViewById(R.id.seller);
         price = findViewById(R.id.price);
         Button rate = findViewById(R.id.rate);
+        Button cancelOrder = findViewById(R.id.cancel_order);
 
         Transaction transaction = (Transaction) getIntent().getSerializableExtra("TRANSACTION");
         assert transaction != null;
         transactionId = transaction.getTransactionId();
+
+        itemId = transaction.getItemId();
+        offerId = transaction.getOfferId();
+        sellerId = transaction.getSellerId();
+        buyerId = transaction.getBuyerId();
+
         getTransaction();
+        /* adjust views for buyer and seller */
+        if (sellerId == sessionId) {
+            cancelOrder.setVisibility(View.GONE);
+        }
 
         // go to rating page for transaction
         rate.setOnClickListener(v -> {
-            Intent review = new Intent(TransactionActivity.this, CustomerReview.class);
+            Intent review = new Intent(TransactionActivity.this, ReviewCustomerActivity.class);
+            Bundle reviewInfo = new Bundle();
+            reviewInfo.putInt("TRANSACTION_ID", transactionId);
+
+            if (buyerId == sessionId) {
+                reviewInfo.putInt("CUSTOMER_ID", sellerId);
+            }
+            else {
+                reviewInfo.putInt("CUSTOMER_ID", buyerId);
+            }
+            review.putExtras(reviewInfo);
             startActivity(review);
+        });
+        cancelOrder.setOnClickListener(v ->{
+
         });
 
     }
@@ -77,14 +102,10 @@ public class TransactionActivity extends AppCompatActivity {
         time.setText(transaction.getTime());
         venue.setText(transaction.getVenue());
 
-        itemId = transaction.getItemId();
-        offerId = transaction.getOfferId();
-        sellerId = transaction.getSellerId();
-        buyerId = transaction.getBuyerId();
-
         getItemName();
         getPrice();
         getSellerAndBuyer();
+
     }
 
     /* Retrieve transaction */

@@ -1,5 +1,6 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,7 +22,10 @@ import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.ItemAdapter;
 import com.mazefernandez.uplbtrade.models.Item;
+import com.mazefernandez.uplbtrade.models.Tag;
+import com.mazefernandez.uplbtrade.models.Transaction;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +42,9 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ItemAdapter itemAdapter;
     BottomNavigationView navigation;
+    ArrayList<Tag> tagList = new ArrayList<>();
+    ArrayList<Transaction> transactionList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +75,7 @@ public class HomeActivity extends AppCompatActivity {
                     itemAdapter = new ItemAdapter(itemList);
                     recyclerView.setAdapter(itemAdapter);
                 }
+                System.out.println("Received Items");
             }
 
             @Override
@@ -82,6 +90,7 @@ public class HomeActivity extends AppCompatActivity {
 
         /* Set up home search view */
         homeSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (itemAdapter != null) {
@@ -91,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextChange(String query) {
                 if (itemAdapter != null) {
@@ -100,6 +110,15 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        /* Get tags from users' buyer interactions */
+        getTransactionList(sessionId);
+
+        for (Transaction transaction: transactionList) {
+            getTagList(transaction.getItemId());
+        }
+        
+
 
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
@@ -162,5 +181,40 @@ public class HomeActivity extends AppCompatActivity {
         else {
             Toast.makeText(this,"There's a problem with your Google Play Services, maps may not work.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void getTransactionList(int sessionId){
+        UPLBTrade.retrofitClient.getBuyerTransactions(new Callback<List<Transaction>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Transaction>> call, @NonNull Response<List<Transaction>> response) {
+                assert response.body() != null;
+                transactionList.addAll(response.body());
+                System.out.println("Received buyer transactions");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Transaction>> call, @NonNull Throwable t) {
+                System.out.println("Get Transactions Failed");
+                System.out.println(t.getMessage());
+            }
+        }, sessionId);
+
+    }
+
+    public void getTagList(int itemId) {
+        UPLBTrade.retrofitClient.getTagsFromItem(new Callback<List<Tag>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
+                assert response.body() != null;
+                tagList.addAll(response.body());
+                System.out.println("Received Tags");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
+                System.out.println("Get Tags Failed");
+                System.out.println(t.getMessage());
+            }
+        }, itemId);
     }
 }

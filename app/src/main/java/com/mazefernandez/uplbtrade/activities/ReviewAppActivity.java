@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.ApplicationReview;
-import com.mazefernandez.uplbtrade.models.Item;
 
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -1,10 +1,10 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -45,11 +45,10 @@ public class CustomerProfileActivity extends AppCompatActivity {
     private ImageView profileImg;
     private RatingBar rating;
     private String customerEmail;
-    ImageButton addFriend, flag;
-    SearchView profileSearch;
-    RecyclerView recyclerView;
-    ItemAdapter itemAdapter;
-    DatabaseReference databaseReference;
+    private ImageButton addFriend;
+    private RecyclerView recyclerView;
+    private ItemAdapter itemAdapter;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +62,13 @@ public class CustomerProfileActivity extends AppCompatActivity {
         profileImg = findViewById(R.id.profile_img);
         rating = findViewById(R.id.rating);
         addFriend = findViewById(R.id.add_friend);
-        profileSearch = findViewById(R.id.profile_search);
-        flag = findViewById(R.id.flag);
+        SearchView profileSearch = findViewById(R.id.profile_search);
+        ImageButton flag = findViewById(R.id.flag);
         recyclerView = findViewById(R.id.recycler_view);
 
         /* SharedPref to get customer email */
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        customerEmail = sharedPreferences.getString("customer_email", "-1");
-        String customerName = sharedPreferences.getString("customer_name", "-1");
+        final SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
+        customerEmail = pref.getString("customer_email", "-1");
 
         /* Initialize Firebase database */
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -102,6 +100,7 @@ public class CustomerProfileActivity extends AppCompatActivity {
 
         /* Set up search view */
         profileSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (itemAdapter != null) {
@@ -111,6 +110,7 @@ public class CustomerProfileActivity extends AppCompatActivity {
                 return false;
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextChange(String query) {
                 if (itemAdapter != null) {

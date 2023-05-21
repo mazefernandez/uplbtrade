@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -32,7 +31,7 @@ import java.util.Objects;
 
 public class MessageActivity extends AppCompatActivity {
     ListView chatHistory;
-    ArrayAdapter arrayAdapter;
+    ArrayAdapter<String> arrayAdapter;
     ArrayList<String> messages = new ArrayList<>();
     DatabaseReference reference;
 
@@ -49,8 +48,8 @@ public class MessageActivity extends AppCompatActivity {
         chatHistory = findViewById(R.id.chat_history);
 
         /* SharedPref to get customer email */
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String customerEmail = sharedPreferences.getString("customer_email", "-1");
+        SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
+        String customerEmail = pref.getString("customer_email", "-1");
 
         /* Get message info from messages activity */
         Intent intent = getIntent();
@@ -117,7 +116,7 @@ public class MessageActivity extends AppCompatActivity {
                             messages.add(message);
                         }
                     }
-                    arrayAdapter = new ArrayAdapter(MessageActivity.this, android.R.layout.simple_list_item_1, messages);
+                    arrayAdapter = new ArrayAdapter<>(MessageActivity.this, android.R.layout.simple_list_item_1, messages);
                     chatHistory.setAdapter(arrayAdapter);
                 }
             }

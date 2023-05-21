@@ -1,20 +1,21 @@
 package com.mazefernandez.uplbtrade.activities;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,15 +25,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Tag;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +42,6 @@ import retrofit2.Response;
 /* Upload Item for selling */
 
 public class AddItemActivity extends AppCompatActivity {
-    private ImageView itemImg;
     private EditText itemName;
     private EditText itemDesc;
     private EditText itemPrice;
@@ -52,29 +49,37 @@ public class AddItemActivity extends AppCompatActivity {
     private EditText itemTags;
     private String imgString;
     private Integer itemId;
-    private Bitmap bitmap;
+    private ImageSwitcher itemImg;
+    private int position = 0;
+    private int rotation = 0;
+    private final ArrayList<Uri> uriArrayList = new ArrayList<>();
     private final ArrayList<String> tagList = new ArrayList<>();
 
     /* AR Launchers to replace OnActivityResult */
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();
-            /* get image */
-            if (intent != null) {
-                Uri uri = intent.getData();
-                String[] filePathColumn = {MediaStore.Images.Media._ID};
-                assert uri != null;
-                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                assert cursor != null;
-                cursor.moveToFirst();
-                cursor.close();
-                try {
-                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                    itemImg.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            /* get images */
+            assert intent != null;
+            if (intent.getClipData() != null) {
+                ClipData clipData = intent.getClipData();
+                int count = clipData.getItemCount();
+                /* add all images to array */
+                for (int i=0; i<count; i++) {
+                    Uri url = clipData.getItemAt(i).getUri();
+                    uriArrayList.add(url);
                 }
+                /* display first image */
             }
+            else {
+                Uri url = intent.getData();
+                uriArrayList.add(url);
+            }
+            itemImg.setImageURI(uriArrayList.get(0));
+            position = 0;
+        }
+        else {
+            Toast.makeText(this, "Please pick an image.", Toast.LENGTH_LONG).show();
         }
     });
 
@@ -88,8 +93,8 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
 
         /* Upload Item Views */
-        itemImg = findViewById(R.id.item_img);
         FloatingActionButton addItemImg = findViewById(R.id.add_item_img);
+        itemImg = findViewById(R.id.item_img);
         itemName = findViewById(R.id.item_name);
         itemDesc = findViewById(R.id.item_desc);
         itemPrice = findViewById(R.id.offer);
@@ -100,11 +105,24 @@ public class AddItemActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        Button addTag = findViewById(R.id.add_tag);
-        Button deleteTag = findViewById(R.id.delete_tag);
+        Button previous = findViewById(R.id.previous);
+        Button next = findViewById(R.id.next);
+
+        ImageButton addTag = findViewById(R.id.add_tag);
+        ImageButton deleteTag = findViewById(R.id.delete_tag);
+        ImageButton rotate = findViewById(R.id.rotate);
 
         Button addItem = findViewById(R.id.add_item);
         Button cancel = findViewById(R.id.cancel);
+
+        /* Show all images in ImageSwitcher */
+        itemImg.setFactory(() -> new ImageView(getApplicationContext()));
+
+        /* Initialize ImageSwitcher with animations */
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.fade_out);
+        itemImg.setInAnimation(in);
+        itemImg.setOutAnimation(out);
 
         /* ArrayAdapter for condition spinner */
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
@@ -123,38 +141,27 @@ public class AddItemActivity extends AppCompatActivity {
         String string_condition = itemCondition.getSelectedItem().toString();
         Double double_price = Double.parseDouble(string_price);
 
-        /* save image to file */
-        File fileDirectory = getApplicationContext().getFilesDir();
-        File file = new File(fileDirectory,"image.jpeg");
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,30, bos);
-        byte[] bitmapData = bos.toByteArray();
-
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(bitmapData);
-            fos.flush();
-            fos.close();
-        }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
-
         /* Get current user */
         int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
 
         /* Upload image to firebase storage */
         imgString = UUID.randomUUID().toString();
-        StorageReference ref = storageReference.child("images/" + imgString);
+        int size = uriArrayList.size();
+        imgString = imgString + "-" + size;
+        int i;
+        for (i = 0; i<uriArrayList.size(); i++) {
+            Uri file = uriArrayList.get(i);
+            StorageReference ref = storageReference.child("images/" + imgString + "/" + i);
+            UploadTask uploadTask = ref.putFile(file);
 
-        ref.putBytes(bitmapData).addOnSuccessListener(success -> {
-            // Image uploaded successfully
-            System.out.println("image uploaded successfully");
-        }).addOnFailureListener(failure -> {
-            // Image upload fail
-            System.out.println("image failed to upload");
-        });
+            uploadTask.addOnSuccessListener(t -> {
+                System.out.println("Uploaded image");
+                System.out.println(t.getMetadata());
+            }).addOnFailureListener(t -> {
+                System.out.println("Failed to upload image");
+                System.out.println(t.getMessage());
+            });
+        }
 
         /* Add item to database */
         Item item = new Item(string_name, string_desc, double_price, imgString, string_condition, customerId);
@@ -216,12 +223,38 @@ public class AddItemActivity extends AppCompatActivity {
             }
         });
 
+        /* Select next image */
+        next.setOnClickListener(view -> {
+            if (position < uriArrayList.size() - 1) {
+                position = position + 1;
+                itemImg.setImageURI(uriArrayList.get(position));
+            }
+            else {
+                Toast.makeText(AddItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /* Select previous image */
+        previous.setOnClickListener(view -> {
+            if (position > 0) {
+                position = position - 1;
+                itemImg.setImageURI(uriArrayList.get(position));
+            }
+        });
+
+        /* Rotate Image */
+        rotate.setOnClickListener(view -> {
+            rotation = (rotation + 90)%360;
+            itemImg.setRotation(rotation);
+            Uri image = uriArrayList.get(position);
+
+        });
+
         /* Upload image to item */
         addItemImg.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setType("image/*");
-            String[] mimeTypes = {"image/jpeg", "image/png"};
-            intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             intent.setAction(Intent.ACTION_GET_CONTENT);
             selectImage.launch(Intent.createChooser(intent, "Select Picture"));
         });
@@ -254,6 +287,7 @@ public class AddItemActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
                 System.out.println("Failed to add tags");
                 System.out.println(t.getMessage());
+                System.out.println(tags);
             }
         }, tags);
     }

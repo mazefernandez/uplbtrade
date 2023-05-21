@@ -1,12 +1,11 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -132,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         /* Set up search view */
         profileSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (itemAdapter != null) {
@@ -141,6 +141,7 @@ public class ProfileActivity extends AppCompatActivity {
                 return false;
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextChange(String query) {
                 if (itemAdapter != null) {
@@ -156,7 +157,8 @@ public class ProfileActivity extends AppCompatActivity {
         final Menu menu = settingsMenu.getMenu();
 
         menu.add(0,0,0, "Rate App");
-        menu.add(0,1,0,"Sign Out");
+        menu.add(0,1,0, "Chat with Admin");
+        menu.add(0,2,0,"Sign Out");
 
         settingsMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
@@ -165,8 +167,13 @@ public class ProfileActivity extends AppCompatActivity {
                     Intent review = new Intent(ProfileActivity.this, ReviewAppActivity.class);
                     startActivity(review);
                     return true;
-                /* Sign out */
+                /* Admin Chat */
                 case 1:
+                    Intent chat = new Intent(ProfileActivity.this, AdminChatActivity.class);
+                    startActivity(chat);
+                    return true;
+                /* Sign out */
+                case 2:
                     googleSIC.signOut().addOnCompleteListener(task -> {
                         Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -266,7 +273,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
         profileName.setText(account.getDisplayName());
 
-        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
         /* Get customer data */

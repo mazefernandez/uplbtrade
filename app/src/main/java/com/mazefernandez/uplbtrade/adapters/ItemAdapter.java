@@ -57,7 +57,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         }
         else {
             /* retrieve image from firebase */
-            StorageReference ref = storageReference.child("images/"+itemListFiltered.get(position).getImage());
+            StorageReference ref = storageReference.child("images/"+itemListFiltered.get(position).getImage()+"/0");
 
             final long ONE_MEGABYTE = 1024 * 1024 * 5;
             ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {

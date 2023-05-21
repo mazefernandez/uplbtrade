@@ -3,9 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mazefernandez.uplbtrade">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -25,26 +29,30 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="s">
         <activity
-            android:name=".activities.CustomerProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".activities.ReportItemActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.CustomerProfileActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MessageActivity"
+            android:exported="false"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.MessagesActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ReviewCustomerActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ReviewAppActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/title_activity_review_app" />
+            android:label="@string/title_activity_review_app"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.TransactionsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -66,6 +74,11 @@
         <activity
             android:name=".activities.HomeActivity"
             android:label="home"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.AdminChatActivity"
+            android:label="adminchat"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
@@ -92,7 +105,8 @@
         <activity
             android:name=".activities.ItemActivity"
             android:label="item"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.EditProfileActivity"
             android:label="edit_profile"
@@ -100,10 +114,13 @@
         <activity
             android:name=".activities.AddItemActivity"
             android:label="add_item"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.EditItemActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
