@@ -1,39 +1,38 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import static java.lang.System.out;
+
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.ImageSwitcher;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Tag;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,14 +48,16 @@ public class EditItemActivity extends AppCompatActivity {
     private EditText itemName;
     private EditText itemDesc;
     private EditText itemPrice;
-    private ImageView itemImg;
+    private ImageSwitcher itemImg;
     private Spinner itemCondition;
     private Bundle itemInfo;
     private String imgString;
-    private Bitmap bitmap;
-    private Uri filepath;
     private int itemId;
+    private int position = 0;
     private EditText addTags;
+    private ChipGroup chipGroup;
+    private final ArrayList<Uri> uriArrayList = new ArrayList<>();
+    private final ArrayList<String> tagList = new ArrayList<>();
     private final ArrayList<Tag> tags = new ArrayList<>();
     private final ArrayList<Tag> newTags = new ArrayList<>();
     private final ArrayList<Tag> deleteTags = new ArrayList<>();
@@ -67,23 +68,27 @@ public class EditItemActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();
-            /* get image */
-            if (intent != null) {
-                Uri uri = intent.getData();
-                filepath = uri;
-                String[] filePathColumn = {MediaStore.Images.Media._ID};
-                assert uri != null;
-                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                assert cursor != null;
-                cursor.moveToFirst();
-                cursor.close();
-                try {
-                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                    itemImg.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            /* get images */
+            assert intent != null;
+            if (intent.getClipData() != null) {
+                ClipData clipData = intent.getClipData();
+                int count = clipData.getItemCount();
+                /* add all images to array */
+                for (int i=0; i<count; i++) {
+                    Uri url = clipData.getItemAt(i).getUri();
+                    uriArrayList.add(url);
                 }
+                /* display first image */
             }
+            else {
+                Uri url = intent.getData();
+                uriArrayList.add(url);
+            }
+            itemImg.setImageURI(uriArrayList.get(0));
+            position = 0;
+        }
+        else {
+            Toast.makeText(this, "Please pick an image.", Toast.LENGTH_LONG).show();
         }
     });
 
@@ -95,8 +100,6 @@ public class EditItemActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
 
-
-
         /* Edit Item Views */
         FloatingActionButton addItemImg = findViewById(R.id.add_item_img);
         itemOwner = findViewById(R.id.item_owner);
@@ -106,18 +109,15 @@ public class EditItemActivity extends AppCompatActivity {
         itemImg = findViewById(R.id.item_img);
         itemCondition = findViewById(R.id.item_condition);
         addTags = findViewById(R.id.add_tags);
-        ListView tagsList = findViewById(R.id.tags);
+        chipGroup = findViewById(R.id.chip_group);
 
         Button saveItem = findViewById(R.id.save_item);
         Button cancel = findViewById(R.id.cancel);
+        Button next = findViewById(R.id.next);
+        Button previous = findViewById(R.id.previous);
 
         ImageButton addTag = findViewById(R.id.add_tag);
-        ImageButton deleteTag = findViewById(R.id.delete_tag);
         ImageButton rotate = findViewById(R.id.rotate);
-
-        /* listview for tags */
-        ArrayAdapter<String> stringAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, tagStrings);
-        tagsList.setAdapter(stringAdapter);
 
         /* ArrayAdapter for condition spinner */
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
@@ -143,39 +143,26 @@ public class EditItemActivity extends AppCompatActivity {
             String condition = itemCondition.getSelectedItem().toString();
             Double double_price = Double.parseDouble(price);
 
-            /* save image to file */
-            if (bitmap != null) {
-                File fileDirectory = getApplicationContext().getFilesDir();
-                File file = new File(fileDirectory,"image.jpeg");
+            /* Upload image to firebase storage */
+            imgString = UUID.randomUUID().toString();
+            int size = uriArrayList.size();
+            imgString = imgString + "-" + size;
+            int i;
+            for (i = 0; i < uriArrayList.size(); i++) {
+                Uri file = uriArrayList.get(i);
+                StorageReference ref = storageReference.child("images/" + imgString + "/" + i);
+                UploadTask uploadTask = ref.putFile(file);
 
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG,0, bos);
-                byte[] bitmapData = bos.toByteArray();
-
-                try {
-                    FileOutputStream fos = new FileOutputStream(file);
-                    fos.write(bitmapData);
-                    fos.flush();
-                    fos.close();
-                }
-                catch(IOException e) {
-                    e.printStackTrace();
-                }
-
-                /* Upload image to firebase storage */
-                imgString = UUID.randomUUID().toString();
-                StorageReference ref = storageReference.child("images/" + imgString);
-
-                ref.putFile(filepath).addOnSuccessListener(success -> {
-                    // Image uploaded successfully
-                    System.out.println("image uploaded successfully");
-                }).addOnFailureListener(failure -> {
-                    // Image upload fail
-                    System.out.println("image failed to upload");
+                uploadTask.addOnSuccessListener(t -> {
+                    System.out.println("Uploaded image");
+                    System.out.println(t.getMetadata());
+                }).addOnFailureListener(t -> {
+                    System.out.println("Failed to upload image");
+                    System.out.println(t.getMessage());
                 });
             }
 
-            if (imgString == null) {
+            if (uriArrayList.isEmpty()) {
                 imgString = itemInfo.getString("IMAGE");
             }
 
@@ -239,36 +226,36 @@ public class EditItemActivity extends AppCompatActivity {
             {
                 Tag tag = new Tag(newTag, itemId);
                 tags.add(tag);
-                stringAdapter.add(newTag);
-
                 newTags.add(tag);
             }
         });
 
-        /* Delete Tag to tags list for new item */
-        deleteTag.setOnClickListener(v -> {
-            String newTag = addTags.getText().toString();
-            if(newTag.length() > 0)
-            {
-                Tag tag = new Tag(newTag, itemId);
-                tags.remove(tag);
-                stringAdapter.remove(newTag);
+        /* Rotate Image */
+        rotate.setOnClickListener(v -> itemImg.setRotation(90));
 
-                deleteTags.add(tag);
+        /* Select next image */
+        next.setOnClickListener(view -> {
+            if (position < uriArrayList.size() - 1) {
+                position = position + 1;
+                itemImg.setImageURI(uriArrayList.get(position));
+            } else {
+                Toast.makeText(EditItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        /* Rotate Image */
-        rotate.setOnClickListener(v -> {
-            itemImg.setRotation(90);
+        /* Select previous image */
+        previous.setOnClickListener(view -> {
+            if (position > 0) {
+                position = position - 1;
+                itemImg.setImageURI(uriArrayList.get(position));
+            }
         });
 
         /* Upload image to item */
         addItemImg.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setType("image/*");
-            String[] mimeTypes = {"image/jpeg", "image/png"};
-            intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             intent.setAction(Intent.ACTION_GET_CONTENT);
             selectImage.launch(Intent.createChooser(intent, "Select Picture"));
         });
@@ -312,15 +299,35 @@ public class EditItemActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
 
-        /* retrieve image from firebase */
-        StorageReference ref = storageReference.child("images/" + itemInfo.getString("IMAGE"));
+        /* retrieve size of folder of images from firebase */
+        if (itemInfo.getString("IMAGE") == null) {
+            itemImg.setImageResource(R.drawable.placeholder);
+        }
+        else {
+            /* retrieve image from firebase */
+            String[] split = itemInfo.getString("IMAGE").split("-");
+            String image = split[split.length - 1];
+            int size = Integer.parseInt(image);
 
-        final long ONE_MEGABYTE = 1024 * 1024 * 5;
-        ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            System.out.println("Successfully read image");
-            itemImg.setImageBitmap(bitmap);
-        }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+            for (int i = 0; i < size; i++) {
+                StorageReference ref = storageReference.child("images/" + itemInfo.getString("IMAGE") + "/" + i);
+                ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                    uriArrayList.add(uri);
+                    System.out.println("Successfully read image");
+
+                }).addOnFailureListener(fail -> out.println("Failed to read image" + fail));
+            }
+        }
 
     }
+    public void addChip(String tag) {
+        Chip chip = new Chip(getApplicationContext());
+        chip.setText(tag);
+        chip.setCloseIconVisible(true);
+        chip.setClickable(true);
+        chip.setCheckable(false);
+        chipGroup.addView(chip);
+        chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
+    }
+
 }

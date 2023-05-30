@@ -8,17 +8,18 @@
     android:background="@color/background">
 
     <!-- Item image -->
-    <ImageView
+    <ImageSwitcher
         android:id="@+id/item_img"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/item_image"
         android:foregroundGravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="@+id/item_name"
+        app:layout_constraintStart_toStartOf="@+id/item_name"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Edit Item FAB -->
@@ -34,7 +35,8 @@
         android:contentDescription="@string/edit_item"
         android:focusable="true"
         android:src="@android:drawable/ic_menu_camera"
-        android:tint="@color/white"
+        app:backgroundTint="@color/orange"
+        app:tint="@color/white"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="@+id/item_img"
         app:layout_constraintStart_toEndOf="@+id/item_img"
@@ -57,6 +59,32 @@
         tools:ignore="ImageContrastCheck"
         tools:src="@android:drawable/ic_menu_rotate" />
 
+    <!-- previous picture-->
+    <Button
+        android:id="@+id/previous"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/previous"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintStart_toStartOf="@id/rotate"
+        app:layout_constraintTop_toBottomOf="@id/item_img" />
+
+    <!-- next picture -->
+    <Button
+        android:id="@+id/next"
+        android:layout_width="90dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/next"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintEnd_toEndOf="@id/add_item_img"
+        app:layout_constraintTop_toBottomOf="@id/item_img" />
+
     <!-- Item owner's name -->
     <TextView
         android:id="@+id/item_owner"
@@ -65,12 +93,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
         android:background="@color/white"
-        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintBottom_toTopOf="@+id/cancel"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chip_group"
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Item name -->
@@ -84,33 +109,28 @@
         android:layout_marginBottom="8dp"
         android:autofillHints="@string/item_name"
         android:background="@color/white"
-        android:gravity="center"
         android:hint="@string/item_name"
         android:inputType="text"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_img" />
+        app:layout_constraintTop_toBottomOf="@+id/previous" />
 
     <!-- Description -->
     <EditText
         android:id="@+id/item_desc"
         android:layout_width="395dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:autofillHints="@string/item_desc"
         android:background="@color/white"
-        android:gravity="center"
         android:hint="@string/item_desc"
         android:inputType="textMultiLine"
+        android:gravity="top"
         android:lines="4"
         android:maxLines="4"
-        android:minLines="4"
+        android:minLines="3"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
@@ -125,11 +145,9 @@
         android:layout_marginBottom="8dp"
         android:autofillHints="@string/price"
         android:background="@color/white"
-        android:gravity="center"
         android:hint="@string/item_price"
         android:inputType="text|numberDecimal"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
@@ -144,18 +162,17 @@
         android:layout_marginBottom="8dp"
         android:autofillHints="condition"
         android:contentDescription="@string/item_condition"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer" />
 
     <!-- Item tags -->
     <EditText
         android:id="@+id/add_tags"
-        android:layout_width="280dp"
+        android:layout_width="340dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:autofillHints="add tags"
         android:hint="@string/write_a_tag"
         android:inputType="text"
@@ -163,22 +180,18 @@
         app:layout_constraintStart_toStartOf="@id/item_condition"
         app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
-    <ListView
-        android:id="@+id/tags"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group"
         android:layout_width="395dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:scrollbars="horizontal"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/white"
-        android:padding="8dp"
-        android:scrollbars="horizontal"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/item_owner"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_tags" />
+        app:layout_constraintTop_toBottomOf="@+id/add_tags"
+        app:layout_constraintBottom_toTopOf="@id/item_owner"/>
 
     <!-- add tag -->
     <ImageButton
@@ -188,7 +201,6 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/orange"
         android:clickable="true"
@@ -197,53 +209,34 @@
         android:src="@android:drawable/ic_input_add"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toStartOf="@id/delete_tag"
-        app:layout_constraintTop_toBottomOf="@+id/item_condition"
-        app:tint="@color/white" />
-
-    <!-- delete tag -->
-    <ImageButton
-        android:id="@+id/delete_tag"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/maroon"
-        android:contentDescription="@string/delete_tag"
-        android:fontFamily="sans-serif"
-        android:src="@android:drawable/ic_delete"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/white"
-        android:typeface="sans"
-        app:layout_constraintEnd_toEndOf="@id/item_condition"
+        app:layout_constraintEnd_toEndOf="@+id/item_condition"
         app:layout_constraintTop_toBottomOf="@+id/item_condition"
         app:tint="@color/white" />
 
     <!-- Save the item's details -->
     <Button
         android:id="@+id/save_item"
-        android:layout_width="90dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
         android:text="@string/save"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintTop_toBottomOf="@id/item_owner"
         app:layout_constraintEnd_toEndOf="@+id/item_owner" />
 
     <!-- Cancel button -->
     <Button
         android:id="@+id/cancel"
-        android:layout_width="90dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         android:text="@string/cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/item_owner" />
+        app:layout_constraintStart_toStartOf="@id/item_owner"
+        app:layout_constraintTop_toBottomOf="@id/item_owner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

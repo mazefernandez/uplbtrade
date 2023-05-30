@@ -10,8 +10,8 @@
     <!-- Profile picture -->
     <ImageView
         android:id="@+id/profile_img"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/profile"
@@ -22,44 +22,39 @@
     <!-- User name -->
     <TextView
         android:id="@+id/profile_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="260dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toTopOf="@+id/profile_img" />
 
     <!-- User contact number -->
     <TextView
         android:id="@+id/contactNo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="260dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:textAppearance="@style/TextAppearance.Compat.Notification"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_name" />
 
     <!-- Complaint -->
     <EditText
         android:id="@+id/report"
-        android:layout_width="380dp"
+        android:layout_width="395dp"
         android:layout_height="200dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:hint="@string/complaint"
         android:gravity="top"
         android:inputType="textMultiLine"
         android:lines="4"
         android:maxLines="4"
         android:minLines="4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_img"
         android:autofillHints="no" />
 
@@ -69,8 +64,11 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/send"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintEnd_toEndOf="@+id/report"
         app:layout_constraintTop_toBottomOf="@+id/report" />
 
     <!-- cancel report button -->
@@ -79,8 +77,11 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/cancel"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintStart_toStartOf="@+id/report"
         app:layout_constraintTop_toBottomOf="@+id/report" />
 
 

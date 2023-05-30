@@ -11,8 +11,8 @@
 
     <TextView
         android:id="@+id/date"
-        android:layout_width="92dp"
-        android:layout_height="40dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,39 +22,28 @@
 
     <TextView
         android:id="@+id/time"
-        android:layout_width="92dp"
-        android:layout_height="40dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Venue -->
-
-    <!-- Item name   -->
-
-    <!-- Seller -->
-
     <TextView
         android:id="@+id/venue"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="20dp"
-        android:gravity="center"
         android:layout_marginHorizontal="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/date"
         app:layout_constraintTop_toBottomOf="@+id/item" />
 
     <TextView
         android:id="@+id/item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="20dp"
-        android:gravity="center"
         android:layout_marginHorizontal="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date">
 
@@ -63,11 +52,9 @@
     <TextView
         android:id="@+id/seller"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginHorizontal="30dp"
-        android:gravity="center"
         android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buyer">
 
@@ -76,11 +63,9 @@
     <TextView
         android:id="@+id/buyer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="20dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price">
 
@@ -91,11 +76,9 @@
     <TextView
         android:id="@+id/price"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="20dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/venue">
 
@@ -107,20 +90,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel_order"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/seller"
+        app:layout_constraintStart_toStartOf="@id/seller" />
 
     <Button
         android:id="@+id/rate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/rate"
-        android:layout_marginBottom="50dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/seller"
+        app:layout_constraintEnd_toEndOf="@id/seller"
         >
 
     </Button>

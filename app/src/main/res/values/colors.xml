@@ -12,4 +12,6 @@
     <color name="orange">#F16334</color>
     <color name="maroon">#800000</color>
     <color name="off_white">#FBFCFD</color>
+    <color name="dark_grey">#414A4C</color>
+    <color name="silver">#C0C0C0</color>
 </resources>

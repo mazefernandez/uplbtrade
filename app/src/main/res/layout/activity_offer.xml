@@ -11,16 +11,13 @@
     <!-- Item image -->
     <ImageView
         android:id="@+id/offer_img"
-        android:layout_width="0dp"
-        android:layout_height="260dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="?attr/colorBackgroundFloating"
         android:contentDescription="@string/item_image"
-        android:foregroundGravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,15 +25,12 @@
     <!-- Item name -->
     <TextView
         android:id="@+id/offer_name"
-        android:layout_width="0dp"
-        android:layout_height="47dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@color/white"
-        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,120 +39,99 @@
     <!-- original offer price -->
     <TextView
         android:id="@+id/original_price"
-        android:layout_width="0dp"
-        android:layout_height="28dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@color/white"
-        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_name" />
 
     <!-- offer price of customer buying -->
     <TextView
         android:id="@+id/offer_price"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@color/white"
-        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/original_price" />
 
     <!-- status if pending/declined/accepted -->
     <TextView
         android:id="@+id/offer_status"
-        android:layout_width="0dp"
-        android:layout_height="28dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@color/white"
-        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_message" />
 
     <!-- offer message -->
     <TextView
         android:id="@+id/offer_message"
-        android:layout_width="0dp"
-        android:layout_height="64dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@color/white"
-        android:gravity="center"
         android:lines="4"
         android:maxLines="4"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_price" />
 
     <!-- Seller of the item -->
     <TextView
         android:id="@+id/offer_seller"
-        android:layout_width="0dp"
-        android:layout_height="29dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@color/white"
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_buyer" />
 
     <!-- buyer of the item -->
     <TextView
         android:id="@+id/offer_buyer"
-        android:layout_width="0dp"
-        android:layout_height="28dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@color/white"
-        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_status" />
 
     <!-- accept button -->
     <Button
         android:id="@+id/accept"
-        android:layout_width="83dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         android:text="@string/accept"
         app:layout_constraintEnd_toEndOf="@+id/offer_seller"
         app:layout_constraintTop_toBottomOf="@+id/offer_seller" />
@@ -166,11 +139,13 @@
     <!-- declination button -->
     <Button
         android:id="@+id/decline"
-        android:layout_width="83dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/decline"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         app:layout_constraintStart_toStartOf="@+id/offer_seller"
         app:layout_constraintTop_toBottomOf="@+id/offer_seller" />
 
@@ -179,7 +154,6 @@
         android:id="@+id/offer_delete"
         android:layout_width="48dp"
         android:layout_height="53dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/background"
@@ -198,9 +172,11 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:text="@string/meet_up"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        android:clickable="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
-        app:layout_constraintStart_toStartOf="@+id/offer_seller"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_seller" />
 
 

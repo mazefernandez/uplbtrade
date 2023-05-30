@@ -9,16 +9,18 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/rate_prompt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
+        android:labelFor="@id/rating_bar"
         android:text="@string/customer_review_prompt"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextSizeCheck">
 
     </androidx.appcompat.widget.AppCompatTextView>
 
@@ -26,24 +28,22 @@
         android:id="@+id/rating_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:isIndicator="false"
         android:numStars="5"
         android:stepSize="0.5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/review"
+        app:layout_constraintStart_toStartOf="@id/review"
         app:layout_constraintTop_toBottomOf="@+id/rate_prompt" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/feedback_prompt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         android:text="@string/comment"
-        android:paddingHorizontal="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:labelFor="@id/review"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rating_bar">
 
@@ -51,11 +51,13 @@
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/review"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="395dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/feedback_prompt"
-        tools:layout_editor_absoluteX="0dp">
+        >
 
     </androidx.appcompat.widget.AppCompatEditText>
 
@@ -63,11 +65,12 @@
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="8dp"
         android:text="@string/submit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@id/review"
         app:layout_constraintTop_toBottomOf="@+id/review">
 
     </Button>

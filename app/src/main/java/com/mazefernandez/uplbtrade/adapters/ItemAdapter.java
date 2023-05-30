@@ -24,15 +24,14 @@ import com.mazefernandez.uplbtrade.activities.ItemActivity;
 import com.mazefernandez.uplbtrade.models.Item;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /* Binds values of item information to views */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements Filterable {
-    private final List<Item> itemList;
-    private List<Item> itemListFiltered;
+    private final ArrayList<Item> itemList;
+    private ArrayList<Item> itemListFiltered;
 
 
-    public ItemAdapter(List<Item> itemList) {
+    public ItemAdapter(ArrayList<Item> itemList) {
         this.itemList = itemList;
         this.itemListFiltered = itemList;
     }
@@ -90,7 +89,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 if (charString.isEmpty()) {
                     itemListFiltered = itemList;
                 } else {
-                    List<Item> filteredList = new ArrayList<>();
+                    ArrayList<Item> filteredList = new ArrayList<>();
                     for (Item item : itemList) {
                         if (item.getItemName().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(item);
@@ -106,7 +105,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             @SuppressLint("NotifyDataSetChanged")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                itemListFiltered = (List<Item>) results.values;
+                itemListFiltered = (ArrayList<Item>) results.values;
                 notifyDataSetChanged();
             }
         };

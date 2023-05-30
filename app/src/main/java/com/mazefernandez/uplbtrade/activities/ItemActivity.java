@@ -23,14 +23,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.adapters.TagAdapter;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -59,8 +57,6 @@ public class ItemActivity extends AppCompatActivity {
     private int position = 0;
     private Offer offer;
     private Customer seller;
-    private RecyclerView recyclerView;
-    private TagAdapter tagAdapter;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
 
     /* Edit item details */
@@ -111,12 +107,9 @@ public class ItemActivity extends AppCompatActivity {
         ImageButton flag = findViewById(R.id.flag);
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
-        recyclerView = findViewById(R.id.tags);
+        ChipGroup chipGroup = findViewById(R.id.tags);
         Button previous = findViewById(R.id.previous);
         Button next = findViewById(R.id.next);
-
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3,RecyclerView.VERTICAL,false);
-        recyclerView.setLayoutManager(layoutManager);
 
         /* Show all images in ImageSwitcher */
         itemImg.setFactory(() -> new ImageView(getApplicationContext()));
@@ -334,8 +327,7 @@ public class ItemActivity extends AppCompatActivity {
                 ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
                 assert tags != null;
                 ArrayList<Tag> tagList = new ArrayList<>(tags);
-                tagAdapter = new TagAdapter(tagList);
-                recyclerView.setAdapter(tagAdapter);
+                //TODO add tags to chip group
             }
 
             @Override

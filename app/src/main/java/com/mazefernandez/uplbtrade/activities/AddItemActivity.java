@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -22,6 +21,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -52,6 +53,7 @@ public class AddItemActivity extends AppCompatActivity {
     private ImageSwitcher itemImg;
     private int position = 0;
     private int rotation = 0;
+    private ChipGroup chipGroup;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
     private final ArrayList<String> tagList = new ArrayList<>();
 
@@ -100,7 +102,7 @@ public class AddItemActivity extends AppCompatActivity {
         itemPrice = findViewById(R.id.offer);
         itemCondition = findViewById(R.id.item_condition);
         itemTags = findViewById(R.id.tags);
-        ListView tagsList = findViewById(R.id.tag_list);
+        chipGroup = findViewById(R.id.chip_group);
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -109,7 +111,6 @@ public class AddItemActivity extends AppCompatActivity {
         Button next = findViewById(R.id.next);
 
         ImageButton addTag = findViewById(R.id.add_tag);
-        ImageButton deleteTag = findViewById(R.id.delete_tag);
         ImageButton rotate = findViewById(R.id.rotate);
 
         Button addItem = findViewById(R.id.add_item);
@@ -119,8 +120,8 @@ public class AddItemActivity extends AppCompatActivity {
         itemImg.setFactory(() -> new ImageView(getApplicationContext()));
 
         /* Initialize ImageSwitcher with animations */
-        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.fade_in);
-        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.fade_out);
+        Animation in = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
         itemImg.setInAnimation(in);
         itemImg.setOutAnimation(out);
 
@@ -129,97 +130,68 @@ public class AddItemActivity extends AppCompatActivity {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         itemCondition.setAdapter(spinnerAdapter);
 
-        /* listview for tags */
-        ArrayAdapter<String> stringAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, tagList);
-        tagsList.setAdapter(stringAdapter);
-
         /* New Item */
         addItem.setOnClickListener(v -> {
-        String string_name = itemName.getText().toString();
-        String string_desc = itemDesc.getText().toString();
-        String string_price = itemPrice.getText().toString();
-        String string_condition = itemCondition.getSelectedItem().toString();
-        Double double_price = Double.parseDouble(string_price);
+            String string_name = itemName.getText().toString();
+            String string_desc = itemDesc.getText().toString();
+            String string_price = itemPrice.getText().toString();
+            String string_condition = itemCondition.getSelectedItem().toString();
+            Double double_price = Double.parseDouble(string_price);
 
-        /* Get current user */
-        int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
+            /* Get current user */
+            int customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
 
-        /* Upload image to firebase storage */
-        imgString = UUID.randomUUID().toString();
-        int size = uriArrayList.size();
-        imgString = imgString + "-" + size;
-        int i;
-        for (i = 0; i<uriArrayList.size(); i++) {
-            Uri file = uriArrayList.get(i);
-            StorageReference ref = storageReference.child("images/" + imgString + "/" + i);
-            UploadTask uploadTask = ref.putFile(file);
+            /* Upload image to firebase storage */
+            imgString = UUID.randomUUID().toString();
+            int size = uriArrayList.size();
+            imgString = imgString + "-" + size;
+            int i;
+            for (i = 0; i < uriArrayList.size(); i++) {
+                Uri file = uriArrayList.get(i);
+                StorageReference ref = storageReference.child("images/" + imgString + "/" + i);
+                UploadTask uploadTask = ref.putFile(file);
 
-            uploadTask.addOnSuccessListener(t -> {
-                System.out.println("Uploaded image");
-                System.out.println(t.getMetadata());
-            }).addOnFailureListener(t -> {
-                System.out.println("Failed to upload image");
-                System.out.println(t.getMessage());
-            });
-        }
-
-        /* Add item to database */
-        Item item = new Item(string_name, string_desc, double_price, imgString, string_condition, customerId);
-
-        UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
-            @Override
-            public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                System.out.println("Added Item");
-                System.out.println(response.body());
-            }
-            @Override
-            public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
-                System.out.println("Failed to add item");
-                System.out.println(t.getMessage());
-            }
-        }, item);
-
-        UPLBTrade.retrofitClient.getItemByImg(new Callback<Item>() {
-            @Override
-            public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
-                Item item = response.body();
-                assert item != null;
-                itemId = item.getItemId();
-                System.out.println("Received item_id");
-                System.out.println(response.body());
-                updateTags(itemId);
+                uploadTask.addOnSuccessListener(t -> {
+                    System.out.println("Uploaded image");
+                    System.out.println(t.getMetadata());
+                }).addOnFailureListener(t -> {
+                    System.out.println("Failed to upload image");
+                    System.out.println(t.getMessage());
+                });
             }
 
-            @Override
-            public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
-                System.out.println("Failed to receive item_id");
-                System.out.println(t.getMessage());
-            }
-        }, imgString);
+            /* Add item to database */
+            Item item = new Item(string_name, string_desc, double_price, imgString, string_condition, customerId);
 
-        /* Return to profile */
-        Intent intent = new Intent();
-        intent.putExtra("CHECK", 1);
+            UPLBTrade.retrofitClient.addItem(new Callback<Item>() {
+                @Override
+                public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
+                    System.out.println("Added Item");
+                    System.out.println(response.body());
+                    getItemFromImage(imgString);
+                }
 
-        setResult(RESULT_OK,intent);
-        finish();
+                @Override
+                public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
+                    System.out.println("Failed to add item");
+                    System.out.println(t.getMessage());
+                }
+            }, item);
+
+            /* Return to profile */
+            Intent intent = new Intent();
+            intent.putExtra("CHECK", 1);
+
+            setResult(RESULT_OK, intent);
+            finish();
         });
 
         /* Add Tag to tags list for new item */
         addTag.setOnClickListener(v -> {
             String newTag = itemTags.getText().toString();
-            if(newTag.length() > 0)
-            {
-                stringAdapter.add(newTag);
-            }
-        });
-
-        /* Delete Tag to tags list for new item */
-        deleteTag.setOnClickListener(v -> {
-            String newTag = itemTags.getText().toString();
-            if(newTag.length() > 0)
-            {
-                stringAdapter.remove(newTag);
+            if (newTag.length() > 0) {
+                addChip(newTag);
+                tagList.add(newTag);
             }
         });
 
@@ -228,8 +200,7 @@ public class AddItemActivity extends AppCompatActivity {
             if (position < uriArrayList.size() - 1) {
                 position = position + 1;
                 itemImg.setImageURI(uriArrayList.get(position));
-            }
-            else {
+            } else {
                 Toast.makeText(AddItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -244,9 +215,8 @@ public class AddItemActivity extends AppCompatActivity {
 
         /* Rotate Image */
         rotate.setOnClickListener(view -> {
-            rotation = (rotation + 90)%360;
+            rotation = (rotation + 90) % 360;
             itemImg.setRotation(rotation);
-            Uri image = uriArrayList.get(position);
 
         });
 
@@ -263,11 +233,31 @@ public class AddItemActivity extends AppCompatActivity {
         cancel.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.putExtra("CHECK", 0);
-            setResult(RESULT_OK,intent);
+            setResult(RESULT_OK, intent);
             finish();
         });
     }
-    public void updateTags(Integer itemId) {
+    private void getItemFromImage(String imgString) {
+            UPLBTrade.retrofitClient.getItemByImg(new Callback<Item>() {
+                @Override
+                public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> response) {
+                    Item item = response.body();
+                    assert item != null;
+                    itemId = item.getItemId();
+                    System.out.println("Received item_id");
+                    System.out.println(response.body());
+                    updateTags(itemId);
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
+                    System.out.println("Failed to receive item_id");
+                    System.out.println(t.getMessage());
+                }
+            }, imgString);
+    }
+
+    private void updateTags(Integer itemId) {
         /* Send tags to database */
         ArrayList<Tag> tags = new ArrayList<>();
 
@@ -290,5 +280,15 @@ public class AddItemActivity extends AppCompatActivity {
                 System.out.println(tags);
             }
         }, tags);
+    }
+
+    public void addChip(String tag) {
+        Chip chip = new Chip(getApplicationContext());
+        chip.setText(tag);
+        chip.setCloseIconVisible(true);
+        chip.setClickable(true);
+        chip.setCheckable(false);
+        chipGroup.addView(chip);
+        chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
     }
 }
