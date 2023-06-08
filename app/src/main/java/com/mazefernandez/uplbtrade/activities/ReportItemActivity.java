@@ -56,7 +56,7 @@ public class ReportItemActivity extends AppCompatActivity {
 
         /* Send report to database */
         send.setOnClickListener(v -> {
-            String message = report.getText().toString();
+            String message = report.getText().toString().trim();
             ItemReport itemReport = new ItemReport(message, sessionId, item.getItemId());
 
             UPLBTrade.retrofitClient.addItemReport(new Callback<ItemReport>() {

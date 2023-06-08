@@ -126,7 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
         displayCustomerItems(sessionId);
 
         /* Setup profile items */
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this,3);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this, 2);
         recyclerView.setLayoutManager(layoutManager);
 
         /* Set up search view */
@@ -156,9 +156,9 @@ public class ProfileActivity extends AppCompatActivity {
         final PopupMenu settingsMenu = new PopupMenu(this, settings);
         final Menu menu = settingsMenu.getMenu();
 
-        menu.add(0,0,0, "Rate App");
-        menu.add(0,1,0, "Chat with Admin");
-        menu.add(0,2,0,"Sign Out");
+        menu.add(0, 0, 0, "Rate App");
+        menu.add(0, 1, 0, "Chat with Admin");
+        menu.add(0, 2, 0, "Sign Out");
 
         settingsMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
@@ -190,9 +190,9 @@ public class ProfileActivity extends AppCompatActivity {
             Bundle userInfo = new Bundle();
             String address = profileAddress.getText().toString();
             String contact = contactNo.getText().toString();
-            userInfo.putParcelable(GOOGLE_ACCOUNT,account);
-            userInfo.putString("ADDRESS",address);
-            userInfo.putString("CONTACT",contact);
+            userInfo.putParcelable(GOOGLE_ACCOUNT, account);
+            userInfo.putString("ADDRESS", address);
+            userInfo.putString("CONTACT", contact);
             userInfo.putInt("ID", sessionId);
 
             intent.putExtras(userInfo);
@@ -202,7 +202,7 @@ public class ProfileActivity extends AppCompatActivity {
         /* Upload Item */
         addItem.setOnClickListener(view -> {
             Intent intent = new Intent(ProfileActivity.this, AddItemActivity.class);
-            intent.putExtra("CUSTOMER_ID",sessionId);
+            intent.putExtra("CUSTOMER_ID", sessionId);
             insertItem.launch(intent);
         });
 
@@ -221,36 +221,33 @@ public class ProfileActivity extends AppCompatActivity {
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_profile);
-        navigation.setOnNavigationItemSelectedListener(item -> {
-        switch (item.getItemId()) {
-            case R.id.navigation_home:
+        navigation.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_home) {
                 item.setChecked(true);
-                Intent home = new Intent(ProfileActivity.this,HomeActivity.class);
+                Intent home = new Intent(ProfileActivity.this, HomeActivity.class);
                 home.putExtra(GOOGLE_ACCOUNT, account);
                 startActivity(home);
                 return true;
-            case R.id.navigation_inbox:
+            } else if (item.getItemId() == R.id.navigation_inbox) {
                 item.setChecked(true);
                 Intent inbox = new Intent(ProfileActivity.this, MessagesActivity.class);
-                inbox.putExtra(GOOGLE_ACCOUNT,account);
+                inbox.putExtra(GOOGLE_ACCOUNT, account);
                 startActivity(inbox);
                 return true;
-            case R.id.navigation_offers:
+            } else if (item.getItemId() == R.id.navigation_offers) {
                 item.setChecked(true);
                 Intent offer = new Intent(ProfileActivity.this, OffersActivity.class);
-                offer.putExtra(GOOGLE_ACCOUNT,account);
+                offer.putExtra(GOOGLE_ACCOUNT, account);
                 startActivity(offer);
                 return true;
-            case R.id.navigation_profile:
-                return true;
-            case R.id.navigation_transactions:
+            } else if (item.getItemId() == R.id.navigation_transactions) {
                 item.setChecked(true);
                 Intent purchase = new Intent(ProfileActivity.this, TransactionsActivity.class);
                 purchase.putExtra(GOOGLE_ACCOUNT, account);
                 startActivity(purchase);
                 return true;
-        }
-        return false;
+            }
+            else return item.getItemId() == R.id.navigation_profile;
         });
     }
 

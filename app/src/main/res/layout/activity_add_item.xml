@@ -34,7 +34,7 @@
             android:textColor="@color/dark_grey"
             app:backgroundTint="@color/silver"
             app:layout_constraintStart_toStartOf="@id/rotate"
-            app:layout_constraintTop_toBottomOf="@id/add_item_img" />
+            app:layout_constraintTop_toBottomOf="@id/item_img" />
 
         <Button
             android:id="@+id/next"
@@ -46,7 +46,7 @@
             android:textColor="@color/dark_grey"
             app:backgroundTint="@color/silver"
             app:layout_constraintEnd_toEndOf="@id/add_item_img"
-            app:layout_constraintTop_toBottomOf="@id/add_item_img" />
+            app:layout_constraintTop_toBottomOf="@id/item_img" />
 
         <!-- Rotate the picture -->
         <ImageButton
@@ -58,6 +58,7 @@
             android:background="@color/maroon"
             android:contentDescription="@string/rotate_picture"
             android:src="@android:drawable/ic_menu_rotate"
+            app:layout_constraintStart_toStartOf="@id/item_name"
             app:layout_constraintBottom_toBottomOf="@id/item_img"
             app:layout_constraintEnd_toStartOf="@id/item_img"
             app:tint="@color/white"
@@ -69,6 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
             android:contentDescription="@string/add_item"
             android:focusable="true"
@@ -90,7 +92,9 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:hint="@string/item_name"
+            android:paddingHorizontal="8dp"
             android:inputType="text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:autofillHints="@string/item_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/next" />
@@ -99,7 +103,7 @@
         <EditText
             android:id="@+id/item_desc"
             android:layout_width="395dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
@@ -107,9 +111,10 @@
             android:hint="@string/item_desc"
             android:inputType="textMultiLine"
             android:lines="4"
-            android:minLines="3"
+            android:minLines="2"
             android:maxLines="4"
             android:gravity="top"
+            android:paddingHorizontal="8dp"
             android:autofillHints="@string/item_desc"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_name" />
@@ -124,8 +129,10 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:hint="@string/item_price"
+            android:paddingHorizontal="8dp"
             android:inputType="numberDecimal"
             android:autofillHints="@string/price"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
@@ -140,6 +147,7 @@
             android:layout_marginTop="8dp"
             android:contentDescription="@string/item_condition"
             android:autofillHints="condition"
+            android:paddingHorizontal="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tags"
             app:layout_constraintTop_toBottomOf="@+id/offer"
@@ -162,17 +170,16 @@
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_group"
             android:layout_width="395dp"
-            android:layout_height="wrap_content"
-            android:scrollbars="horizontal"
+            android:layout_height="100dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:scrollbars="horizontal"
+            app:chipSpacing="10dp"
             app:layout_constraintEnd_toEndOf="@id/item_name"
             app:layout_constraintStart_toStartOf="@+id/item_name"
             app:layout_constraintTop_toBottomOf="@+id/tags"
-            app:layout_constraintBottom_toTopOf="@id/cancel"/>
-
+            app:layout_constraintBottom_toTopOf="@id/cancel" >
+        </com.google.android.material.chip.ChipGroup>
 
         <!-- add tag -->
         <ImageButton
@@ -202,13 +209,11 @@
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
             android:text="@string/submit"
             android:textColor="@color/dark_grey"
             app:backgroundTint="@color/silver"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/item_condition"
-            app:layout_constraintTop_toBottomOf="@+id/tags" />
+            app:layout_constraintTop_toBottomOf="@+id/chip_group" />
 
         <!-- Cancel button -->
         <Button
@@ -217,12 +222,10 @@
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
             android:text="@string/cancel"
             android:textColor="@color/dark_grey"
             app:backgroundTint="@color/silver"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/item_condition"
-            app:layout_constraintTop_toBottomOf="@+id/tags" />
+            app:layout_constraintTop_toBottomOf="@+id/chip_group" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

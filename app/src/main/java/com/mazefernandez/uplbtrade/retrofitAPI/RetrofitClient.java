@@ -176,6 +176,11 @@ public class RetrofitClient {
         getTagsFromItemCall.enqueue(callback);
     }
 
+    public void deleteTag(Callback<Tag> callback, int tag_id) {
+        Call<Tag> deleteTagCall = service.deleteTag(tag_id);
+        deleteTagCall.enqueue(callback);
+    }
+
     /* Offer Calls */
     public void getOffers(Callback<List<Offer>> callback) {
         Call<List<Offer>> getOffersCall = service.getOffers();

@@ -56,8 +56,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
         /* save new info to Customer */
         saveCustomer.setOnClickListener(view -> {
-            String address = editAddress.getText().toString();
-            String contactNo = editContactNo.getText().toString();
+            String address = editAddress.getText().toString().trim();
+            String contactNo = editContactNo.getText().toString().trim();
 
             Customer customer = new Customer(address, contactNo);
 

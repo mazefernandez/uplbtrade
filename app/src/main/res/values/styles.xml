@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/off_white</item>
         <item name="colorPrimaryDark">@color/maroon</item>
         <item name="colorAccent">@color/orange</item>
+        <item name="editTextBackground">@color/orange</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

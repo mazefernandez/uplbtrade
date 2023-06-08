@@ -25,7 +25,6 @@ import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Tag;
 import com.mazefernandez.uplbtrade.models.Transaction;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
 
         /* Set up home items */
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this,3);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(HomeActivity.this,2);
         recyclerView.setLayoutManager(layoutManager);
 
         /* Get info from database and display customer items */
@@ -123,36 +122,33 @@ public class HomeActivity extends AppCompatActivity {
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_home);
-        navigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    return true;
-                case R.id.navigation_inbox:
-                    item.setChecked(true);
-                    Intent inbox = new Intent(HomeActivity.this, MessagesActivity.class);
-                    inbox.putExtra(GOOGLE_ACCOUNT,account);
-                    startActivity(inbox);
-                    return true;
-                case R.id.navigation_offers:
-                    item.setChecked(true);
-                    Intent offer = new Intent(HomeActivity.this, OffersActivity.class);
-                    offer.putExtra(GOOGLE_ACCOUNT,account);
-                    startActivity(offer);
-                    return true;
-                case R.id.navigation_profile:
-                    item.setChecked(true);
-                    Intent profile = new Intent(HomeActivity.this,ProfileActivity.class);
-                    profile.putExtra(GOOGLE_ACCOUNT, account);
-                    startActivity(profile);
-                    return true;
-                case R.id.navigation_transactions:
-                    item.setChecked(true);
-                    Intent purchase = new Intent(HomeActivity.this, TransactionsActivity.class);
-                    purchase.putExtra(GOOGLE_ACCOUNT, account);
-                    startActivity(purchase);
-                    return true;
+        navigation.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_profile) {
+                item.setChecked(true);
+                Intent profile = new Intent(HomeActivity.this, ProfileActivity.class);
+                profile.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(profile);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_inbox) {
+                item.setChecked(true);
+                Intent inbox = new Intent(HomeActivity.this, MessagesActivity.class);
+                inbox.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(inbox);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_offers) {
+                item.setChecked(true);
+                Intent offer = new Intent(HomeActivity.this, OffersActivity.class);
+                offer.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(offer);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_transactions) {
+                item.setChecked(true);
+                Intent purchase = new Intent(HomeActivity.this, TransactionsActivity.class);
+                purchase.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(purchase);
+                return true;
             }
-            return false;
+            else return item.getItemId() == R.id.navigation_home;
         });
     }
 

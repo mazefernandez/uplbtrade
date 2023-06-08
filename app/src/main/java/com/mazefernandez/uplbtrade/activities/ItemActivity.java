@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,7 +24,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -57,6 +60,7 @@ public class ItemActivity extends AppCompatActivity {
     private int position = 0;
     private Offer offer;
     private Customer seller;
+    private ChipGroup chipGroup;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
 
     /* Edit item details */
@@ -107,7 +111,7 @@ public class ItemActivity extends AppCompatActivity {
         ImageButton flag = findViewById(R.id.flag);
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
-        ChipGroup chipGroup = findViewById(R.id.tags);
+        chipGroup = findViewById(R.id.tags);
         Button previous = findViewById(R.id.previous);
         Button next = findViewById(R.id.next);
 
@@ -149,7 +153,6 @@ public class ItemActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<List<Offer>> call, @NonNull Throwable t) {
                 System.out.println(t.getMessage());
@@ -174,12 +177,12 @@ public class ItemActivity extends AppCompatActivity {
         itemEdit.setOnClickListener(v -> {
             Intent intent = new Intent(ItemActivity.this, EditItemActivity.class);
             Bundle itemInfo = new Bundle();
-            String owner = itemOwner.getText().toString();
-            String name = itemName.getText().toString();
-            String desc = itemDesc.getText().toString();
-            String price = itemPrice.getText().toString();
+            String owner = itemOwner.getText().toString().trim();
+            String name = itemName.getText().toString().trim();
+            String desc = itemDesc.getText().toString().trim();
+            String price = itemPrice.getText().toString().trim();
             String image = item.getImage();
-            String condition = itemCondition.getText().toString();
+            String condition = itemCondition.getText().toString().trim();
             int itemId = item.getItemId();
 
             itemInfo.putString("OWNER",owner);
@@ -202,8 +205,8 @@ public class ItemActivity extends AppCompatActivity {
         makeOffer.setOnClickListener(v -> {
             Intent intent = new Intent(ItemActivity.this, MakeOfferActivity.class);
             Bundle offerInfo = new Bundle();
-            String owner = itemOwner.getText().toString();
-            String name = itemName.getText().toString();
+            String owner = itemOwner.getText().toString().trim();
+            String name = itemName.getText().toString().trim();
             String image = item.getImage();
 
             offerInfo.putString("OWNER", owner);
@@ -274,7 +277,7 @@ public class ItemActivity extends AppCompatActivity {
         itemOwner.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
         itemName.setText(item.getItemName());
         itemDesc.setText(item.getDescription());
-        String price = item.getPrice().toString();
+        String price = "\u20B1" + item.getPrice().toString();
         itemPrice.setText(price);
         if (item.getImage() == null) {
             itemImg.setImageResource(R.drawable.placeholder);
@@ -326,8 +329,10 @@ public class ItemActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
                 ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
                 assert tags != null;
-                ArrayList<Tag> tagList = new ArrayList<>(tags);
-                //TODO add tags to chip group
+                /* Add tags to chip group */
+                for (int i=0; i<tags.size();i++) {
+                    addChip(tags.get(i).getTagName());
+                }
             }
 
             @Override
@@ -374,5 +379,22 @@ public class ItemActivity extends AppCompatActivity {
                 out.println(t.getMessage());
             }
         }, itemId);
+    }
+    /* Add tag to chip group */
+    private void addChip(String tag) {
+        try {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            Chip chip = (Chip) inflater.inflate(R.layout.chip, chipGroup, false);
+            chip.setId(ViewCompat.generateViewId());
+            chip.setText(tag);
+            chip.setCloseIconVisible(false);
+            chip.setClickable(true);
+            chip.setCheckable(false);
+            chipGroup.addView(chip);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error in adding chip " + e.getMessage());
+        }
+
     }
 }

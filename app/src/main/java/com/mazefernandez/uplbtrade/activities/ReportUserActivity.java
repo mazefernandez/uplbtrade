@@ -57,7 +57,7 @@ public class ReportUserActivity extends AppCompatActivity {
 
         /* Report Customer */
         send.setOnClickListener(v -> {
-            String message = report.getText().toString();
+            String message = report.getText().toString().trim();
             int customerId = customer.getCustomerId();
 
             CustomerReport customerReport = new CustomerReport(message, sessionId, customerId);

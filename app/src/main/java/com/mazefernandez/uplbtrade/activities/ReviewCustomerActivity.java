@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
@@ -22,14 +23,9 @@ import retrofit2.Response;
 
 public class ReviewCustomerActivity extends AppCompatActivity {
 
-    private TextView ratePrompt;
     private RatingBar ratingBar;
-    private TextView feedbackPrompt;
     private EditText review;
-    private Button submit;
     private int raterId;
-    private Intent transactionIntent;
-    private Bundle transactionInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,24 +37,26 @@ public class ReviewCustomerActivity extends AppCompatActivity {
         raterId = pref.getInt("customer_id", -1);
 
         /* Get info from transaction page */
-        transactionIntent = getIntent();
-        transactionInfo = transactionIntent.getExtras();
+        Intent transactionIntent = getIntent();
+        Bundle transactionInfo = transactionIntent.getExtras();
 
         int transactionId = transactionInfo.getInt("TRANSACTION_ID");
         int customerId = transactionInfo.getInt("CUSTOMER_ID");
 
-        ratePrompt = findViewById(R.id.rate_prompt);
+        TextView ratePrompt = findViewById(R.id.rate_prompt);
+        ratePrompt.setVisibility(View.VISIBLE);
         ratingBar = findViewById(R.id.rating_bar);
-        feedbackPrompt = findViewById(R.id.feedback_prompt);
+        TextView feedbackPrompt = findViewById(R.id.feedback_prompt);
+        feedbackPrompt.setVisibility(View.VISIBLE);
         review = findViewById(R.id.review);
-        submit = findViewById(R.id.submit_button);
+        Button submit = findViewById(R.id.submit_button);
 
         submit.setOnClickListener(v -> {
             /* Add Customer Review to database*/
             float float_rating;
             float_rating = ratingBar.getRating();
             Double rating = (double) float_rating;
-            String string_review = review.getText().toString();
+            String string_review = review.getText().toString().trim();
 
             /* Add Customer review to database */
             CustomerReview customerReview = new CustomerReview(rating, string_review, raterId, customerId, transactionId);

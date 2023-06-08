@@ -60,6 +60,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tags" />
@@ -73,6 +74,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/previous" />
@@ -87,8 +89,10 @@
         android:layout_marginTop="8dp"
         android:lines="4"
         android:maxLines="4"
+        android:minLines="2"
         android:gravity="top"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
@@ -102,6 +106,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_desc" />
@@ -115,6 +120,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer" />
@@ -122,12 +128,13 @@
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/tags"
         android:layout_width="395dp"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:scrollbars="horizontal"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        app:chipSpacing="10dp"
         app:layout_constraintEnd_toEndOf="@id/item_name"
         app:layout_constraintStart_toStartOf="@+id/item_name"
         app:layout_constraintTop_toBottomOf="@id/item_condition"

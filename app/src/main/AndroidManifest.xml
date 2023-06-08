@@ -17,7 +17,6 @@
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="true"
-        android:hardwareAccelerated="false"
         android:icon="@mipmap/uplb_trade_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -77,9 +76,11 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.AdminChatActivity"
-            android:label="adminchat"
+            android:label="admin_chat"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+         />
         <activity
             android:name=".activities.OffersActivity"
             android:label="offers"
@@ -87,7 +88,9 @@
         <activity
             android:name=".activities.MakeOfferActivity"
             android:label="make_offer"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            />
         <activity
             android:name=".activities.MeetUpActivity"
             android:label="meetup"
@@ -109,16 +112,22 @@
         <activity
             android:name=".activities.EditProfileActivity"
             android:label="edit_profile"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            />
         <activity
             android:name=".activities.AddItemActivity"
             android:label="add_item"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            />
         <activity
             android:name=".activities.EditItemActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            />
 
         <meta-data
             android:name="com.google.android.gms.version"

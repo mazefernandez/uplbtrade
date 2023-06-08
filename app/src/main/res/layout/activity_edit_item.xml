@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="vertical"
     android:background="@color/background">
 
     <!-- Item image -->
@@ -53,6 +54,7 @@
         android:background="@color/maroon"
         android:contentDescription="@string/rotate_picture"
         android:src="@android:drawable/ic_menu_rotate"
+        app:layout_constraintStart_toStartOf="@id/item_name"
         app:layout_constraintBottom_toBottomOf="@id/item_img"
         app:layout_constraintEnd_toStartOf="@id/item_img"
         app:tint="@color/white"
@@ -93,6 +95,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:paddingHorizontal="8dp"
         android:background="@color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintTop_toBottomOf="@id/chip_group"
@@ -111,6 +114,7 @@
         android:background="@color/white"
         android:hint="@string/item_name"
         android:inputType="text"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/previous" />
@@ -119,7 +123,7 @@
     <EditText
         android:id="@+id/item_desc"
         android:layout_width="395dp"
-        android:layout_height="0dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:autofillHints="@string/item_desc"
@@ -129,7 +133,8 @@
         android:gravity="top"
         android:lines="4"
         android:maxLines="4"
-        android:minLines="3"
+        android:minLines="2"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
@@ -146,6 +151,7 @@
         android:autofillHints="@string/price"
         android:background="@color/white"
         android:hint="@string/item_price"
+        android:paddingHorizontal="8dp"
         android:inputType="text|numberDecimal"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,6 +166,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:paddingHorizontal="8dp"
         android:autofillHints="condition"
         android:contentDescription="@string/item_condition"
         app:layout_constraintStart_toStartOf="parent"
@@ -183,7 +190,7 @@
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chip_group"
         android:layout_width="395dp"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:scrollbars="horizontal"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"

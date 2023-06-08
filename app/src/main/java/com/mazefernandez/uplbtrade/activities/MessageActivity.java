@@ -70,7 +70,7 @@ public class MessageActivity extends AppCompatActivity {
                 Map<String, Object> chatData = new HashMap<>();
                 chatData.put("sender", customerEmail);
                 chatData.put("receiver", chatterEmail);
-                chatData.put("message", chatInput.getText().toString());
+                chatData.put("message", chatInput.getText().toString().trim());
                 chatData.put("time", new Date().getTime());
 
                 reference.child("chats").addListenerForSingleValueEvent(new ValueEventListener() {

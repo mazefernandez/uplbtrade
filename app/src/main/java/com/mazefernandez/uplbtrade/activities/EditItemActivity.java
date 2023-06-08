@@ -8,6 +8,7 @@ import android.content.Intent;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -54,15 +56,10 @@ public class EditItemActivity extends AppCompatActivity {
     private String imgString;
     private int itemId;
     private int position = 0;
+    private boolean duplicate;
     private EditText addTags;
     private ChipGroup chipGroup;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
-    private final ArrayList<String> tagList = new ArrayList<>();
-    private final ArrayList<Tag> tags = new ArrayList<>();
-    private final ArrayList<Tag> newTags = new ArrayList<>();
-    private final ArrayList<Tag> deleteTags = new ArrayList<>();
-    private final ArrayList<String> tagStrings = new ArrayList<>();
-
 
     /* AR Launchers to replace OnActivityResult */
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -137,10 +134,10 @@ public class EditItemActivity extends AppCompatActivity {
 
         /* Save info to item */
         saveItem.setOnClickListener(view -> {
-            String name = itemName.getText().toString();
-            String desc = itemDesc.getText().toString();
-            String price = itemPrice.getText().toString();
-            String condition = itemCondition.getSelectedItem().toString();
+            String name = itemName.getText().toString().trim();
+            String desc = itemDesc.getText().toString().trim();
+            String price = itemPrice.getText().toString().trim();
+            String condition = itemCondition.getSelectedItem().toString().trim();
             Double double_price = Double.parseDouble(price);
 
             /* Upload image to firebase storage */
@@ -183,22 +180,8 @@ public class EditItemActivity extends AppCompatActivity {
             }, item, itemId);
 
             /* Add and delete tags from database */
-
-            UPLBTrade.retrofitClient.addTags(new Callback<List<Tag>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
-                    System.out.println("Added Tags");
-                    System.out.println(response.body());
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
-                    System.out.println("Failed to add tags");
-                    System.out.println(t.getMessage());
-                }
-            }, newTags);
-
-
+            deleteTags(itemId);
+            addTags(itemId);
 
             /* Return to item */
             Intent intent = new Intent();
@@ -217,16 +200,22 @@ public class EditItemActivity extends AppCompatActivity {
             selectImage.launch(Intent.createChooser(intent, "Select Picture"));
         });
 
-
-
         /* Add Tag to tags list for new item */
         addTag.setOnClickListener(v -> {
-            String newTag = addTags.getText().toString();
-            if(newTag.length() > 0)
-            {
-                Tag tag = new Tag(newTag, itemId);
-                tags.add(tag);
-                newTags.add(tag);
+            String newTag = addTags.getText().toString().trim();
+            if(!newTag.isEmpty()) {
+                /* check for duplicate tags */
+                duplicate = checkDuplicate(newTag);
+                if (!duplicate) {
+                    addChip(newTag);
+                }
+                else {
+                    Toast.makeText(EditItemActivity.this, newTag + " is already added", Toast.LENGTH_SHORT).show();
+                }
+                addTags.setText("");
+            }
+            else {
+                Toast.makeText(EditItemActivity.this, "Enter a tag", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -276,12 +265,11 @@ public class EditItemActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
                 ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
                 assert tags != null;
-                ArrayList<Tag> tagList = new ArrayList<>(tags);
-                for (Tag tag: tagList) {
-                    tagStrings.add(tag.getTagName());
+                /* Add tags to chip group */
+                for (int i=0; i<tags.size();i++) {
+                    addChip(tags.get(i).getTagName());
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
 
@@ -320,14 +308,72 @@ public class EditItemActivity extends AppCompatActivity {
         }
 
     }
-    public void addChip(String tag) {
-        Chip chip = new Chip(getApplicationContext());
-        chip.setText(tag);
-        chip.setCloseIconVisible(true);
-        chip.setClickable(true);
-        chip.setCheckable(false);
-        chipGroup.addView(chip);
-        chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
+    /* Add chips to chip group when user adds tag */
+    private void addChip(String tag) {
+        try {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            Chip chip = (Chip) inflater.inflate(R.layout.chip, chipGroup, false);
+            chip.setId(ViewCompat.generateViewId());
+            chip.setText(tag);
+            chip.setCloseIconVisible(true);
+            chip.setClickable(true);
+            chip.setCheckable(false);
+            chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
+            chipGroup.addView(chip);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error in adding chip " + e.getMessage());
+        }
+
+    }
+    /* Check if there's a duplicate tag */
+    private boolean checkDuplicate(String tag) {
+        for (int i=0;i<chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            if (chip.getText().equals(tag)) return true;
+        }
+        return false;
     }
 
+    private void addTags(int itemId){
+        /* Send tags to database */
+        ArrayList<Tag> tags = new ArrayList<>();
+
+        for (int i=0;i<this.chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) this.chipGroup.getChildAt(i);
+
+            Tag tag = new Tag((String) chip.getText(), itemId);
+            tags.add(tag);
+        }
+
+        UPLBTrade.retrofitClient.addTags(new Callback<List<Tag>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
+                System.out.println("Added Tags");
+                System.out.println(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
+                System.out.println("Failed to add tags");
+                System.out.println(t.getMessage());
+                System.out.println(tags);
+            }
+        }, tags);
+    }
+    private void deleteTags(int itemId){
+        UPLBTrade.retrofitClient.deleteTag(new Callback<Tag>() {
+            @Override
+            public void onResponse(@NonNull Call<Tag> call, @NonNull Response<Tag> response) {
+                System.out.println("Deleted Tags");
+                System.out.println(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Tag> call, @NonNull Throwable t) {
+                System.out.println("Failed to delete tags");
+                System.out.println(t.getMessage());
+            }
+        }, itemId);
+    }
 }

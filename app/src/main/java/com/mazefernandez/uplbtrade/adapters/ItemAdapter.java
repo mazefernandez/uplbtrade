@@ -20,10 +20,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.activities.ItemActivity;
 import com.mazefernandez.uplbtrade.models.Item;
+import com.mazefernandez.uplbtrade.models.Tag;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /* Binds values of item information to views */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements Filterable {
@@ -117,6 +124,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         private final TextView itemName;
         private final TextView itemPrice;
         private final Context context;
+
         private Item item;
 
         /* View attributes */
@@ -138,5 +146,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(intent);
         }
+    }
+    /* Retrieve the tags of the item */
+    private void getTags(int itemId) {
+        UPLBTrade.retrofitClient.getTagsFromItem(new Callback<List<Tag>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
+                ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
+                assert tags != null;
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
+
+            }
+        }, itemId);
     }
 }

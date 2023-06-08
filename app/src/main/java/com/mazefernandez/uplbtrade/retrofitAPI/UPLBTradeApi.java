@@ -111,6 +111,9 @@ public interface UPLBTradeApi {
     @GET("/api/tags/item/{item_id}")
     Call<List<Tag>> getTagsFromItem(@Path("item_id") int itemId);
 
+    @DELETE("/api/tags/{tag_id}")
+    Call<Tag> deleteTag(@Path("tag_id") int tagId);
+
     /* Offer Calls */
     @GET("/api/offers")
     Call<List<Offer>> getOffers();

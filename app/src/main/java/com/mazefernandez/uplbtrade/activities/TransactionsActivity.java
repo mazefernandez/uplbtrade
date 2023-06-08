@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
 import com.mazefernandez.uplbtrade.adapters.TransactionAdapter;
 import com.mazefernandez.uplbtrade.models.Transaction;
 
@@ -34,7 +32,6 @@ public class TransactionsActivity extends AppCompatActivity {
     TransactionAdapter buyerAdapter;
     TransactionAdapter sellerAdapter;
 
-    private final GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +42,6 @@ public class TransactionsActivity extends AppCompatActivity {
         seller = findViewById(R.id.seller);
 
         /* Configure Google Sign in */
-        final GoogleSignInClient googleSIC = googleAdapter.configureGoogleSIC(this);
         final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
 
         /* SharedPref to save customer_id */
@@ -103,36 +99,33 @@ public class TransactionsActivity extends AppCompatActivity {
         /* Navigation bar */
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_transactions);
-        navigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    item.setChecked(true);
-                    Intent home = new Intent(TransactionsActivity.this,HomeActivity.class);
-                    home.putExtra(GOOGLE_ACCOUNT, account);
-                    startActivity(home);
-                    return true;
-                case R.id.navigation_inbox:
-                    item.setChecked(true);
-                    Intent inbox = new Intent(TransactionsActivity.this, MessagesActivity.class);
-                    inbox.putExtra(GOOGLE_ACCOUNT,account);
-                    startActivity(inbox);
-                    return true;
-                case R.id.navigation_offers:
-                    item.setChecked(true);
-                    Intent offer = new Intent(TransactionsActivity.this, OffersActivity.class);
-                    offer.putExtra(GOOGLE_ACCOUNT,account);
-                    startActivity(offer);
-                    return true;
-                case R.id.navigation_profile:
-                    item.setChecked(true);
-                    Intent profile = new Intent(TransactionsActivity.this, ProfileActivity.class);
-                    profile.putExtra(GOOGLE_ACCOUNT,account);
-                    startActivity(profile);
-                    return true;
-                case R.id.navigation_transactions:
-                    return true;
+        navigation.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_home) {
+                item.setChecked(true);
+                Intent home = new Intent(TransactionsActivity.this, HomeActivity.class);
+                home.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(home);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_inbox) {
+                item.setChecked(true);
+                Intent inbox = new Intent(TransactionsActivity.this, MessagesActivity.class);
+                inbox.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(inbox);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_offers) {
+                item.setChecked(true);
+                Intent offer = new Intent(TransactionsActivity.this, OffersActivity.class);
+                offer.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(offer);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_transactions) {
+                item.setChecked(true);
+                Intent profile = new Intent(TransactionsActivity.this, ProfileActivity.class);
+                profile.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(profile);
+                return true;
             }
-            return false;
+            else return item.getItemId() == R.id.navigation_transactions;
         });
     }
     @Override

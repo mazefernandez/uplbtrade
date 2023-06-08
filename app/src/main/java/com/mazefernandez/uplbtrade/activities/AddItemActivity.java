@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -53,9 +55,9 @@ public class AddItemActivity extends AppCompatActivity {
     private ImageSwitcher itemImg;
     private int position = 0;
     private int rotation = 0;
+    private boolean duplicate;
     private ChipGroup chipGroup;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
-    private final ArrayList<String> tagList = new ArrayList<>();
 
     /* AR Launchers to replace OnActivityResult */
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -117,7 +119,7 @@ public class AddItemActivity extends AppCompatActivity {
         Button cancel = findViewById(R.id.cancel);
 
         /* Show all images in ImageSwitcher */
-        itemImg.setFactory(() -> new ImageView(getApplicationContext()));
+        itemImg.setFactory(() -> new ImageView(this));
 
         /* Initialize ImageSwitcher with animations */
         Animation in = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
@@ -132,10 +134,10 @@ public class AddItemActivity extends AppCompatActivity {
 
         /* New Item */
         addItem.setOnClickListener(v -> {
-            String string_name = itemName.getText().toString();
-            String string_desc = itemDesc.getText().toString();
-            String string_price = itemPrice.getText().toString();
-            String string_condition = itemCondition.getSelectedItem().toString();
+            String string_name = itemName.getText().toString().trim();
+            String string_desc = itemDesc.getText().toString().trim();
+            String string_price = itemPrice.getText().toString().trim();
+            String string_condition = itemCondition.getSelectedItem().toString().trim();
             Double double_price = Double.parseDouble(string_price);
 
             /* Get current user */
@@ -188,10 +190,17 @@ public class AddItemActivity extends AppCompatActivity {
 
         /* Add Tag to tags list for new item */
         addTag.setOnClickListener(v -> {
-            String newTag = itemTags.getText().toString();
-            if (newTag.length() > 0) {
-                addChip(newTag);
-                tagList.add(newTag);
+            String newTag = itemTags.getText().toString().trim();
+            if (!newTag.isEmpty()) {
+                duplicate = checkDuplicate(newTag);
+                if (!duplicate) addChip(newTag);
+                else {
+                    Toast.makeText(AddItemActivity.this, newTag + " is already added", Toast.LENGTH_SHORT).show();
+                }
+                itemTags.setText("");
+            }
+            else {
+                Toast.makeText(AddItemActivity.this, "Enter a tag", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -237,6 +246,7 @@ public class AddItemActivity extends AppCompatActivity {
             finish();
         });
     }
+    /* Get item_id of newly inserted item from the database */
     private void getItemFromImage(String imgString) {
             UPLBTrade.retrofitClient.getItemByImg(new Callback<Item>() {
                 @Override
@@ -256,13 +266,15 @@ public class AddItemActivity extends AppCompatActivity {
                 }
             }, imgString);
     }
-
-    private void updateTags(Integer itemId) {
+    /* Send tags to database */
+    private void updateTags(int itemId) {
         /* Send tags to database */
         ArrayList<Tag> tags = new ArrayList<>();
 
-        for (int i=0;i<tagList.size(); i++) {
-            Tag tag = new Tag(tagList.get(i), itemId);
+        for (int i=0;i<chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+
+            Tag tag = new Tag((String) chip.getText(), itemId);
             tags.add(tag);
         }
 
@@ -281,14 +293,30 @@ public class AddItemActivity extends AppCompatActivity {
             }
         }, tags);
     }
+    /* Add chips to chip group when user adds tag */
+    private void addChip(String tag) {
+        try {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            Chip chip = (Chip) inflater.inflate(R.layout.chip, chipGroup, false);
+            chip.setId(ViewCompat.generateViewId());
+            chip.setText(tag);
+            chip.setCloseIconVisible(true);
+            chip.setClickable(true);
+            chip.setCheckable(false);
+            chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
+            chipGroup.addView(chip);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error in adding chip " + e.getMessage());
+        }
 
-    public void addChip(String tag) {
-        Chip chip = new Chip(getApplicationContext());
-        chip.setText(tag);
-        chip.setCloseIconVisible(true);
-        chip.setClickable(true);
-        chip.setCheckable(false);
-        chipGroup.addView(chip);
-        chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
+    }
+    /* Check if there's a duplicate tag */
+    private boolean checkDuplicate(String tag) {
+        for (int i=0;i<chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            if (chip.getText().equals(tag)) return true;
+        }
+        return false;
     }
 }

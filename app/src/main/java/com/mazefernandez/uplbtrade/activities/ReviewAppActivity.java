@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
@@ -37,8 +38,10 @@ public class ReviewAppActivity extends AppCompatActivity {
 
         /* Review App Views */
         TextView ratePrompt = findViewById(R.id.rate_prompt);
+        ratePrompt.setVisibility(View.VISIBLE);
         ratingBar = findViewById(R.id.rating_bar);
         TextView feedbackPrompt = findViewById(R.id.feedback_prompt);
+        feedbackPrompt.setVisibility(View.VISIBLE);
         review = findViewById(R.id.review);
         Button submit = findViewById(R.id.submit_button);
 
@@ -46,7 +49,7 @@ public class ReviewAppActivity extends AppCompatActivity {
             float float_rating;
             float_rating = ratingBar.getRating();
             Double rating = (double) float_rating;
-            String string_review = review.getText().toString();
+            String string_review = review.getText().toString().trim();
 
             /* Add application review to database */
             ApplicationReview applicationReview = new ApplicationReview(rating, string_review, customerId);
