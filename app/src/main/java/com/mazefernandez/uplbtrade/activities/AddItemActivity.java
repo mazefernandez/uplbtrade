@@ -1,6 +1,7 @@
 package com.mazefernandez.uplbtrade.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
@@ -114,6 +115,7 @@ public class AddItemActivity extends AppCompatActivity {
 
         ImageButton addTag = findViewById(R.id.add_tag);
         ImageButton rotate = findViewById(R.id.rotate);
+        ImageButton deleteImages = findViewById(R.id.delete_images);
 
         Button addItem = findViewById(R.id.add_item);
         Button cancel = findViewById(R.id.cancel);
@@ -131,6 +133,8 @@ public class AddItemActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         itemCondition.setAdapter(spinnerAdapter);
+
+        deleteImages.setOnClickListener(v -> confirmDelete());
 
         /* New Item */
         addItem.setOnClickListener(v -> {
@@ -318,5 +322,28 @@ public class AddItemActivity extends AppCompatActivity {
             if (chip.getText().equals(tag)) return true;
         }
         return false;
+    }
+    private void confirmDelete(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Images");
+        builder.setMessage("Do you really want to delete your images?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            deleteImages();
+            Toast.makeText(getApplicationContext(), "Images deleted", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show();
+            dialog.cancel();
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    private void deleteImages() {
+        itemImg.setImageDrawable(null);
     }
 }

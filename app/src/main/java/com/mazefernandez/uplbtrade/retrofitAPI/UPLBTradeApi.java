@@ -4,6 +4,7 @@ import com.mazefernandez.uplbtrade.models.ApplicationReview;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
+import com.mazefernandez.uplbtrade.models.Id;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.ItemReport;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -84,6 +85,12 @@ public interface UPLBTradeApi {
     /* Item calls */
     @GET("/api/items")
     Call<List<Item>> getItems();
+
+    @POST("/api/items/tags")
+    Call<List<Id>> searchTagItems(@Body List<String> tags);
+
+    @POST("/api/items/ids")
+    Call<List<Item>> getItemsByIds(@Body List<Integer> ids);
 
     @GET("/api/items/{item_id}")
     Call<Item> getItem(@Path("item_id") int itemId);

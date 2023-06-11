@@ -77,6 +77,8 @@
     <string name="rotate_picture">rotate picture</string>
     <string name="add_tag">add tag</string>
     <string name="delete_tag">delete tag</string>
-    <string name="write_a_tag">Write a Tag...</string>
-    <string name="write_a_review">Write a Review...</string>
+    <string name="write_a_tag">Write a Tag…</string>
+    <string name="write_a_review">Write a Review…</string>
+    <string name="delete_images">delete images</string>
+    <string name="show_recommended">show recommended</string>
 </resources>

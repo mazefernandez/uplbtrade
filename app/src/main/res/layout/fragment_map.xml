@@ -34,7 +34,7 @@
             android:iconifiedByDefault="false"
             android:inputType="text"
             android:queryHint="@string/map_query"
-            tools:targetApi="o" />
+            />
     </RelativeLayout>
 
 </FrameLayout>

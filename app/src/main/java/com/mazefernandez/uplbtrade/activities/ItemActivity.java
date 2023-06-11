@@ -6,8 +6,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +64,10 @@ public class ItemActivity extends AppCompatActivity {
     private Offer offer;
     private Customer seller;
     private ChipGroup chipGroup;
-    private final ArrayList<Uri> uriArrayList = new ArrayList<>();
+    private final ArrayList<String> addresses = new ArrayList<>();
+    /* Firebase instances */
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageReference = storage.getReference();
 
     /* Edit item details */
     ActivityResultLauncher<Intent> editItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -119,8 +125,8 @@ public class ItemActivity extends AppCompatActivity {
         itemImg.setFactory(() -> new ImageView(getApplicationContext()));
 
         /* Initialize ImageSwitcher with animations */
-        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
-        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.fade_out);
         itemImg.setInAnimation(in);
         itemImg.setOutAnimation(out);
 
@@ -237,9 +243,16 @@ public class ItemActivity extends AppCompatActivity {
 
         /* Select next image */
         next.setOnClickListener(view -> {
-            if (position < uriArrayList.size() - 1) {
+            if (position < addresses.size() - 1) {
                 position = position + 1;
-                itemImg.setImageURI(uriArrayList.get(position));
+                StorageReference ref = storageReference.child(addresses.get(position));
+                final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                    itemImg.setImageDrawable(drawable);
+                    System.out.println("Successfully read image");
+                }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
             }
             else {
                 Toast.makeText(ItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
@@ -250,7 +263,14 @@ public class ItemActivity extends AppCompatActivity {
         previous.setOnClickListener(view -> {
             if (position > 0) {
                 position = position - 1;
-                itemImg.setImageURI(uriArrayList.get(position));
+                StorageReference ref = storageReference.child(addresses.get(position));
+                final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                    itemImg.setImageDrawable(drawable);
+                    System.out.println("Successfully read image");
+                }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
             }
         });
 
@@ -270,10 +290,6 @@ public class ItemActivity extends AppCompatActivity {
 
     /* Display Item Details */
     private void displayItem(Customer customer, Item item) {
-        /* Firebase instances */
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-
         itemOwner.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
         itemName.setText(item.getItemName());
         itemDesc.setText(item.getDescription());
@@ -287,16 +303,19 @@ public class ItemActivity extends AppCompatActivity {
             String[] split = item.getImage().split("-");
             String image = split[split.length-1];
             int size = Integer.parseInt(image);
-
+            /* Store all addresses in an arraylist */
             for (int i = 0; i<size; i++){
-                StorageReference ref = storageReference.child("images/" + item.getImage() + "/" + i);
-                ref.getDownloadUrl().addOnSuccessListener(uri -> {
-                    uriArrayList.add(uri);
-                    System.out.println("Successfully read image");
-
-
-                }).addOnFailureListener(fail -> out.println("Failed to read image" + fail));
+                String address = "images/" + item.getImage() + "/" + i;
+                addresses.add(address);
             }
+            StorageReference ref = storageReference.child(addresses.get(0));
+            final long ONE_MEGABYTE = 1024 * 1024 * 5;
+            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                itemImg.setImageDrawable(drawable);
+                System.out.println("Successfully read image");
+            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }
         itemCondition.setText(item.getCondition());
 
@@ -363,6 +382,8 @@ public class ItemActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
     }
 
     /* Delete user's item */

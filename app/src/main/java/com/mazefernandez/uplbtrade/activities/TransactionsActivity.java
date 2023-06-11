@@ -118,7 +118,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 offer.putExtra(GOOGLE_ACCOUNT, account);
                 startActivity(offer);
                 return true;
-            } else if (item.getItemId() == R.id.navigation_transactions) {
+            } else if (item.getItemId() == R.id.navigation_profile) {
                 item.setChecked(true);
                 Intent profile = new Intent(TransactionsActivity.this, ProfileActivity.class);
                 profile.putExtra(GOOGLE_ACCOUNT, account);

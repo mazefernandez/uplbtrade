@@ -15,8 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
@@ -37,7 +40,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private final ArrayList<Item> itemList;
     private ArrayList<Item> itemListFiltered;
 
-
     public ItemAdapter(ArrayList<Item> itemList) {
         this.itemList = itemList;
         this.itemListFiltered = itemList;
@@ -56,6 +58,35 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         /* Firebase instances */
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
+
+        /* Get Tags from database */
+        UPLBTrade.retrofitClient.getTagsFromItem(new Callback<List<Tag>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
+                ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
+                assert tags != null;
+                for (int i=0; i<tags.size(); i++) {
+                    try {
+                        LayoutInflater inflater = LayoutInflater.from(holder.context);
+                        Chip chip = (Chip) inflater.inflate(R.layout.chip, holder.chipGroup, false);
+                        chip.setId(ViewCompat.generateViewId());
+                        chip.setText(tags.get(i).getTagName());
+                        chip.setClickable(true);
+                        chip.setCheckable(false);
+                        chip.setCloseIconVisible(false);
+                        holder.chipGroup.addView(chip);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error in adding chip " + e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
+                System.out.println("Error adding tags (ItemAdapter)" + t.getMessage());
+            }
+        }, itemListFiltered.get(position).getItemId());
 
         /* puts default image if no image */
         if(itemListFiltered.get(position).getImage() == null) {
@@ -79,6 +110,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         price = "\u20B1" + price;
         holder.itemPrice.setText(price);
         holder.item = itemListFiltered.get(position);
+        holder.chipGroup.setClickable(false);
     }
 
     @Override
@@ -118,13 +150,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         };
     }
 
+
     /* Holds the values for individual views on the recycler */
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final ImageView itemImg;
         private final TextView itemName;
         private final TextView itemPrice;
         private final Context context;
-
+        private final ChipGroup chipGroup;
         private Item item;
 
         /* View attributes */
@@ -134,6 +167,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             itemName = view.findViewById(R.id.item_name);
             itemPrice = view.findViewById(R.id.offer);
             LinearLayout card = view.findViewById(R.id.card);
+            chipGroup = view.findViewById(R.id.chip_group);
             context = view.getContext();
             card.setOnClickListener(this);
         }
@@ -146,21 +180,5 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(intent);
         }
-    }
-    /* Retrieve the tags of the item */
-    private void getTags(int itemId) {
-        UPLBTrade.retrofitClient.getTagsFromItem(new Callback<List<Tag>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
-                ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
-                assert tags != null;
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
-
-            }
-        }, itemId);
     }
 }

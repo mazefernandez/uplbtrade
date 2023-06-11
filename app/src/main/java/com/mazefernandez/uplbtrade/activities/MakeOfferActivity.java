@@ -63,7 +63,7 @@ public class MakeOfferActivity extends AppCompatActivity {
         offerName.setText(name);
 
         /* retrieve image from firebase */
-        StorageReference ref = storageReference.child("images/"+image);
+        StorageReference ref = storageReference.child("images/"+image+"/0");
 
         final long ONE_MEGABYTE = 1024 * 1024 * 5;
         ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {

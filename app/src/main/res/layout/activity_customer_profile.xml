@@ -15,14 +15,15 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
         android:background="@color/background"
         android:contentDescription="@string/add_friend"
         android:padding="3dp"
         android:scaleType="centerCrop"
         android:src="@drawable/add_friend"
+        app:layout_constraintEnd_toEndOf="@id/flag"
+        app:layout_constraintBottom_toBottomOf="@id/profile_search"
         app:layout_constraintStart_toEndOf="@id/profile_search"
-        app:layout_constraintTop_toBottomOf="@id/flag"
         app:tint="@color/orange"
         tools:ignore="ImageContrastCheck" />
 
@@ -30,7 +31,7 @@
     <TextView
         android:id="@+id/profile_text"
         android:layout_width="260dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
@@ -43,13 +44,13 @@
     <TextView
         android:id="@+id/profile_address"
         android:layout_width="260dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:lines="2"
-        android:maxLines="2"
-        android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:gravity="top"
+        android:padding="5dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_text" />
@@ -58,10 +59,12 @@
     <TextView
         android:id="@+id/contactNo"
         android:layout_width="200dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:gravity="top"
+        android:padding="5dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@id/profile_address"
         app:layout_constraintTop_toBottomOf="@+id/profile_address"
@@ -77,10 +80,10 @@
         android:layout_marginTop="8dp"
         android:numStars="5"
         android:stepSize="0.5"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_img"
-        app:layout_constraintStart_toEndOf="@+id/profile_img"
-        app:layout_constraintTop_toBottomOf="@+id/contactNo"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="@id/profile_img"
+        app:layout_constraintEnd_toEndOf="@id/profile_img"
+        app:layout_constraintTop_toBottomOf="@id/profile_img"
+        />
 
     <!-- Profile picture -->
     <ImageView
@@ -107,7 +110,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/flag"
         app:layout_constraintStart_toStartOf="@+id/profile_img"
-        app:layout_constraintTop_toBottomOf="@+id/contactNo" />
+        app:layout_constraintTop_toBottomOf="@+id/rating" />
 
     <!-- Report user flag -->
     <ImageButton
@@ -128,7 +131,7 @@
     <!-- Container for items -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
+        android:layout_width="395dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"

@@ -4,6 +4,7 @@ import com.mazefernandez.uplbtrade.models.ApplicationReview;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
+import com.mazefernandez.uplbtrade.models.Id;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.ItemReport;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -133,6 +134,14 @@ public class RetrofitClient {
     public void getItems(Callback<List<Item>> callback) {
         Call<List<Item>> getItemsCall = service.getItems();
         getItemsCall.enqueue(callback);
+    }
+    public void searchTagItems(Callback<List<Id>> callback, List<String> tags) {
+        Call<List<Id>> getTagItemsCall = service.searchTagItems(tags);
+        getTagItemsCall.enqueue(callback);
+    }
+    public void getItemsByIds(Callback<List<Item>> callback, List<Integer> ids) {
+        Call<List<Item>> getItemsByIdsCall = service.getItemsByIds(ids);
+        getItemsByIdsCall.enqueue(callback);
     }
     public void getItem(Callback<Item> callback, int item_id) {
         Call<Item> getItemCall = service.getItem(item_id);

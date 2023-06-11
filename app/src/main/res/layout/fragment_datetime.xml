@@ -16,6 +16,7 @@
         android:layout_marginStart="40dp"
         android:inputType="date"
         android:autofillHints="date"
+        android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="@id/date_button"
         app:layout_constraintStart_toEndOf="@id/date_button"
         />
@@ -26,12 +27,12 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:text="@string/date"
         android:labelFor="@id/date"
         android:textColor="@color/dark_grey"
         app:backgroundTint="@color/silver"
+        app:layout_constraintBottom_toTopOf="@id/time_button"
         app:layout_constraintEnd_toStartOf="@+id/date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,6 +44,7 @@
         android:layout_height="48dp"
         android:inputType="time"
         android:autofillHints="time"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@id/date"
         app:layout_constraintTop_toTopOf="@id/time_button"
          />
@@ -52,11 +54,11 @@
         android:id="@+id/time_button"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginTop="16dp"
         android:text="@string/time"
         android:labelFor="@id/time"
         android:textColor="@color/dark_grey"
         app:backgroundTint="@color/silver"
+        app:layout_constraintBottom_toTopOf="@id/cardView"
         app:layout_constraintStart_toStartOf="@+id/date_button"
         app:layout_constraintTop_toBottomOf="@+id/date_button" />
 
@@ -65,14 +67,13 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="395dp"
-        android:layout_height="550dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time"
-        tools:ignore="TextSizeCheck">
+        app:layout_constraintTop_toBottomOf="@+id/time_button"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -80,14 +81,11 @@
 
             <!-- image -->
             <ImageView
-                android:contentDescription="@string/item_image"
                 android:id="@+id/item_img"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/item_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -173,17 +171,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/offer" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
                 android:background="@color/accent"
                 android:padding="10dp"
                 android:text="@string/warning"
                 android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/price_label" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

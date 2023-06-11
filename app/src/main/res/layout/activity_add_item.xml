@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
+    android:scrollbars="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <!-- Item image -->
@@ -23,6 +24,20 @@
             app:layout_constraintEnd_toEndOf="@+id/item_name"
             app:layout_constraintStart_toStartOf="@+id/item_name"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Delete Image -->
+        <ImageButton
+            android:id="@+id/delete_images"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="-8dp"
+            android:layout_marginStart="-40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/delete_images"
+            app:layout_constraintStart_toEndOf="@id/item_img"
+            app:layout_constraintTop_toTopOf="@id/item_img"
+            app:srcCompat="@drawable/places_ic_clear"
+            app:tint="@color/dark_grey" />
 
         <Button
             android:id="@+id/previous"
@@ -111,7 +126,6 @@
             android:hint="@string/item_desc"
             android:inputType="textMultiLine"
             android:lines="4"
-            android:minLines="2"
             android:maxLines="4"
             android:gravity="top"
             android:paddingHorizontal="8dp"
@@ -167,19 +181,29 @@
             app:layout_constraintEnd_toStartOf="@id/add_tag"
             app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group"
-            android:layout_width="395dp"
-            android:layout_height="100dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:scrollbars="horizontal"
-            app:chipSpacing="10dp"
+        <HorizontalScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/item_name"
             app:layout_constraintEnd_toEndOf="@id/item_name"
-            app:layout_constraintStart_toStartOf="@+id/item_name"
             app:layout_constraintTop_toBottomOf="@+id/tags"
-            app:layout_constraintBottom_toTopOf="@id/cancel" >
-        </com.google.android.material.chip.ChipGroup>
+            app:layout_constraintBottom_toTopOf="@id/cancel"
+            >
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group"
+                    android:layout_width="395dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    app:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="@id/item_name"
+                    app:layout_constraintStart_toStartOf="@+id/item_name"
+                    app:layout_constraintTop_toBottomOf="@+id/tags"
+                    app:layout_constraintBottom_toTopOf="@id/cancel" >
+                </com.google.android.material.chip.ChipGroup>
+
+        </HorizontalScrollView>
 
         <!-- add tag -->
         <ImageButton
@@ -213,7 +237,7 @@
             android:textColor="@color/dark_grey"
             app:backgroundTint="@color/silver"
             app:layout_constraintEnd_toEndOf="@+id/item_condition"
-            app:layout_constraintTop_toBottomOf="@+id/chip_group" />
+            app:layout_constraintTop_toBottomOf="@+id/scroll" />
 
         <!-- Cancel button -->
         <Button
@@ -226,6 +250,6 @@
             android:textColor="@color/dark_grey"
             app:backgroundTint="@color/silver"
             app:layout_constraintStart_toStartOf="@+id/item_condition"
-            app:layout_constraintTop_toBottomOf="@+id/chip_group" />
+            app:layout_constraintTop_toBottomOf="@+id/scroll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

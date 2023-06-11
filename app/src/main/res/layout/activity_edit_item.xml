@@ -22,6 +22,20 @@
         app:layout_constraintEnd_toEndOf="@+id/item_name"
         app:layout_constraintStart_toStartOf="@+id/item_name"
         app:layout_constraintTop_toTopOf="parent" />
+    
+    <!-- Delete Image -->
+    <ImageButton
+        android:id="@+id/delete_images"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="-8dp"
+        android:layout_marginStart="-40dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/delete_images"
+        app:layout_constraintStart_toEndOf="@id/item_img"
+        app:layout_constraintTop_toTopOf="@id/item_img"
+        app:srcCompat="@drawable/places_ic_clear"
+        app:tint="@color/dark_grey" />
 
     <!-- Edit Item FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -98,7 +112,7 @@
         android:paddingHorizontal="8dp"
         android:background="@color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintTop_toBottomOf="@id/chip_group"
+        app:layout_constraintTop_toBottomOf="@id/scroll"
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Item name -->
@@ -123,7 +137,7 @@
     <EditText
         android:id="@+id/item_desc"
         android:layout_width="395dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:autofillHints="@string/item_desc"
@@ -133,7 +147,6 @@
         android:gravity="top"
         android:lines="4"
         android:maxLines="4"
-        android:minLines="2"
         android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
@@ -178,7 +191,6 @@
         android:layout_width="340dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:autofillHints="add tags"
         android:hint="@string/write_a_tag"
@@ -187,18 +199,27 @@
         app:layout_constraintStart_toStartOf="@id/item_condition"
         app:layout_constraintTop_toBottomOf="@+id/item_condition" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group"
-        android:layout_width="395dp"
-        android:layout_height="100dp"
-        android:scrollbars="horizontal"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
+    <HorizontalScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/item_name"
+        app:layout_constraintEnd_toEndOf="@id/item_name"
         app:layout_constraintTop_toBottomOf="@+id/add_tags"
-        app:layout_constraintBottom_toTopOf="@id/item_owner"/>
+        app:layout_constraintBottom_toTopOf="@id/item_owner"
+        >
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group"
+            android:layout_width="395dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:singleLine="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/item_name"
+            app:layout_constraintTop_toBottomOf="@+id/add_tags"
+            app:layout_constraintBottom_toTopOf="@id/item_owner"/>
+    </HorizontalScrollView>
 
     <!-- add tag -->
     <ImageButton
@@ -208,7 +229,6 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:background="@color/orange"
         android:clickable="true"
         android:contentDescription="@string/add_tag"

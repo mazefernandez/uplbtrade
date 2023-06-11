@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +28,6 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.graphics.BitmapFactory.decodeByteArray;
-
 
 /* Binds values of offer information to views */
 public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHolder> {
@@ -74,7 +70,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
                 StorageReference storageReference = storage.getReference();
 
                 /* retrieve image from firebase */
-                StorageReference ref = storageReference.child("images/"+imgString);
+                StorageReference ref = storageReference.child("images/"+imgString+"/0");
                 final long ONE_MEGABYTE = 1024 * 1024 * 5;
                 ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -99,7 +95,9 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
     /* Holds the values for individual views on the recycler */
     static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView offerImg;
-        TextView offerName, offerPrice, offerStatus, originalPrice;
+        TextView offerName;
+        TextView offerPrice;
+        TextView offerStatus;
         LinearLayout card;
         private final Context context;
         Offer offer;

@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme.NoActionBar"
+    android:scrollbars="vertical"
     android:background="@color/background">
 
     <!-- Item image -->
@@ -63,7 +64,7 @@
         android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tags" />
+        app:layout_constraintTop_toBottomOf="@+id/scroll" />
 
     <!-- Item name -->
     <TextView
@@ -89,7 +90,6 @@
         android:layout_marginTop="8dp"
         android:lines="4"
         android:maxLines="4"
-        android:minLines="2"
         android:gravity="top"
         android:background="@color/white"
         android:paddingHorizontal="8dp"
@@ -125,33 +125,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/tags"
-        android:layout_width="395dp"
-        android:layout_height="100dp"
-        android:scrollbars="horizontal"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:chipSpacing="10dp"
+    <HorizontalScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/item_name"
         app:layout_constraintEnd_toEndOf="@id/item_name"
-        app:layout_constraintStart_toStartOf="@+id/item_name"
-        app:layout_constraintTop_toBottomOf="@id/item_condition"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/item_condition"
+        >
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tags"
+            android:layout_width="395dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:singleLine="true"
+            app:layout_constraintEnd_toEndOf="@id/item_name"
+            app:layout_constraintStart_toStartOf="@+id/item_name"
+            app:layout_constraintTop_toBottomOf="@id/item_condition"
+            />
+    </HorizontalScrollView>
 
     <!-- Edit button -->
     <ImageButton
         android:id="@+id/item_edit"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@color/background"
         android:contentDescription="@string/edit_item"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintTop_toBottomOf="@+id/item_owner"
-        app:srcCompat="@drawable/edit_button" />
+        app:srcCompat="@drawable/edit_button"
+        app:tint="@color/orange" />
 
     <!-- Delete item button -->
     <ImageButton
@@ -160,14 +169,12 @@
         android:layout_height="53dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:background="@color/background"
         android:contentDescription="@string/delete_item"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_owner"
         app:srcCompat="@android:drawable/ic_menu_delete"
-        app:tint="@color/orange"
+        app:tint="@color/maroon"
         tools:ignore="ImageContrastCheck,VisualLintBounds" />
 
     <!-- Report user flag -->
@@ -178,14 +185,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/background"
+        android:clickable="false"
         android:contentDescription="@string/flag"
         android:scaleType="fitXY"
-        android:clickable="false"
         android:src="@drawable/flag_alt"
-        app:tint="@color/maroon"
-        app:layout_constraintTop_toBottomOf="@id/item_owner"
         app:layout_constraintEnd_toEndOf="@id/item_owner"
-        />
+        app:layout_constraintTop_toBottomOf="@id/item_owner"
+        app:tint="@color/maroon" />
 
     <!-- Make offer button -->
     <Button

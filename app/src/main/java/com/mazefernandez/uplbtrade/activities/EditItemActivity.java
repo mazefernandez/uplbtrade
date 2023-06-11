@@ -1,19 +1,26 @@
 package com.mazefernandez.uplbtrade.activities;
 
-import static java.lang.System.out;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Intent;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,19 +54,21 @@ import retrofit2.Response;
 
 public class EditItemActivity extends AppCompatActivity {
     private TextView itemOwner;
-    private EditText itemName;
-    private EditText itemDesc;
-    private EditText itemPrice;
+    private EditText itemName, itemDesc, itemPrice, addTags;
     private ImageSwitcher itemImg;
+    private ChipGroup chipGroup;
     private Spinner itemCondition;
     private Bundle itemInfo;
     private String imgString;
     private int itemId;
     private int position = 0;
+    private boolean edit = false;
     private boolean duplicate;
-    private EditText addTags;
-    private ChipGroup chipGroup;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
+    private final ArrayList<String> addresses = new ArrayList<>();
+    /* Firebase instances */
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageReference = storage.getReference();
 
     /* AR Launchers to replace OnActivityResult */
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -83,6 +92,7 @@ public class EditItemActivity extends AppCompatActivity {
             }
             itemImg.setImageURI(uriArrayList.get(0));
             position = 0;
+            edit = true;
         }
         else {
             Toast.makeText(this, "Please pick an image.", Toast.LENGTH_LONG).show();
@@ -92,10 +102,6 @@ public class EditItemActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
-
-        /* Firebase instances */
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
 
         /* Edit Item Views */
         FloatingActionButton addItemImg = findViewById(R.id.add_item_img);
@@ -113,8 +119,18 @@ public class EditItemActivity extends AppCompatActivity {
         Button next = findViewById(R.id.next);
         Button previous = findViewById(R.id.previous);
 
+        ImageButton deleteImages = findViewById(R.id.delete_images);
         ImageButton addTag = findViewById(R.id.add_tag);
         ImageButton rotate = findViewById(R.id.rotate);
+
+        /* Show all images in ImageSwitcher */
+        itemImg.setFactory(() -> new ImageView(getApplicationContext()));
+
+        /* Initialize ImageSwitcher with animations */
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.fade_out);
+        itemImg.setInAnimation(in);
+        itemImg.setOutAnimation(out);
 
         /* ArrayAdapter for condition spinner */
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
@@ -132,31 +148,40 @@ public class EditItemActivity extends AppCompatActivity {
         displayItem(spinnerPosition);
         getTags(itemId);
 
+        /* Delete the photos */
+        deleteImages.setOnClickListener(v -> confirmDelete());
+
         /* Save info to item */
         saveItem.setOnClickListener(view -> {
             String name = itemName.getText().toString().trim();
             String desc = itemDesc.getText().toString().trim();
             String price = itemPrice.getText().toString().trim();
+
+            String[] split = price.split("\u20B1");
+            price = split[split.length-1];
+
             String condition = itemCondition.getSelectedItem().toString().trim();
             Double double_price = Double.parseDouble(price);
 
-            /* Upload image to firebase storage */
-            imgString = UUID.randomUUID().toString();
-            int size = uriArrayList.size();
-            imgString = imgString + "-" + size;
-            int i;
-            for (i = 0; i < uriArrayList.size(); i++) {
-                Uri file = uriArrayList.get(i);
-                StorageReference ref = storageReference.child("images/" + imgString + "/" + i);
-                UploadTask uploadTask = ref.putFile(file);
+            if (edit) {
+                /* Upload image to firebase storage */
+                imgString = UUID.randomUUID().toString();
+                int size = uriArrayList.size();
+                imgString = imgString + "-" + size;
+                int i;
+                for (i = 0; i < uriArrayList.size(); i++) {
+                    Uri file = uriArrayList.get(i);
+                    StorageReference ref = storageReference.child("images/" + imgString + "/" + i);
+                    UploadTask uploadTask = ref.putFile(file);
 
-                uploadTask.addOnSuccessListener(t -> {
-                    System.out.println("Uploaded image");
-                    System.out.println(t.getMetadata());
-                }).addOnFailureListener(t -> {
-                    System.out.println("Failed to upload image");
-                    System.out.println(t.getMessage());
-                });
+                    uploadTask.addOnSuccessListener(t -> {
+                        System.out.println("Uploaded image");
+                        System.out.println(t.getMetadata());
+                    }).addOnFailureListener(t -> {
+                        System.out.println("Failed to upload image");
+                        System.out.println(t.getMessage());
+                    });
+                }
             }
 
             if (uriArrayList.isEmpty()) {
@@ -224,19 +249,49 @@ public class EditItemActivity extends AppCompatActivity {
 
         /* Select next image */
         next.setOnClickListener(view -> {
-            if (position < uriArrayList.size() - 1) {
-                position = position + 1;
-                itemImg.setImageURI(uriArrayList.get(position));
-            } else {
-                Toast.makeText(EditItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
+            if (edit) {
+                if (position < uriArrayList.size() - 1) {
+                    position = position + 1;
+                    itemImg.setImageURI(uriArrayList.get(position));
+                } else {
+                    Toast.makeText(EditItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
+                }
             }
+            else {
+                if (position < addresses.size() - 1) {
+                    position = position + 1;
+                    StorageReference ref = storageReference.child(addresses.get(position));
+                    final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                    ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                        itemImg.setImageDrawable(drawable);
+                        System.out.println("Successfully read image");
+                    }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+                } else {
+                    Toast.makeText(EditItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
         });
 
         /* Select previous image */
         previous.setOnClickListener(view -> {
             if (position > 0) {
                 position = position - 1;
-                itemImg.setImageURI(uriArrayList.get(position));
+                if (edit) {
+                    itemImg.setImageURI(uriArrayList.get(position));
+                }
+                else {
+                    StorageReference ref = storageReference.child(addresses.get(position));
+                    final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                    ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                        itemImg.setImageDrawable(drawable);
+                        System.out.println("Successfully read image");
+                    }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+                }
             }
         });
 
@@ -283,10 +338,6 @@ public class EditItemActivity extends AppCompatActivity {
         itemPrice.setText(itemInfo.getString("PRICE"));
         itemCondition.setSelection(spinnerPosition);
 
-        /* Firebase instances */
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-
         /* retrieve size of folder of images from firebase */
         if (itemInfo.getString("IMAGE") == null) {
             itemImg.setImageResource(R.drawable.placeholder);
@@ -296,15 +347,19 @@ public class EditItemActivity extends AppCompatActivity {
             String[] split = itemInfo.getString("IMAGE").split("-");
             String image = split[split.length - 1];
             int size = Integer.parseInt(image);
-
-            for (int i = 0; i < size; i++) {
-                StorageReference ref = storageReference.child("images/" + itemInfo.getString("IMAGE") + "/" + i);
-                ref.getDownloadUrl().addOnSuccessListener(uri -> {
-                    uriArrayList.add(uri);
-                    System.out.println("Successfully read image");
-
-                }).addOnFailureListener(fail -> out.println("Failed to read image" + fail));
+            /* Store all addresses in an arraylist */
+            for (int i = 0; i<size; i++){
+                String address = "images/" + itemInfo.getString("IMAGE") + "/" + i;
+                addresses.add(address);
             }
+            StorageReference ref = storageReference.child(addresses.get(0));
+            final long ONE_MEGABYTE = 1024 * 1024 * 5;
+            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                itemImg.setImageDrawable(drawable);
+                System.out.println("Successfully read image");
+            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }
 
     }
@@ -375,5 +430,32 @@ public class EditItemActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, itemId);
+    }
+    private void confirmDelete(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Images");
+        builder.setMessage("Delete Images?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            deleteImages();
+            Toast.makeText(getApplicationContext(), "Images deleted", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show();
+            dialog.cancel();
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+    }
+    private void deleteImages() {
+        itemImg.setImageDrawable(null);
+        uriArrayList.clear();
+        addresses.clear();
     }
 }

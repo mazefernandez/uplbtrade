@@ -103,7 +103,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/white"
-        android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -161,7 +160,7 @@
         app:layout_constraintStart_toStartOf="@+id/offer_seller"
         app:layout_constraintTop_toBottomOf="@+id/offer_seller"
         app:srcCompat="@android:drawable/ic_menu_delete"
-        app:tint="?attr/colorError" />
+        app:tint="@color/maroon" />
 
     <!-- redirects to meetup page -->
     <Button

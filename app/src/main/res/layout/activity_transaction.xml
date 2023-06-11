@@ -91,6 +91,8 @@
         android:layout_height="wrap_content"
         android:text="@string/cancel_order"
         android:layout_marginTop="16dp"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         app:layout_constraintTop_toBottomOf="@id/seller"
         app:layout_constraintStart_toStartOf="@id/seller" />
 
@@ -100,6 +102,8 @@
         android:layout_height="wrap_content"
         android:text="@string/rate"
         android:layout_marginTop="16dp"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         app:layout_constraintTop_toBottomOf="@id/seller"
         app:layout_constraintEnd_toEndOf="@id/seller"
         >
