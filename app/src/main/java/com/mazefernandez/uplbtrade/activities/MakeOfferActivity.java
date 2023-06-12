@@ -61,15 +61,18 @@ public class MakeOfferActivity extends AppCompatActivity {
         /* Initialize offer views */
         offerOwner.setText(owner);
         offerName.setText(name);
-
+        String[] split = image.split("-");
+        String rotate = split[split.length-1];
+        int rotation = Integer.parseInt(rotate);
         /* retrieve image from firebase */
-        StorageReference ref = storageReference.child("images/"+image);
+        StorageReference ref = storageReference.child("images/"+image+"/0");
 
         final long ONE_MEGABYTE = 1024 * 1024 * 5;
         ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             System.out.println("Successfully read image");
             offerImg.setImageBitmap(bitmap);
+            offerImg.setRotation(rotation);
         }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
 
 

@@ -105,35 +105,33 @@ public class OffersActivity extends AppCompatActivity {
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_offers);
-        navigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    item.setChecked(true);
-                    Intent home = new Intent(OffersActivity.this,HomeActivity.class);
-                    home.putExtra(GOOGLE_ACCOUNT, account);
-                    startActivity(home);
-                    return true;
-                case R.id.navigation_inbox:
-                    item.setChecked(true);
-                    Intent inbox = new Intent(OffersActivity.this, MessagesActivity.class);
-                    inbox.putExtra(GOOGLE_ACCOUNT,account);
-                    startActivity(inbox);
-                    return true;
-                case R.id.navigation_offers:
-                    return true;
-                case R.id.navigation_profile:
-                    item.setChecked(true);
-                    Intent profile = new Intent(OffersActivity.this,ProfileActivity.class);
-                    profile.putExtra(GOOGLE_ACCOUNT, account);
-                    startActivity(profile);
-                    return true;
-                case R.id.navigation_transactions:
-                    item.setChecked(true);
-                    Intent purchase = new Intent(OffersActivity.this, TransactionsActivity.class);
-                    startActivity(purchase);
-                    return true;
+        navigation.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_home) {
+                item.setChecked(true);
+                Intent home = new Intent(OffersActivity.this, HomeActivity.class);
+                home.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(home);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_inbox) {
+                item.setChecked(true);
+                Intent inbox = new Intent(OffersActivity.this, MessagesActivity.class);
+                inbox.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(inbox);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_profile) {
+                item.setChecked(true);
+                Intent profile = new Intent(OffersActivity.this, ProfileActivity.class);
+                profile.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(profile);
+                return true;
+            } else if (item.getItemId() == R.id.navigation_transactions) {
+                item.setChecked(true);
+                Intent purchase = new Intent(OffersActivity.this, TransactionsActivity.class);
+                purchase.putExtra(GOOGLE_ACCOUNT, account);
+                startActivity(purchase);
+                return true;
             }
-            return false;
+            else return item.getItemId() == R.id.navigation_offers;
         });
     }
 

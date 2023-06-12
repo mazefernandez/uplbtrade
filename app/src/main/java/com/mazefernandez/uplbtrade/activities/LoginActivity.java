@@ -3,11 +3,8 @@ package com.mazefernandez.uplbtrade.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,9 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.SignInButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter;
@@ -38,16 +32,11 @@ import retrofit2.Response;
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
 import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Objects;
 /* Login Customers through Google Account */
 
 public class LoginActivity extends AppCompatActivity {
     private final GoogleAccountAdapter googleAdapter = new GoogleAccountAdapter();
-    // Firebase instances
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageReference = storage.getReference();
     DatabaseReference database;
 
     /* login to the application */
@@ -141,12 +130,7 @@ public class LoginActivity extends AppCompatActivity {
         UPLBTrade.retrofitClient.getCustomerByEmail(new Callback<Customer>() {
             @Override
             public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
-                if (response.isSuccessful()) {
-                    System.out.println("Customer exists");
-                }
-                else {
-                    System.out.println("find customer by email error " + response.errorBody());
-                }
+                System.out.println("Customer exists");
             }
 
             @Override
@@ -181,12 +165,7 @@ public class LoginActivity extends AppCompatActivity {
         UPLBTrade.retrofitClient.addCustomer(new Callback<Customer>() {
             @Override
             public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
-                if (response.isSuccessful()) {
-                    System.out.println("Added new customer");
-                }
-                else {
-                    System.out.println("add new customer error " + response.errorBody());
-                }
+                System.out.println("Added new customer");
             }
 
             @Override

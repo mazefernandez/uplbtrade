@@ -15,24 +15,32 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
+import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.activities.ItemActivity;
 import com.mazefernandez.uplbtrade.models.Item;
+import com.mazefernandez.uplbtrade.models.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /* Binds values of item information to views */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements Filterable {
-    private final List<Item> itemList;
-    private List<Item> itemListFiltered;
+    private final ArrayList<Item> itemList;
+    private ArrayList<Item> itemListFiltered;
 
-
-    public ItemAdapter(List<Item> itemList) {
+    public ItemAdapter(ArrayList<Item> itemList) {
         this.itemList = itemList;
         this.itemListFiltered = itemList;
     }
@@ -51,19 +59,52 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
 
+        /* Get Tags from database */
+        UPLBTrade.retrofitClient.getTagsFromItem(new Callback<List<Tag>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
+                ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
+                assert tags != null;
+                for (int i=0; i<tags.size(); i++) {
+                    try {
+                        LayoutInflater inflater = LayoutInflater.from(holder.context);
+                        Chip chip = (Chip) inflater.inflate(R.layout.chip, holder.chipGroup, false);
+                        chip.setId(ViewCompat.generateViewId());
+                        chip.setText(tags.get(i).getTagName());
+                        chip.setClickable(true);
+                        chip.setCheckable(false);
+                        chip.setCloseIconVisible(false);
+                        holder.chipGroup.addView(chip);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error in adding chip " + e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
+                System.out.println("Error adding tags (ItemAdapter)" + t.getMessage());
+            }
+        }, itemListFiltered.get(position).getItemId());
+
         /* puts default image if no image */
         if(itemListFiltered.get(position).getImage() == null) {
             holder.itemImg.setImageResource(R.drawable.placeholder);
         }
         else {
             /* retrieve image from firebase */
-            StorageReference ref = storageReference.child("images/"+itemListFiltered.get(position).getImage()+"/0");
-
+            String imgString = itemListFiltered.get(position).getImage();
+            StorageReference ref = storageReference.child("images/"+imgString+"/0");
+            String[] split = imgString.split("-");
+            String rotate = split[split.length-1];
+            int rotation = Integer.parseInt(rotate);
             final long ONE_MEGABYTE = 1024 * 1024 * 5;
             ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 System.out.println("Successfully read image");
                 holder.itemImg.setImageBitmap(bitmap);
+                holder.itemImg.setRotation(rotation);
             }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }
         /* retrieve item data */
@@ -73,6 +114,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         price = "\u20B1" + price;
         holder.itemPrice.setText(price);
         holder.item = itemListFiltered.get(position);
+        holder.chipGroup.setClickable(false);
     }
 
     @Override
@@ -90,7 +132,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 if (charString.isEmpty()) {
                     itemListFiltered = itemList;
                 } else {
-                    List<Item> filteredList = new ArrayList<>();
+                    ArrayList<Item> filteredList = new ArrayList<>();
                     for (Item item : itemList) {
                         if (item.getItemName().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(item);
@@ -106,11 +148,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             @SuppressLint("NotifyDataSetChanged")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                itemListFiltered = (List<Item>) results.values;
+                itemListFiltered = (ArrayList<Item>) results.values;
                 notifyDataSetChanged();
             }
         };
     }
+
 
     /* Holds the values for individual views on the recycler */
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -118,6 +161,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         private final TextView itemName;
         private final TextView itemPrice;
         private final Context context;
+        private final ChipGroup chipGroup;
         private Item item;
 
         /* View attributes */
@@ -127,6 +171,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             itemName = view.findViewById(R.id.item_name);
             itemPrice = view.findViewById(R.id.offer);
             LinearLayout card = view.findViewById(R.id.card);
+            chipGroup = view.findViewById(R.id.chip_group);
             context = view.getContext();
             card.setOnClickListener(this);
         }

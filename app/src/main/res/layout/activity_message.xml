@@ -9,10 +9,11 @@
     <!-- customer email -->
     <TextView
         android:id="@+id/chat_email"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_width="395dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,46 +21,49 @@
 
     <ListView
         android:id="@+id/chat_history"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="395dp"
+        android:layout_height="550dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toTopOf="@id/input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chat_email"
      />
 
     <!-- user message input -->
     <EditText
         android:id="@+id/input"
-        android:layout_width="0dp"
+        android:layout_width="340dp"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:autofillHints="message"
         android:inputType="textMultiLine"
         android:hint="@string/enter_message"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/send_button"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="@id/chat_history"
+        app:layout_constraintTop_toBottomOf="@id/chat_history"
+        >
 
     </EditText>
 
     <!-- send button -->
-    <androidx.appcompat.widget.AppCompatImageButton
+    <ImageButton
         android:id="@+id/send_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@android:drawable/ic_menu_send"
-        android:backgroundTint="@color/orange"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/send"
+        app:tint="@color/white"
+        app:backgroundTint="@color/orange"
+        app:layout_constraintTop_toTopOf="@id/input"
+        app:layout_constraintStart_toEndOf="@id/input"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,62 +8,54 @@
     android:layout_height="match_parent"
     tools:context=".activities.MeetUpActivity">
 
-    <!-- date button, switches to datetime fragment -->
-
-    <!-- venue button, switches to map fragment -->
-
-    <!-- confirm button -->
     <Button
         android:id="@+id/date"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/date_time"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.041" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintBottom_toTopOf="@id/fragment_frame"
+        app:layout_constraintEnd_toStartOf="@id/venue"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- displays current fragment -->
+
     <Button
         android:id="@+id/venue"
         android:layout_width="wrap_content"
-        android:layout_height="49dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="48dp"
         android:text="@string/venue"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/confirm"
-        app:layout_constraintHorizontal_bias="0.648"
-        app:layout_constraintStart_toEndOf="@+id/date"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.041" />
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintBottom_toTopOf="@id/fragment_frame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="8dp"
         android:text="@string/confirm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintStart_toEndOf="@id/venue"
+        app:layout_constraintBottom_toTopOf="@id/fragment_frame"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.041" />
+        />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/fragment_frame"
-        android:layout_width="0dp"
-        android:layout_height="591dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="395dp"
+        android:layout_height="550dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/venue" />
 

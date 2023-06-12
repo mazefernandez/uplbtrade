@@ -4,6 +4,7 @@ import com.mazefernandez.uplbtrade.models.ApplicationReview;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
+import com.mazefernandez.uplbtrade.models.Id;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.ItemReport;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -120,6 +121,12 @@ public class RetrofitClient {
         Call<Customer> updateCustomerCall = service.updateCustomer(customer,customer_id);
         updateCustomerCall.enqueue(callback);
     }
+
+    public void updateRating(Callback<Customer> callback, int customer_id) {
+        Call<Customer> updateRatingCall = service.updateRating(customer_id);
+        updateRatingCall.enqueue(callback);
+    }
+
     public void getCustomerItems(Callback<List<Item>> callback, int customer_id) {
         Call<List<Item>> getCustomerItemsCall = service.getCustomerItems(customer_id);
         getCustomerItemsCall.enqueue(callback);
@@ -133,6 +140,14 @@ public class RetrofitClient {
     public void getItems(Callback<List<Item>> callback) {
         Call<List<Item>> getItemsCall = service.getItems();
         getItemsCall.enqueue(callback);
+    }
+    public void searchTagItems(Callback<List<Id>> callback, List<String> tags) {
+        Call<List<Id>> getTagItemsCall = service.searchTagItems(tags);
+        getTagItemsCall.enqueue(callback);
+    }
+    public void getItemsByIds(Callback<List<Item>> callback, List<Integer> ids) {
+        Call<List<Item>> getItemsByIdsCall = service.getItemsByIds(ids);
+        getItemsByIdsCall.enqueue(callback);
     }
     public void getItem(Callback<Item> callback, int item_id) {
         Call<Item> getItemCall = service.getItem(item_id);
@@ -174,6 +189,11 @@ public class RetrofitClient {
     public void getTagsFromItem(Callback<List<Tag>> callback, int item_id) {
         Call<List<Tag>> getTagsFromItemCall = service.getTagsFromItem(item_id);
         getTagsFromItemCall.enqueue(callback);
+    }
+
+    public void deleteTag(Callback<Tag> callback, int tag_id) {
+        Call<Tag> deleteTagCall = service.deleteTag(tag_id);
+        deleteTagCall.enqueue(callback);
     }
 
     /* Offer Calls */
@@ -231,6 +251,11 @@ public class RetrofitClient {
     public void addTransaction(Callback<Transaction> callback, Transaction transaction) {
         Call<Transaction> addTransactionCall = service.addTransaction(transaction);
         addTransactionCall.enqueue(callback);
+    }
+
+    public void cancelTransaction(Callback<Transaction> callback, int transaction_id){
+        Call<Transaction> cancelTransactionCall = service.cancelTransaction(transaction_id);
+        cancelTransactionCall.enqueue(callback);
     }
 }
 

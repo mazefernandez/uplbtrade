@@ -5,57 +5,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/off_white"
+    android:background="@color/background"
     tools:context=".activities.HomeActivity">
 
     <!-- Page Title -->
     <TextView
         android:id="@+id/recommended"
-        android:layout_width="0dp"
-        android:layout_height="39dp"
-        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/maroon"
+        android:gravity="center_horizontal"
         android:text="@string/recommended"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/off_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Search bar -->
-    <androidx.appcompat.widget.SearchView
+    <SearchView
         android:id="@+id/home_search"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_width="340dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/border"
         android:iconifiedByDefault="false"
-        android:padding="4dp"
         android:queryHint="@string/search"
-        app:layout_constraintBottom_toTopOf="@+id/recycler_view"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recommended">
 
-    </androidx.appcompat.widget.SearchView>
+    </SearchView>
+
+    <ImageButton
+        android:id="@+id/filter"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:background="@color/background"
+        android:contentDescription="@string/show_recommended"
+        android:src="@android:drawable/ic_menu_more"
+        app:layout_constraintStart_toEndOf="@id/home_search"
+        app:layout_constraintTop_toTopOf="@id/home_search"
+        app:tint="@color/orange"
+        tools:ignore="ImageContrastCheck" />
 
     <!-- List of items -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="395dp"
+        android:layout_height="600dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        android:layout_marginTop="8dp"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_search" />
 
@@ -68,6 +74,7 @@
         android:background="@color/maroon"
         app:itemTextColor="@color/off_white"
         app:itemIconTint="@color/off_white"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

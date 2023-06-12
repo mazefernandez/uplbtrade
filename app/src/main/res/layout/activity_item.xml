@@ -7,24 +7,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme.NoActionBar"
+    android:scrollbars="vertical"
     android:background="@color/background">
 
     <!-- Item image -->
     <ImageSwitcher
         android:id="@+id/item_img"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="?attr/colorBackgroundFloating"
         android:contentDescription="@string/item_image"
         android:foregroundGravity="center"
         android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/item_name"
+        app:layout_constraintStart_toStartOf="@id/item_name"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -32,11 +30,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/previous"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_img">
     </Button>
@@ -46,131 +44,123 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/next"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintEnd_toEndOf="@id/item_name"
         app:layout_constraintTop_toBottomOf="@id/item_img" />
 
     <!-- Owner name -->
     <TextView
         android:id="@+id/item_owner"
-        android:layout_width="match_parent"
+        android:layout_width="395dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tags" />
+        app:layout_constraintTop_toBottomOf="@+id/scroll" />
 
     <!-- Item name -->
     <TextView
         android:id="@+id/item_name"
-        android:layout_width="match_parent"
+        android:layout_width="395dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/previous" />
 
     <!-- Description -->
     <TextView
         android:id="@+id/item_desc"
-        android:layout_width="match_parent"
+        android:layout_width="395dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:lines="4"
         android:maxLines="4"
-        android:gravity="center"
+        android:gravity="top"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
     <!-- Offer price -->
     <TextView
         android:id="@+id/offer"
-        android:layout_width="match_parent"
+        android:layout_width="395dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_desc" />
 
     <!-- Item condition -->
     <TextView
         android:id="@+id/item_condition"
-        android:layout_width="match_parent"
+        android:layout_width="395dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
         android:background="@color/white"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tags"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/white"
-        android:scrollbars="horizontal"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/item_condition" />
+    <HorizontalScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/item_name"
+        app:layout_constraintEnd_toEndOf="@id/item_name"
+        app:layout_constraintTop_toBottomOf="@+id/item_condition"
+        >
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tags"
+            android:layout_width="395dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:singleLine="true"
+            app:layout_constraintEnd_toEndOf="@id/item_name"
+            app:layout_constraintStart_toStartOf="@+id/item_name"
+            app:layout_constraintTop_toBottomOf="@id/item_condition"
+            />
+    </HorizontalScrollView>
 
     <!-- Edit button -->
     <ImageButton
         android:id="@+id/item_edit"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@color/background"
         android:contentDescription="@string/edit_item"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintTop_toBottomOf="@+id/item_owner"
-        app:srcCompat="@drawable/edit_button" />
+        app:srcCompat="@drawable/edit_button"
+        app:tint="@color/orange" />
 
     <!-- Delete item button -->
     <ImageButton
@@ -179,14 +169,12 @@
         android:layout_height="53dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:background="@color/background"
         android:contentDescription="@string/delete_item"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_owner"
         app:srcCompat="@android:drawable/ic_menu_delete"
-        app:tint="@color/orange"
+        app:tint="@color/maroon"
         tools:ignore="ImageContrastCheck,VisualLintBounds" />
 
     <!-- Report user flag -->
@@ -197,14 +185,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/background"
+        android:clickable="false"
         android:contentDescription="@string/flag"
         android:scaleType="fitXY"
-        android:clickable="false"
         android:src="@drawable/flag_alt"
-        app:tint="@color/maroon"
-        app:layout_constraintTop_toBottomOf="@id/item_owner"
         app:layout_constraintEnd_toEndOf="@id/item_owner"
-        />
+        app:layout_constraintTop_toBottomOf="@id/item_owner"
+        app:tint="@color/maroon" />
 
     <!-- Make offer button -->
     <Button
@@ -212,6 +199,8 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:text="@string/make_offer"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintStart_toStartOf="@+id/item_owner"
@@ -221,10 +210,12 @@
     <!-- See offer button -->
     <Button
         android:id="@+id/see_offer"
-        android:layout_width="108dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:text="@string/see_offer"
         android:clickable="false"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/item_owner"
         app:layout_constraintStart_toStartOf="@+id/item_owner"

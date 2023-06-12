@@ -1,39 +1,47 @@
 package com.mazefernandez.uplbtrade.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Intent;
-import android.database.Cursor;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Tag;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,56 +54,55 @@ import retrofit2.Response;
 
 public class EditItemActivity extends AppCompatActivity {
     private TextView itemOwner;
-    private EditText itemName;
-    private EditText itemDesc;
-    private EditText itemPrice;
-    private ImageView itemImg;
+    private EditText itemName, itemDesc, itemPrice, addTags;
+    private ImageSwitcher itemImg;
+    private ChipGroup chipGroup;
     private Spinner itemCondition;
     private Bundle itemInfo;
     private String imgString;
-    private Bitmap bitmap;
-    private Uri filepath;
     private int itemId;
-    private EditText addTags;
-    private final ArrayList<Tag> tags = new ArrayList<>();
-    private final ArrayList<Tag> newTags = new ArrayList<>();
-    private final ArrayList<Tag> deleteTags = new ArrayList<>();
-    private final ArrayList<String> tagStrings = new ArrayList<>();
-
+    private int position = 0;
+    private int rotation = 0;
+    private boolean edit = false;
+    private boolean duplicate;
+    private final ArrayList<Uri> uriArrayList = new ArrayList<>();
+    private final ArrayList<String> addresses = new ArrayList<>();
+    /* Firebase instances */
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageReference = storage.getReference();
 
     /* AR Launchers to replace OnActivityResult */
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();
-            /* get image */
-            if (intent != null) {
-                Uri uri = intent.getData();
-                filepath = uri;
-                String[] filePathColumn = {MediaStore.Images.Media._ID};
-                assert uri != null;
-                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                assert cursor != null;
-                cursor.moveToFirst();
-                cursor.close();
-                try {
-                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                    itemImg.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            /* get images */
+            assert intent != null;
+            if (intent.getClipData() != null) {
+                ClipData clipData = intent.getClipData();
+                int count = clipData.getItemCount();
+                /* add all images to array */
+                for (int i=0; i<count; i++) {
+                    Uri url = clipData.getItemAt(i).getUri();
+                    uriArrayList.add(url);
                 }
+                /* display first image */
             }
+            else {
+                Uri url = intent.getData();
+                uriArrayList.add(url);
+            }
+            itemImg.setImageURI(uriArrayList.get(0));
+            position = 0;
+            edit = true;
+        }
+        else {
+            Toast.makeText(this, "Please pick an image.", Toast.LENGTH_LONG).show();
         }
     });
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
-
-        /* Firebase instances */
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-
-
 
         /* Edit Item Views */
         FloatingActionButton addItemImg = findViewById(R.id.add_item_img);
@@ -106,18 +113,25 @@ public class EditItemActivity extends AppCompatActivity {
         itemImg = findViewById(R.id.item_img);
         itemCondition = findViewById(R.id.item_condition);
         addTags = findViewById(R.id.add_tags);
-        ListView tagsList = findViewById(R.id.tags);
+        chipGroup = findViewById(R.id.chip_group);
 
         Button saveItem = findViewById(R.id.save_item);
         Button cancel = findViewById(R.id.cancel);
+        Button next = findViewById(R.id.next);
+        Button previous = findViewById(R.id.previous);
 
+        ImageButton deleteImages = findViewById(R.id.delete_images);
         ImageButton addTag = findViewById(R.id.add_tag);
-        ImageButton deleteTag = findViewById(R.id.delete_tag);
         ImageButton rotate = findViewById(R.id.rotate);
 
-        /* listview for tags */
-        ArrayAdapter<String> stringAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, tagStrings);
-        tagsList.setAdapter(stringAdapter);
+        /* Show all images in ImageSwitcher */
+        itemImg.setFactory(() -> new ImageView(getApplicationContext()));
+
+        /* Initialize ImageSwitcher with animations */
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.fade_out);
+        itemImg.setInAnimation(in);
+        itemImg.setOutAnimation(out);
 
         /* ArrayAdapter for condition spinner */
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
@@ -135,47 +149,43 @@ public class EditItemActivity extends AppCompatActivity {
         displayItem(spinnerPosition);
         getTags(itemId);
 
+        /* Delete the photos */
+        deleteImages.setOnClickListener(v -> confirmDelete());
+
         /* Save info to item */
         saveItem.setOnClickListener(view -> {
-            String name = itemName.getText().toString();
-            String desc = itemDesc.getText().toString();
-            String price = itemPrice.getText().toString();
-            String condition = itemCondition.getSelectedItem().toString();
+            String name = itemName.getText().toString().trim();
+            String desc = itemDesc.getText().toString().trim();
+            String price = itemPrice.getText().toString().trim();
+
+            String[] split = price.split("\u20B1");
+            price = split[split.length-1];
+
+            String condition = itemCondition.getSelectedItem().toString().trim();
             Double double_price = Double.parseDouble(price);
 
-            /* save image to file */
-            if (bitmap != null) {
-                File fileDirectory = getApplicationContext().getFilesDir();
-                File file = new File(fileDirectory,"image.jpeg");
-
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG,0, bos);
-                byte[] bitmapData = bos.toByteArray();
-
-                try {
-                    FileOutputStream fos = new FileOutputStream(file);
-                    fos.write(bitmapData);
-                    fos.flush();
-                    fos.close();
-                }
-                catch(IOException e) {
-                    e.printStackTrace();
-                }
-
+            if (edit) {
                 /* Upload image to firebase storage */
                 imgString = UUID.randomUUID().toString();
-                StorageReference ref = storageReference.child("images/" + imgString);
+                int size = uriArrayList.size();
+                imgString = imgString + "-" + size + "-" + rotation;
+                int i;
+                for (i = 0; i < uriArrayList.size(); i++) {
+                    Uri file = uriArrayList.get(i);
+                    StorageReference ref = storageReference.child("images/" + imgString + "/" + i);
+                    UploadTask uploadTask = ref.putFile(file);
 
-                ref.putFile(filepath).addOnSuccessListener(success -> {
-                    // Image uploaded successfully
-                    System.out.println("image uploaded successfully");
-                }).addOnFailureListener(failure -> {
-                    // Image upload fail
-                    System.out.println("image failed to upload");
-                });
+                    uploadTask.addOnSuccessListener(t -> {
+                        System.out.println("Uploaded image");
+                        System.out.println(t.getMetadata());
+                    }).addOnFailureListener(t -> {
+                        System.out.println("Failed to upload image");
+                        System.out.println(t.getMessage());
+                    });
+                }
             }
 
-            if (imgString == null) {
+            if (uriArrayList.isEmpty()) {
                 imgString = itemInfo.getString("IMAGE");
             }
 
@@ -196,22 +206,8 @@ public class EditItemActivity extends AppCompatActivity {
             }, item, itemId);
 
             /* Add and delete tags from database */
-
-            UPLBTrade.retrofitClient.addTags(new Callback<List<Tag>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
-                    System.out.println("Added Tags");
-                    System.out.println(response.body());
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
-                    System.out.println("Failed to add tags");
-                    System.out.println(t.getMessage());
-                }
-            }, newTags);
-
-
+            deleteTags(itemId);
+            addTags(itemId);
 
             /* Return to item */
             Intent intent = new Intent();
@@ -230,45 +226,84 @@ public class EditItemActivity extends AppCompatActivity {
             selectImage.launch(Intent.createChooser(intent, "Select Picture"));
         });
 
-
-
         /* Add Tag to tags list for new item */
         addTag.setOnClickListener(v -> {
-            String newTag = addTags.getText().toString();
-            if(newTag.length() > 0)
-            {
-                Tag tag = new Tag(newTag, itemId);
-                tags.add(tag);
-                stringAdapter.add(newTag);
-
-                newTags.add(tag);
+            String newTag = addTags.getText().toString().trim();
+            if(!newTag.isEmpty()) {
+                /* check for duplicate tags */
+                duplicate = checkDuplicate(newTag);
+                if (!duplicate) {
+                    addChip(newTag);
+                }
+                else {
+                    Toast.makeText(EditItemActivity.this, newTag + " is already added", Toast.LENGTH_SHORT).show();
+                }
+                addTags.setText("");
             }
-        });
-
-        /* Delete Tag to tags list for new item */
-        deleteTag.setOnClickListener(v -> {
-            String newTag = addTags.getText().toString();
-            if(newTag.length() > 0)
-            {
-                Tag tag = new Tag(newTag, itemId);
-                tags.remove(tag);
-                stringAdapter.remove(newTag);
-
-                deleteTags.add(tag);
+            else {
+                Toast.makeText(EditItemActivity.this, "Enter a tag", Toast.LENGTH_SHORT).show();
             }
         });
 
         /* Rotate Image */
         rotate.setOnClickListener(v -> {
-            itemImg.setRotation(90);
+            rotation = (rotation + 90) % 360;
+            itemImg.setRotation(rotation);
+        });
+
+        /* Select next image */
+        next.setOnClickListener(view -> {
+            if (edit) {
+                if (position < uriArrayList.size() - 1) {
+                    position = position + 1;
+                    itemImg.setImageURI(uriArrayList.get(position));
+                } else {
+                    Toast.makeText(EditItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {
+                if (position < addresses.size() - 1) {
+                    position = position + 1;
+                    StorageReference ref = storageReference.child(addresses.get(position));
+                    final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                    ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                        itemImg.setImageDrawable(drawable);
+                        System.out.println("Successfully read image");
+                    }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+                } else {
+                    Toast.makeText(EditItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+
+        /* Select previous image */
+        previous.setOnClickListener(view -> {
+            if (position > 0) {
+                position = position - 1;
+                if (edit) {
+                    itemImg.setImageURI(uriArrayList.get(position));
+                }
+                else {
+                    StorageReference ref = storageReference.child(addresses.get(position));
+                    final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                    ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                        itemImg.setImageDrawable(drawable);
+                        System.out.println("Successfully read image");
+                    }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+                }
+            }
         });
 
         /* Upload image to item */
         addItemImg.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setType("image/*");
-            String[] mimeTypes = {"image/jpeg", "image/png"};
-            intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             intent.setAction(Intent.ACTION_GET_CONTENT);
             selectImage.launch(Intent.createChooser(intent, "Select Picture"));
         });
@@ -289,12 +324,11 @@ public class EditItemActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
                 ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
                 assert tags != null;
-                ArrayList<Tag> tagList = new ArrayList<>(tags);
-                for (Tag tag: tagList) {
-                    tagStrings.add(tag.getTagName());
+                /* Add tags to chip group */
+                for (int i=0; i<tags.size();i++) {
+                    addChip(tags.get(i).getTagName());
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
 
@@ -308,19 +342,127 @@ public class EditItemActivity extends AppCompatActivity {
         itemPrice.setText(itemInfo.getString("PRICE"));
         itemCondition.setSelection(spinnerPosition);
 
-        /* Firebase instances */
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
+        /* retrieve size of folder of images from firebase */
+        if (itemInfo.getString("IMAGE") == null) {
+            itemImg.setImageResource(R.drawable.placeholder);
+        }
+        else {
+            /* retrieve image from firebase */
+            String[] split = itemInfo.getString("IMAGE").split("-");
+            String image = split[split.length - 2];
+            String rotate = split[split.length-1];
+            int size = Integer.parseInt(image);
+            rotation = Integer.parseInt(rotate);
+            /* Store all addresses in an arraylist */
+            for (int i = 0; i<size; i++){
+                String address = "images/" + itemInfo.getString("IMAGE") + "/" + i;
+                addresses.add(address);
+            }
+            StorageReference ref = storageReference.child(addresses.get(0));
+            final long ONE_MEGABYTE = 1024 * 1024 * 5;
+            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                itemImg.setImageDrawable(drawable);
+                itemImg.setRotation(rotation);
+                System.out.println("Successfully read image");
+            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+        }
 
-        /* retrieve image from firebase */
-        StorageReference ref = storageReference.child("images/" + itemInfo.getString("IMAGE"));
+    }
+    /* Add chips to chip group when user adds tag */
+    private void addChip(String tag) {
+        try {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            Chip chip = (Chip) inflater.inflate(R.layout.chip, chipGroup, false);
+            chip.setId(ViewCompat.generateViewId());
+            chip.setText(tag);
+            chip.setCloseIconVisible(true);
+            chip.setClickable(true);
+            chip.setCheckable(false);
+            chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
+            chipGroup.addView(chip);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error in adding chip " + e.getMessage());
+        }
 
-        final long ONE_MEGABYTE = 1024 * 1024 * 5;
-        ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            System.out.println("Successfully read image");
-            itemImg.setImageBitmap(bitmap);
-        }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
+    }
+    /* Check if there's a duplicate tag */
+    private boolean checkDuplicate(String tag) {
+        for (int i=0;i<chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            if (chip.getText().equals(tag)) return true;
+        }
+        return false;
+    }
 
+    private void addTags(int itemId){
+        /* Send tags to database */
+        ArrayList<Tag> tags = new ArrayList<>();
+
+        for (int i=0;i<this.chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) this.chipGroup.getChildAt(i);
+
+            Tag tag = new Tag((String) chip.getText(), itemId);
+            tags.add(tag);
+        }
+
+        UPLBTrade.retrofitClient.addTags(new Callback<List<Tag>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
+                System.out.println("Added Tags");
+                System.out.println(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
+                System.out.println("Failed to add tags");
+                System.out.println(t.getMessage());
+                System.out.println(tags);
+            }
+        }, tags);
+    }
+    private void deleteTags(int itemId){
+        UPLBTrade.retrofitClient.deleteTag(new Callback<Tag>() {
+            @Override
+            public void onResponse(@NonNull Call<Tag> call, @NonNull Response<Tag> response) {
+                System.out.println("Deleted Tags");
+                System.out.println(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Tag> call, @NonNull Throwable t) {
+                System.out.println("Failed to delete tags");
+                System.out.println(t.getMessage());
+            }
+        }, itemId);
+    }
+    private void confirmDelete(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Images");
+        builder.setMessage("Delete Images?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            deleteImages();
+            Toast.makeText(getApplicationContext(), "Images deleted", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show();
+            dialog.cancel();
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+    }
+    private void deleteImages() {
+        itemImg.setImageDrawable(null);
+        uriArrayList.clear();
+        addresses.clear();
     }
 }

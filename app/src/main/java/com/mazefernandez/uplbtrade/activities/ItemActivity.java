@@ -6,9 +6,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,14 +27,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.view.ViewCompat;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
-import com.mazefernandez.uplbtrade.adapters.TagAdapter;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -57,11 +61,14 @@ public class ItemActivity extends AppCompatActivity {
     private int itemId;
     private int sellerId;
     private int position = 0;
+    private int rotation = 0;
     private Offer offer;
     private Customer seller;
-    private RecyclerView recyclerView;
-    private TagAdapter tagAdapter;
-    private final ArrayList<Uri> uriArrayList = new ArrayList<>();
+    private ChipGroup chipGroup;
+    private final ArrayList<String> addresses = new ArrayList<>();
+    /* Firebase instances */
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private final StorageReference storageReference = storage.getReference();
 
     /* Edit item details */
     ActivityResultLauncher<Intent> editItem = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -111,19 +118,16 @@ public class ItemActivity extends AppCompatActivity {
         ImageButton flag = findViewById(R.id.flag);
         makeOffer = findViewById(R.id.make_offer);
         seeOffer = findViewById(R.id.see_offer);
-        recyclerView = findViewById(R.id.tags);
+        chipGroup = findViewById(R.id.tags);
         Button previous = findViewById(R.id.previous);
         Button next = findViewById(R.id.next);
-
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3,RecyclerView.VERTICAL,false);
-        recyclerView.setLayoutManager(layoutManager);
 
         /* Show all images in ImageSwitcher */
         itemImg.setFactory(() -> new ImageView(getApplicationContext()));
 
         /* Initialize ImageSwitcher with animations */
-        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
-        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.fade_out);
         itemImg.setInAnimation(in);
         itemImg.setOutAnimation(out);
 
@@ -156,7 +160,6 @@ public class ItemActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<List<Offer>> call, @NonNull Throwable t) {
                 System.out.println(t.getMessage());
@@ -181,12 +184,12 @@ public class ItemActivity extends AppCompatActivity {
         itemEdit.setOnClickListener(v -> {
             Intent intent = new Intent(ItemActivity.this, EditItemActivity.class);
             Bundle itemInfo = new Bundle();
-            String owner = itemOwner.getText().toString();
-            String name = itemName.getText().toString();
-            String desc = itemDesc.getText().toString();
-            String price = itemPrice.getText().toString();
+            String owner = itemOwner.getText().toString().trim();
+            String name = itemName.getText().toString().trim();
+            String desc = itemDesc.getText().toString().trim();
+            String price = itemPrice.getText().toString().trim();
             String image = item.getImage();
-            String condition = itemCondition.getText().toString();
+            String condition = itemCondition.getText().toString().trim();
             int itemId = item.getItemId();
 
             itemInfo.putString("OWNER",owner);
@@ -209,8 +212,8 @@ public class ItemActivity extends AppCompatActivity {
         makeOffer.setOnClickListener(v -> {
             Intent intent = new Intent(ItemActivity.this, MakeOfferActivity.class);
             Bundle offerInfo = new Bundle();
-            String owner = itemOwner.getText().toString();
-            String name = itemName.getText().toString();
+            String owner = itemOwner.getText().toString().trim();
+            String name = itemName.getText().toString().trim();
             String image = item.getImage();
 
             offerInfo.putString("OWNER", owner);
@@ -241,9 +244,16 @@ public class ItemActivity extends AppCompatActivity {
 
         /* Select next image */
         next.setOnClickListener(view -> {
-            if (position < uriArrayList.size() - 1) {
+            if (position < addresses.size() - 1) {
                 position = position + 1;
-                itemImg.setImageURI(uriArrayList.get(position));
+                StorageReference ref = storageReference.child(addresses.get(position));
+                final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                    itemImg.setImageDrawable(drawable);
+                    System.out.println("Successfully read image");
+                }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
             }
             else {
                 Toast.makeText(ItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
@@ -254,12 +264,19 @@ public class ItemActivity extends AppCompatActivity {
         previous.setOnClickListener(view -> {
             if (position > 0) {
                 position = position - 1;
-                itemImg.setImageURI(uriArrayList.get(position));
+                StorageReference ref = storageReference.child(addresses.get(position));
+                final long ONE_MEGABYTE = 1024 * 1024 * 5;
+                ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                    itemImg.setImageDrawable(drawable);
+                    System.out.println("Successfully read image");
+                }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
             }
         });
 
         flag.setOnClickListener(v -> {
-            Intent intent = new Intent(ItemActivity.this, ReportUserActivity.class);
+            Intent intent = new Intent(ItemActivity.this, ReportItemActivity.class);
             intent.putExtra("ITEM", item);
             startActivity(intent);
         });
@@ -274,14 +291,10 @@ public class ItemActivity extends AppCompatActivity {
 
     /* Display Item Details */
     private void displayItem(Customer customer, Item item) {
-        /* Firebase instances */
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-
         itemOwner.setText(String.format("%s %s", customer.getFirstName(), customer.getLastName()));
         itemName.setText(item.getItemName());
         itemDesc.setText(item.getDescription());
-        String price = item.getPrice().toString();
+        String price = "\u20B1" + item.getPrice().toString();
         itemPrice.setText(price);
         if (item.getImage() == null) {
             itemImg.setImageResource(R.drawable.placeholder);
@@ -289,18 +302,24 @@ public class ItemActivity extends AppCompatActivity {
         else {
             /* retrieve image from firebase */
             String[] split = item.getImage().split("-");
-            String image = split[split.length-1];
+            String image = split[split.length-2];
+            String rotate = split[split.length-1];
             int size = Integer.parseInt(image);
-
+            rotation = Integer.parseInt(rotate);
+            /* Store all addresses in an arraylist */
             for (int i = 0; i<size; i++){
-                StorageReference ref = storageReference.child("images/" + item.getImage() + "/" + i);
-                ref.getDownloadUrl().addOnSuccessListener(uri -> {
-                    uriArrayList.add(uri);
-                    System.out.println("Successfully read image");
-
-
-                }).addOnFailureListener(fail -> out.println("Failed to read image" + fail));
+                String address = "images/" + item.getImage() + "/" + i;
+                addresses.add(address);
             }
+            StorageReference ref = storageReference.child(addresses.get(0));
+            final long ONE_MEGABYTE = 1024 * 1024 * 5;
+            ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+                itemImg.setImageDrawable(drawable);
+                itemImg.setRotation(rotation);
+                System.out.println("Successfully read image");
+            }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }
         itemCondition.setText(item.getCondition());
 
@@ -333,9 +352,10 @@ public class ItemActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
                 ArrayList<Tag> tags = (ArrayList<Tag>) response.body();
                 assert tags != null;
-                ArrayList<Tag> tagList = new ArrayList<>(tags);
-                tagAdapter = new TagAdapter(tagList);
-                recyclerView.setAdapter(tagAdapter);
+                /* Add tags to chip group */
+                for (int i=0; i<tags.size();i++) {
+                    addChip(tags.get(i).getTagName());
+                }
             }
 
             @Override
@@ -366,6 +386,8 @@ public class ItemActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
     }
 
     /* Delete user's item */
@@ -380,7 +402,25 @@ public class ItemActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
                 out.println("Failed to delete item");
                 out.println(t.getMessage());
+
             }
         }, itemId);
+    }
+    /* Add tag to chip group */
+    private void addChip(String tag) {
+        try {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            Chip chip = (Chip) inflater.inflate(R.layout.chip, chipGroup, false);
+            chip.setId(ViewCompat.generateViewId());
+            chip.setText(tag);
+            chip.setCloseIconVisible(false);
+            chip.setClickable(true);
+            chip.setCheckable(false);
+            chipGroup.addView(chip);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error in adding chip " + e.getMessage());
+        }
+
     }
 }

@@ -70,7 +70,7 @@ public class MessageActivity extends AppCompatActivity {
                 Map<String, Object> chatData = new HashMap<>();
                 chatData.put("sender", customerEmail);
                 chatData.put("receiver", chatterEmail);
-                chatData.put("message", chatInput.getText().toString());
+                chatData.put("message", chatInput.getText().toString().trim());
                 chatData.put("time", new Date().getTime());
 
                 reference.child("chats").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -105,8 +105,8 @@ public class MessageActivity extends AppCompatActivity {
                     messages.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                         /* check if the sender and receiver are either the user or the person they are chatting */
-                        if ((Objects.equals(dataSnapshot.child("sender").getValue(), customerEmail) || (Objects.equals(dataSnapshot.child("receiver").getValue(), customerEmail))
-                        & (Objects.equals(dataSnapshot.child("sender").getValue(), chatterEmail) || Objects.equals(dataSnapshot.child("sender").getValue(), chatterEmail))))
+                        if ((Objects.equals(dataSnapshot.child("receiver").getValue(), customerEmail) & (Objects.equals(dataSnapshot.child("sender").getValue(), chatterEmail))
+                        || (Objects.equals(dataSnapshot.child("receiver").getValue(), chatterEmail) & Objects.equals(dataSnapshot.child("sender").getValue(), customerEmail))))
                         {
                             String message = Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString();
                             /* check if the sender is not the user */

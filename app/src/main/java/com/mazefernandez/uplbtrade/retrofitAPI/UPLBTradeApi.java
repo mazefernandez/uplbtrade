@@ -4,6 +4,7 @@ import com.mazefernandez.uplbtrade.models.ApplicationReview;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReport;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
+import com.mazefernandez.uplbtrade.models.Id;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.ItemReport;
 import com.mazefernandez.uplbtrade.models.Offer;
@@ -42,7 +43,7 @@ public interface UPLBTradeApi {
     @GET("/api/customer-reviews/{id}")
     Call<CustomerReview> getCustomerReview();
 
-    @POST("/api/customer-reviews/")
+    @POST("/api/customer-reviews")
     Call<CustomerReview> addCustomerReview(@Body CustomerReview customerReview);
 
     @GET("/api/customer-reviews/customer/{id}")
@@ -75,6 +76,9 @@ public interface UPLBTradeApi {
     @PUT("/api/customers/{customer_id}")
     Call<Customer> updateCustomer(@Body Customer customer, @Path("customer_id") int customerId);
 
+    @PUT("/api/customers/rating/{customer_id}")
+    Call<Customer> updateRating(@Path("customer_id") int customerId);
+
     @GET("/api/customers/{customer_id}/items")
     Call<List<Item>> getCustomerItems(@Path("customer_id") int customerId);
 
@@ -84,6 +88,12 @@ public interface UPLBTradeApi {
     /* Item calls */
     @GET("/api/items")
     Call<List<Item>> getItems();
+
+    @POST("/api/items/tags")
+    Call<List<Id>> searchTagItems(@Body List<String> tags);
+
+    @POST("/api/items/ids")
+    Call<List<Item>> getItemsByIds(@Body List<Integer> ids);
 
     @GET("/api/items/{item_id}")
     Call<Item> getItem(@Path("item_id") int itemId);
@@ -110,6 +120,9 @@ public interface UPLBTradeApi {
 
     @GET("/api/tags/item/{item_id}")
     Call<List<Tag>> getTagsFromItem(@Path("item_id") int itemId);
+
+    @DELETE("/api/tags/{tag_id}")
+    Call<Tag> deleteTag(@Path("tag_id") int tagId);
 
     /* Offer Calls */
     @GET("/api/offers")
@@ -152,5 +165,7 @@ public interface UPLBTradeApi {
     @POST("/api/transactions")
     Call<Transaction> addTransaction(@Body Transaction transaction);
 
+    @POST("/api/transactions/cancel/{transaction_id}")
+    Call<Transaction> cancelTransaction(@Path("transaction_id") int transaction_id);
 }
 

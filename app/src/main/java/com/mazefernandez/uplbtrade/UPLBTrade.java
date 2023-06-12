@@ -1,18 +1,10 @@
 package com.mazefernandez.uplbtrade;
 
-import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.TAG;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.mazefernandez.uplbtrade.activities.LoginActivity;
 import com.mazefernandez.uplbtrade.retrofitAPI.RetrofitClient;
 

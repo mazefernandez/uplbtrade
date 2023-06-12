@@ -10,62 +10,54 @@
     <!-- Customer name -->
     <TextView
         android:id="@+id/edit_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/edit_img"
         app:layout_constraintTop_toTopOf="@+id/edit_img" />
 
     <!-- Contact number -->
     <EditText
         android:id="@+id/edit_contactNo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:hint="@string/contact_number"
         android:inputType="number"
         android:textAppearance="@style/TextAppearance.Compat.Notification"
         android:autofillHints="@string/contact_number"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/edit_img"
         app:layout_constraintTop_toBottomOf="@+id/edit_address" />
 
     <!-- Save customer details -->
     <Button
         android:id="@+id/save_customer"
-        android:layout_width="71dp"
-        android:layout_height="37dp"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="12dp"
         android:text="@string/save"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
         app:layout_constraintEnd_toEndOf="@+id/edit_contactNo"
         app:layout_constraintTop_toBottomOf="@+id/edit_contactNo" />
 
     <!-- Address -->
     <EditText
         android:id="@+id/edit_address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:hint="@string/address"
         android:inputType="textPostalAddress"
         android:textAppearance="@style/TextAppearance.Compat.Notification"
         android:autofillHints="@string/address"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/edit_img"
         app:layout_constraintTop_toBottomOf="@+id/edit_text" />
 
@@ -79,7 +71,7 @@
         android:contentDescription="@string/app_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="8dp" />
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

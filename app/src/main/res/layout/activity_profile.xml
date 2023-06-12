@@ -12,43 +12,42 @@
     <!-- User name -->
     <TextView
         android:id="@+id/profile_text"
-        android:layout_width="0dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        app:layout_constraintEnd_toStartOf="@+id/settings"
-        app:layout_constraintStart_toEndOf="@+id/profile_img"
-        app:layout_constraintTop_toTopOf="@+id/profile_img" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_img" />
 
     <!-- User Address -->
     <TextView
         android:id="@+id/profile_address"
-        android:layout_width="0dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:lines="2"
-        android:maxLines="2"
-        android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:layout_marginTop="8dp"
+        android:gravity="top"
+        android:padding="5dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/profile_text"
         app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_text" />
 
     <!-- User contact number -->
     <TextView
         android:id="@+id/contactNo"
-        android:layout_width="0dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:gravity="top"
+        android:padding="5dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@id/profile_text"
         app:layout_constraintEnd_toStartOf="@+id/editCustomer"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/profile_img"
         app:layout_constraintTop_toBottomOf="@+id/profile_address" />
 
     <!-- User rating -->
@@ -57,20 +56,19 @@
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:numStars="5"
         android:stepSize="0.5"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_img"
-        app:layout_constraintStart_toEndOf="@+id/profile_img"
-        app:layout_constraintTop_toBottomOf="@+id/contactNo"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="@id/profile_img"
+        app:layout_constraintTop_toBottomOf="@id/profile_img"
+        app:layout_constraintEnd_toEndOf="@id/profile_img"
+        />
 
     <!-- Profile picture -->
     <ImageView
         android:id="@+id/profile_img"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/app_name"
@@ -81,56 +79,48 @@
 
     <ImageButton
         android:id="@+id/message"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginStart="8dp"
         android:background="@color/background"
         android:contentDescription="@string/message"
-        app:layout_constraintBottom_toTopOf="@id/recycler_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/profile_search"
-        app:layout_constraintTop_toBottomOf="@+id/profile_img"
-        app:tint="@color/orange"
+        app:layout_constraintTop_toTopOf="@+id/profile_search"
+        app:tint="@color/maroon"
         tools:src="@android:drawable/ic_dialog_email" />
 
     <!-- Search bar for items -->
     <SearchView
         android:id="@+id/profile_search"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="340dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/border"
         android:iconifiedByDefault="false"
         android:inputType="text"
         android:queryHint="@string/search"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/recycler_view"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/profile_img"
-        app:layout_constraintTop_toBottomOf="@+id/profile_img" />
+        app:layout_constraintTop_toBottomOf="@+id/rating" />
 
     <!-- Edit customer button -->
     <Button
         android:id="@+id/editCustomer"
         android:layout_width="wrap_content"
-        android:layout_height="37dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/app_name"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/edit_profile"
         android:text="@string/edit_profile"
-        app:layout_constraintBottom_toBottomOf="@+id/rating"
+        android:paddingHorizontal="10dp"
+        android:textColor="@color/dark_grey"
+        app:backgroundTint="@color/silver"
+        app:layout_constraintBottom_toBottomOf="@+id/contactNo"
         app:layout_constraintEnd_toEndOf="@+id/settings"
         app:layout_constraintStart_toEndOf="@+id/contactNo"
-        app:layout_constraintTop_toBottomOf="@+id/profile_address" />
+        app:layout_constraintTop_toTopOf="@+id/contactNo" />
 
     <!-- Add item to user's shop -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -138,30 +128,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="20dp"
         android:clickable="true"
+        android:contentDescription="@string/add_item"
         android:focusable="true"
-        android:tint="@color/off_white"
         app:backgroundTint="@color/orange"
         app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/recycler_view"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="@+id/recycler_view"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:contentDescription="@string/add_item" />
+        app:tint="@color/white"
+        tools:ignore="ImageContrastCheck" />
 
     <!-- Container for items -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="395dp"
+        android:layout_height="550dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_search" />
 
@@ -181,16 +167,15 @@
     <!-- Settings -->
     <ImageButton
         android:id="@+id/settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
         android:background="@color/background"
         android:contentDescription="@string/settings"
         app:layout_constraintBottom_toTopOf="@+id/profile_address"
-        app:layout_constraintEnd_toEndOf="@+id/profile_address"
-        app:layout_constraintTop_toTopOf="@+id/profile_text"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/profile_text"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/gear"
-        app:tint="@android:color/darker_gray" />
+        app:tint="@color/dark_grey" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,21 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.ApplicationReview;
@@ -32,13 +36,19 @@ public class ReviewAppActivity extends AppCompatActivity {
         setContentView(R.layout.activity_review_app);
 
         /*SharedPref to save customer_id*/
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        final SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         customerId = pref.getInt("customer_id", -1);
+
+        /*Configure Google Account*/
+        final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
+        assert account != null;
 
         /* Review App Views */
         TextView ratePrompt = findViewById(R.id.rate_prompt);
+        ratePrompt.setVisibility(View.VISIBLE);
         ratingBar = findViewById(R.id.rating_bar);
         TextView feedbackPrompt = findViewById(R.id.feedback_prompt);
+        feedbackPrompt.setVisibility(View.VISIBLE);
         review = findViewById(R.id.review);
         Button submit = findViewById(R.id.submit_button);
 
@@ -46,7 +56,7 @@ public class ReviewAppActivity extends AppCompatActivity {
             float float_rating;
             float_rating = ratingBar.getRating();
             Double rating = (double) float_rating;
-            String string_review = review.getText().toString();
+            String string_review = review.getText().toString().trim();
 
             /* Add application review to database */
             ApplicationReview applicationReview = new ApplicationReview(rating, string_review, customerId);
@@ -67,6 +77,7 @@ public class ReviewAppActivity extends AppCompatActivity {
             Toast.makeText(this, "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(ReviewAppActivity.this,HomeActivity.class);
+            intent.putExtra(GOOGLE_ACCOUNT, account);
             startActivity(intent);
         });
     }

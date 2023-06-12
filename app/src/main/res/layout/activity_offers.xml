@@ -10,12 +10,12 @@
     <TextView
         android:id="@+id/offers_title"
         android:layout_width="match_parent"
-        android:layout_height="39dp"
-        android:text="@string/offers"
+        android:layout_height="wrap_content"
         android:background="@color/maroon"
-        android:textColor="@color/off_white"
         android:gravity="center_horizontal"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:text="@string/offers"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/off_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,9 +26,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/buying"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/offers_title"
+        app:layout_constraintTop_toBottomOf="@+id/offers_title"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp" />
 
@@ -40,7 +40,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/selling"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toTopOf="@id/selling"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buying" />
@@ -48,36 +48,26 @@
     <!-- List of offers the customer is buying -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/buying"
-        android:layout_width="0dp"
+        android:layout_width="395dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toTopOf="@id/seller"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buyer" />
+        app:layout_constraintBottom_toTopOf="@+id/seller"
+        app:layout_constraintStart_toStartOf="@+id/buyer"
+        app:layout_constraintTop_toBottomOf="@+id/buyer" />
 
     <!-- List of offers the customer is selling -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selling"
-        android:layout_width="0dp"
+        android:layout_width="395dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/seller" />
+        app:layout_constraintStart_toStartOf="@+id/seller"
+        app:layout_constraintTop_toBottomOf="@+id/seller" />
 
     <!-- nav bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

@@ -3,10 +3,10 @@ package com.mazefernandez.uplbtrade.models;
 import com.google.gson.annotations.SerializedName;
 
 public class Tag {
-    @SerializedName("tag_name")
-    private String tagName;
     @SerializedName("item_id")
     private Integer itemId;
+    @SerializedName("tag_name")
+    private String tagName;
 
     public Tag(String tagName, Integer itemId) {
         this.tagName = tagName;

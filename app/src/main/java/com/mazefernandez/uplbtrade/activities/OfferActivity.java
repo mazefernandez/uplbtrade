@@ -83,6 +83,13 @@ public class OfferActivity extends AppCompatActivity {
         }
         else {
             deleteOffer.setVisibility(View.GONE);
+            /*TODO add seller customer */
+//            offerSeller.setOnClickListener(v -> {
+//                Intent intent = new Intent(OfferActivity.this, CustomerProfileActivity.class);
+//                intent.putExtra("CUSTOMER",seller);
+//                startActivity(intent);
+//            });
+//            offerSeller.setTextColor(Color.BLUE);
         }
 
         if (!offer.getStatus().equals("Accepted")) {
@@ -147,19 +154,22 @@ public class OfferActivity extends AppCompatActivity {
                 price = "\u20B1" + price;
                 originalPrice.setText(price);
                 imgString = item.getImage();
-
+                String[] split = imgString.split("-");
+                String rotate = split[split.length-1];
+                int rotation = Integer.parseInt(rotate);
                 /* Firebase instances */
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageReference = storage.getReference();
 
                 /* retrieve image from firebase */
-                StorageReference ref = storageReference.child("images/"+imgString);
+                StorageReference ref = storageReference.child("images/"+imgString+"/0");
 
                 final long ONE_MEGABYTE = 1024 * 1024 * 5;
                 ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     System.out.println("Successfully read image");
                     offerImg.setImageBitmap(bitmap);
+                    offerImg.setRotation(rotation);
                 }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
 
             }
@@ -204,7 +214,7 @@ public class OfferActivity extends AppCompatActivity {
 
     /* Confirmation for declination of customer's offer */
     private void confirmDecline() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Decline Offer");
         builder.setMessage("Do you really want to decline the offer?");
         builder.setCancelable(false);
@@ -222,6 +232,8 @@ public class OfferActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
     }
 
     /* Declination of customer's offer to buy the item and add to database */
@@ -241,7 +253,7 @@ public class OfferActivity extends AppCompatActivity {
 
     /* Confirmation of accepting customer's offer to buy the item */
     private void confirmAccept() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Accept Offer");
         builder.setMessage("Do you really want to accept the offer?");
         builder.setCancelable(false);
@@ -251,8 +263,10 @@ public class OfferActivity extends AppCompatActivity {
             finish();
         });
 
-        builder.setNegativeButton("No", (dialog, which) -> Toast.makeText(getApplicationContext(), "Accept cancelled", Toast.LENGTH_SHORT).show());
-        builder.show();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
     }
 
     /* Accept customer's offer to buy the item and add to database */
@@ -272,7 +286,7 @@ public class OfferActivity extends AppCompatActivity {
 
     /* Confirmation of deleting one's offer to buy an item from a user */
     private void confirmDelete() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Offer");
         builder.setMessage("Do you really want to delete the offer?");
         builder.setCancelable(false);
@@ -284,7 +298,10 @@ public class OfferActivity extends AppCompatActivity {
 
         builder.setNegativeButton("No", (dialog, which) -> Toast.makeText(getApplicationContext(), "Delete cancelled", Toast.LENGTH_SHORT).show());
 
-        builder.show();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
     }
 
     /* Delete one's offer to buy an item from a user */

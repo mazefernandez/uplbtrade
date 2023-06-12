@@ -3,7 +3,6 @@ package com.mazefernandez.uplbtrade.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.activities.MessageActivity;
-import com.mazefernandez.uplbtrade.activities.OfferActivity;
-import com.mazefernandez.uplbtrade.models.Message;
 import com.mazefernandez.uplbtrade.models.User;
 
 import java.util.List;
@@ -42,12 +37,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-
-        /* Firebase instances */
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-
-
         /* retrieve customer data */
         holder.user = userList.get(position);
         holder.lastMessage.setText(userList.get(position).getLastMessage());

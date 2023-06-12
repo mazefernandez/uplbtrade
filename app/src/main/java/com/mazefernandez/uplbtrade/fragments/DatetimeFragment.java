@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,13 +61,17 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
         StorageReference storageReference = storage.getReference();
 
         /* retrieve image from firebase */
-        StorageReference ref = storageReference.child("images/"+imgString);
+        StorageReference ref = storageReference.child("images/"+imgString+"/0");
+        String[] split = imgString.split("-");
+        String rotate = split[split.length-1];
+        int rotation = Integer.parseInt(rotate);
 
         final long ONE_MEGABYTE = 1024 * 1024 * 5;
         ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             System.out.println("Successfully read image");
             itemImg.setImageBitmap(bitmap);
+            itemImg.setRotation(rotation);
         }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
 
 
@@ -93,6 +98,8 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
 
             @SuppressLint("DefaultLocale") DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view, year1, month1, dayOfMonth) -> date.setText(String.format("%d-%d-%d", year1, (month1 +1), dayOfMonth)), year, month, day);
             datePickerDialog.show();
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
         }
         else if (v == timeButton) {
             //get time
@@ -101,6 +108,8 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
 
             @SuppressLint("DefaultLocale") TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), (view, hourOfDay, minute1) -> time.setText(String.format("%d:%d", hourOfDay, minute1)), hour, minute, true);
             timePickerDialog.show();
+            timePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+            timePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
         }
     }
 
