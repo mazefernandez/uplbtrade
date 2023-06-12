@@ -165,11 +165,13 @@ public class ProfileActivity extends AppCompatActivity {
                 /* Review application */
                 case 0:
                     Intent review = new Intent(ProfileActivity.this, ReviewAppActivity.class);
+                    review.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(review);
                     return true;
                 /* Admin Chat */
                 case 1:
                     Intent chat = new Intent(ProfileActivity.this, AdminChatActivity.class);
+                    chat.putExtra(GOOGLE_ACCOUNT, account);
                     startActivity(chat);
                     return true;
                 /* Sign out */

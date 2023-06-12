@@ -1,5 +1,7 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import static com.mazefernandez.uplbtrade.adapters.GoogleAccountAdapter.GOOGLE_ACCOUNT;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +15,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.ApplicationReview;
@@ -33,8 +36,12 @@ public class ReviewAppActivity extends AppCompatActivity {
         setContentView(R.layout.activity_review_app);
 
         /*SharedPref to save customer_id*/
-        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        final SharedPreferences pref = this.getSharedPreferences("uplbtrade", MODE_PRIVATE);
         customerId = pref.getInt("customer_id", -1);
+
+        /*Configure Google Account*/
+        final GoogleSignInAccount account = getIntent().getParcelableExtra(GOOGLE_ACCOUNT);
+        assert account != null;
 
         /* Review App Views */
         TextView ratePrompt = findViewById(R.id.rate_prompt);
@@ -70,6 +77,7 @@ public class ReviewAppActivity extends AppCompatActivity {
             Toast.makeText(this, "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(ReviewAppActivity.this,HomeActivity.class);
+            intent.putExtra(GOOGLE_ACCOUNT, account);
             startActivity(intent);
         });
     }

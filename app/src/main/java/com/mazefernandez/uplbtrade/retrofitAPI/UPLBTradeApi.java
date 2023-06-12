@@ -43,7 +43,7 @@ public interface UPLBTradeApi {
     @GET("/api/customer-reviews/{id}")
     Call<CustomerReview> getCustomerReview();
 
-    @POST("/api/customer-reviews/")
+    @POST("/api/customer-reviews")
     Call<CustomerReview> addCustomerReview(@Body CustomerReview customerReview);
 
     @GET("/api/customer-reviews/customer/{id}")
@@ -75,6 +75,9 @@ public interface UPLBTradeApi {
 
     @PUT("/api/customers/{customer_id}")
     Call<Customer> updateCustomer(@Body Customer customer, @Path("customer_id") int customerId);
+
+    @PUT("/api/customers/rating/{customer_id}")
+    Call<Customer> updateRating(@Path("customer_id") int customerId);
 
     @GET("/api/customers/{customer_id}/items")
     Call<List<Item>> getCustomerItems(@Path("customer_id") int customerId);
@@ -162,5 +165,7 @@ public interface UPLBTradeApi {
     @POST("/api/transactions")
     Call<Transaction> addTransaction(@Body Transaction transaction);
 
+    @POST("/api/transactions/cancel/{transaction_id}")
+    Call<Transaction> cancelTransaction(@Path("transaction_id") int transaction_id);
 }
 

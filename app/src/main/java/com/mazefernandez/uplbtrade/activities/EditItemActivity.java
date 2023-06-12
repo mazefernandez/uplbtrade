@@ -62,6 +62,7 @@ public class EditItemActivity extends AppCompatActivity {
     private String imgString;
     private int itemId;
     private int position = 0;
+    private int rotation = 0;
     private boolean edit = false;
     private boolean duplicate;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
@@ -167,7 +168,7 @@ public class EditItemActivity extends AppCompatActivity {
                 /* Upload image to firebase storage */
                 imgString = UUID.randomUUID().toString();
                 int size = uriArrayList.size();
-                imgString = imgString + "-" + size;
+                imgString = imgString + "-" + size + "-" + rotation;
                 int i;
                 for (i = 0; i < uriArrayList.size(); i++) {
                     Uri file = uriArrayList.get(i);
@@ -245,7 +246,10 @@ public class EditItemActivity extends AppCompatActivity {
         });
 
         /* Rotate Image */
-        rotate.setOnClickListener(v -> itemImg.setRotation(90));
+        rotate.setOnClickListener(v -> {
+            rotation = (rotation + 90) % 360;
+            itemImg.setRotation(rotation);
+        });
 
         /* Select next image */
         next.setOnClickListener(view -> {
@@ -345,8 +349,10 @@ public class EditItemActivity extends AppCompatActivity {
         else {
             /* retrieve image from firebase */
             String[] split = itemInfo.getString("IMAGE").split("-");
-            String image = split[split.length - 1];
+            String image = split[split.length - 2];
+            String rotate = split[split.length-1];
             int size = Integer.parseInt(image);
+            rotation = Integer.parseInt(rotate);
             /* Store all addresses in an arraylist */
             for (int i = 0; i<size; i++){
                 String address = "images/" + itemInfo.getString("IMAGE") + "/" + i;
@@ -358,6 +364,7 @@ public class EditItemActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
                 itemImg.setImageDrawable(drawable);
+                itemImg.setRotation(rotation);
                 System.out.println("Successfully read image");
             }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }

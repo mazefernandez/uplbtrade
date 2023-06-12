@@ -121,6 +121,12 @@ public class RetrofitClient {
         Call<Customer> updateCustomerCall = service.updateCustomer(customer,customer_id);
         updateCustomerCall.enqueue(callback);
     }
+
+    public void updateRating(Callback<Customer> callback, int customer_id) {
+        Call<Customer> updateRatingCall = service.updateRating(customer_id);
+        updateRatingCall.enqueue(callback);
+    }
+
     public void getCustomerItems(Callback<List<Item>> callback, int customer_id) {
         Call<List<Item>> getCustomerItemsCall = service.getCustomerItems(customer_id);
         getCustomerItemsCall.enqueue(callback);
@@ -245,6 +251,11 @@ public class RetrofitClient {
     public void addTransaction(Callback<Transaction> callback, Transaction transaction) {
         Call<Transaction> addTransactionCall = service.addTransaction(transaction);
         addTransactionCall.enqueue(callback);
+    }
+
+    public void cancelTransaction(Callback<Transaction> callback, int transaction_id){
+        Call<Transaction> cancelTransactionCall = service.cancelTransaction(transaction_id);
+        cancelTransactionCall.enqueue(callback);
     }
 }
 

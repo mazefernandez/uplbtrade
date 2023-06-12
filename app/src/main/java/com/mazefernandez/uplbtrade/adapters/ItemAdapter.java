@@ -94,13 +94,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         }
         else {
             /* retrieve image from firebase */
-            StorageReference ref = storageReference.child("images/"+itemListFiltered.get(position).getImage()+"/0");
-
+            String imgString = itemListFiltered.get(position).getImage();
+            StorageReference ref = storageReference.child("images/"+imgString+"/0");
+            String[] split = imgString.split("-");
+            String rotate = split[split.length-1];
+            int rotation = Integer.parseInt(rotate);
             final long ONE_MEGABYTE = 1024 * 1024 * 5;
             ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 System.out.println("Successfully read image");
                 holder.itemImg.setImageBitmap(bitmap);
+                holder.itemImg.setRotation(rotation);
             }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }
         /* retrieve item data */

@@ -5,19 +5,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.ItemReport;
-import com.mazefernandez.uplbtrade.picasso.CircleTransformation;
-import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,6 +75,10 @@ public class ReportItemActivity extends AppCompatActivity {
                     System.out.println(t.getMessage());
                 }
             }, itemReport);
+            Toast.makeText(this, "Thank you for your report!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ReportItemActivity.this,ItemActivity.class);
+            intent.putExtra("ITEM", item);
+            startActivity(intent);
         });
         /* Cancel and return to item */
         cancel.setOnClickListener(v -> finish());
@@ -94,12 +101,24 @@ public class ReportItemActivity extends AppCompatActivity {
         }, customerId);
     }
     public void displayItem(Item item){
-        if (item.getImage().equals("placeholder")) {
-            Picasso.get().load(R.drawable.placeholder).centerInside().fit().transform(new CircleTransformation()).into(itemImage);
-        }
-        else {
-            Picasso.get().load(item.getImage() + "/0").centerInside().fit().transform(new CircleTransformation()).into(itemImage);
-        }
+        String imgString = item.getImage();
+        String[] split = imgString.split("-");
+        String rotate = split[split.length-1];
+        int rotation = Integer.parseInt(rotate);
+        /* Firebase instances */
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+
+        /* retrieve image from firebase */
+        StorageReference ref = storageReference.child("images/"+imgString+"/0");
+
+        final long ONE_MEGABYTE = 1024 * 1024 * 5;
+        ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            System.out.println("Successfully read image");
+            itemImage.setImageBitmap(bitmap);
+            itemImage.setRotation(rotation);
+        }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         String name = item.getItemName();
         itemName.setText(name);
     }

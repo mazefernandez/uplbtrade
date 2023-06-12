@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
+import com.mazefernandez.uplbtrade.models.Customer;
 import com.mazefernandez.uplbtrade.models.CustomerReview;
 
 import retrofit2.Call;
@@ -60,12 +61,12 @@ public class ReviewCustomerActivity extends AppCompatActivity {
 
             /* Add Customer review to database */
             CustomerReview customerReview = new CustomerReview(rating, string_review, raterId, customerId, transactionId);
-
             UPLBTrade.retrofitClient.addCustomerReview(new Callback<CustomerReview>() {
                 @Override
                 public void onResponse(@NonNull Call<CustomerReview> call, @NonNull Response<CustomerReview> response) {
                     System.out.println("Added Customer Review");
                     System.out.println(response.body());
+                    updateRating(customerId);
                 }
                 @Override
                 public void onFailure(@NonNull Call<CustomerReview> call, @NonNull Throwable t) {
@@ -80,5 +81,21 @@ public class ReviewCustomerActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+    }
+    private void updateRating(int customerId) {
+        UPLBTrade.retrofitClient.updateRating(new Callback<Customer>() {
+            @Override
+            public void onResponse(@NonNull Call<Customer> call, @NonNull Response<Customer> response) {
+                System.out.println("Updated customer Rating");
+                assert response.body() != null;
+                System.out.println(response.body().getOverallRating());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Customer> call, @NonNull Throwable t) {
+                System.out.println("Failed to update customer Rating");
+                System.out.println(t.getMessage());
+            }
+        }, customerId);
     }
 }

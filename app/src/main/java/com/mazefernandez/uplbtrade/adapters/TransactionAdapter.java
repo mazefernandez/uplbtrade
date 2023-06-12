@@ -45,10 +45,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         /* Insert transaction details */
-        String date = transactionList.get(position).getDate().toString();
+        String date = transactionList.get(position).getDate();
+        String time = transactionList.get(position).getTime();
         holder.transaction = transactionList.get(position);
         holder.date.setText(date);
-        holder.time.setText(transactionList.get(position).getTime());
+        holder.time.setText(time);
         holder.venue.setText(transactionList.get(position).getVenue());
         getItem(transactionList.get(position).getItemId(), holder);
         getOffer(transactionList.get(position).getOfferId(), holder);

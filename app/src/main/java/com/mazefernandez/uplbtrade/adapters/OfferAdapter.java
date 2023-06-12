@@ -64,6 +64,9 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
                 assert item != null;
                 holder.offerName.setText(item.getItemName());
                 imgString = item.getImage();
+                String[] split = imgString.split("-");
+                String rotate = split[split.length-1];
+                int rotation = Integer.parseInt(rotate);
 
                 /* Firebase instances */
                 FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -76,6 +79,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ItemViewHold
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     System.out.println("Successfully read image");
                     holder.offerImg.setImageBitmap(bitmap);
+                    holder.offerImg.setRotation(rotation);
                 }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
 
                 System.out.println("Retrieved item from offer");

@@ -81,4 +81,5 @@
     <string name="write_a_review">Write a Review…</string>
     <string name="delete_images">delete images</string>
     <string name="show_recommended">show recommended</string>
+    <string name="info">info</string>
 </resources>

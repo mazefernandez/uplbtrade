@@ -78,8 +78,10 @@ public class CustomerProfileActivity extends AppCompatActivity {
         displayCustomerItems(customer.getCustomerId());
         displayCustomer(customer);
 
+        String email = customer.getEmail().replace("@up.edu.ph","");
+
         /* Check if users are already friends */
-        databaseReference.child("users").child(customerEmail).child("friends").child(customerEmail).get().addOnCompleteListener(task -> {
+        databaseReference.child("users").child(customerEmail).child("friends").child(email).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             }
@@ -95,7 +97,7 @@ public class CustomerProfileActivity extends AppCompatActivity {
         });
 
         /* Setup profile items */
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(CustomerProfileActivity.this,3);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(CustomerProfileActivity.this,2);
         recyclerView.setLayoutManager(layoutManager);
 
         /* Set up search view */
@@ -123,7 +125,6 @@ public class CustomerProfileActivity extends AppCompatActivity {
 
         /* Message User */
         addFriend.setOnClickListener(v -> {
-            String email = customer.getEmail().replace("@up.edu.ph","");
             /* Add user to list of friends */
 
             User user = new User(email);

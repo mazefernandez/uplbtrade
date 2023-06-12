@@ -1,11 +1,14 @@
 package com.mazefernandez.uplbtrade.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,10 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mazefernandez.uplbtrade.R;
 import com.mazefernandez.uplbtrade.UPLBTrade;
 import com.mazefernandez.uplbtrade.models.Customer;
-import com.mazefernandez.uplbtrade.models.CustomerReview;
 import com.mazefernandez.uplbtrade.models.Item;
 import com.mazefernandez.uplbtrade.models.Offer;
 import com.mazefernandez.uplbtrade.models.Transaction;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +36,7 @@ public class TransactionActivity extends AppCompatActivity {
     TextView buyer;
     TextView seller;
     TextView price;
+    Button cancel;
 
     private int itemId;
     private int offerId;
@@ -58,7 +62,7 @@ public class TransactionActivity extends AppCompatActivity {
         seller = findViewById(R.id.seller);
         price = findViewById(R.id.price);
         Button rate = findViewById(R.id.rate);
-        Button cancelOrder = findViewById(R.id.cancel_order);
+        cancel = findViewById(R.id.cancel_order);
 
         Transaction transaction = (Transaction) getIntent().getSerializableExtra("TRANSACTION");
         assert transaction != null;
@@ -72,7 +76,7 @@ public class TransactionActivity extends AppCompatActivity {
         getTransaction();
         /* adjust views for buyer and seller */
         if (sellerId == sessionId) {
-            cancelOrder.setVisibility(View.GONE);
+            cancel.setVisibility(View.GONE);
         }
 
         // go to rating page for transaction
@@ -90,16 +94,16 @@ public class TransactionActivity extends AppCompatActivity {
             review.putExtras(reviewInfo);
             startActivity(review);
         });
-        cancelOrder.setOnClickListener(v ->{
-
-        });
+        cancel.setOnClickListener(v -> confirmCancel(transactionId));
 
     }
 
     /* retrieve transaction information */
     private void getTransactionInfo(Transaction transaction) {
-        date.setText(transaction.getDate());
-        time.setText(transaction.getTime());
+        String dateStr = transaction.getDate();
+        String timeStr = transaction.getTime();
+        date.setText(dateStr);
+        time.setText(timeStr);
         venue.setText(transaction.getVenue());
 
         getItemName();
@@ -196,5 +200,43 @@ public class TransactionActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, buyerId);
+    }
+    private void cancelOrder(int transaction_id) {
+        UPLBTrade.retrofitClient.cancelTransaction(new Callback<Transaction>() {
+            @Override
+            public void onResponse(@NonNull Call<Transaction> call, @NonNull Response<Transaction> response) {
+                System.out.println("Cancelled Transaction");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Transaction> call, @NonNull Throwable t) {
+                System.out.println("Failed to cancel Transaction");
+                System.out.println(t.getMessage());
+            }
+        }, transaction_id);
+    }
+    private void confirmCancel(int transaction_id) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Item");
+        builder.setMessage("Do you really want to cancel?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            cancelOrder(transaction_id);
+            Toast.makeText(getApplicationContext(), "Order canceled", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+            cancel.setVisibility(View.GONE);
+            finish();
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> {
+            Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+            dialog.cancel();
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -59,6 +60,7 @@ public class AddItemActivity extends AppCompatActivity {
     private boolean duplicate;
     private ChipGroup chipGroup;
     private final ArrayList<Uri> uriArrayList = new ArrayList<>();
+//    private final ArrayList<Integer> rotationList = new ArrayList<>();
 
     /* AR Launchers to replace OnActivityResult */
     ActivityResultLauncher<Intent> selectImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -73,14 +75,36 @@ public class AddItemActivity extends AppCompatActivity {
                 for (int i=0; i<count; i++) {
                     Uri url = clipData.getItemAt(i).getUri();
                     uriArrayList.add(url);
+//                    try{
+//                        ContentResolver contentResolver = getContentResolver();
+//                        InputStream inputStream = contentResolver.openInputStream(url);
+//                        ExifInterface ei = new ExifInterface(inputStream);
+//                        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+//                        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+//                            rotationList.add(90);
+//                        }
+//                        else if (orientation == ExifInterface.ORIENTATION_ROTATE_180){
+//                            rotationList.add(180);
+//                        }
+//                        else if (orientation == ExifInterface.ORIENTATION_ROTATE_270){
+//                            rotationList.add(270);
+//                        }
+//                        else {
+//                            rotationList.add(0);
+//                        }
+//                    } catch(Exception e) {
+//                        System.out.println("Error getting rotation: "+e.getMessage());
+//                    }
                 }
-                /* display first image */
             }
             else {
                 Uri url = intent.getData();
                 uriArrayList.add(url);
             }
+            /* display first image */
             itemImg.setImageURI(uriArrayList.get(0));
+            itemImg.setRotation(rotation);
+//            itemImg.setRotation(rotationList.get(0));
             position = 0;
         }
         else {
@@ -107,6 +131,7 @@ public class AddItemActivity extends AppCompatActivity {
         itemTags = findViewById(R.id.tags);
         chipGroup = findViewById(R.id.chip_group);
 
+
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
@@ -116,6 +141,7 @@ public class AddItemActivity extends AppCompatActivity {
         ImageButton addTag = findViewById(R.id.add_tag);
         ImageButton rotate = findViewById(R.id.rotate);
         ImageButton deleteImages = findViewById(R.id.delete_images);
+        ImageButton info = findViewById(R.id.info);
 
         Button addItem = findViewById(R.id.add_item);
         Button cancel = findViewById(R.id.cancel);
@@ -135,6 +161,7 @@ public class AddItemActivity extends AppCompatActivity {
         itemCondition.setAdapter(spinnerAdapter);
 
         deleteImages.setOnClickListener(v -> confirmDelete());
+        info.setOnClickListener(v -> provideInfo());
 
         /* New Item */
         addItem.setOnClickListener(v -> {
@@ -150,7 +177,7 @@ public class AddItemActivity extends AppCompatActivity {
             /* Upload image to firebase storage */
             imgString = UUID.randomUUID().toString();
             int size = uriArrayList.size();
-            imgString = imgString + "-" + size;
+            imgString = imgString + "-" + size + "-" + rotation;
             int i;
             for (i = 0; i < uriArrayList.size(); i++) {
                 Uri file = uriArrayList.get(i);
@@ -213,6 +240,7 @@ public class AddItemActivity extends AppCompatActivity {
             if (position < uriArrayList.size() - 1) {
                 position = position + 1;
                 itemImg.setImageURI(uriArrayList.get(position));
+                itemImg.setRotation(rotation);
             } else {
                 Toast.makeText(AddItemActivity.this, "This is the last image.", Toast.LENGTH_SHORT).show();
             }
@@ -223,6 +251,7 @@ public class AddItemActivity extends AppCompatActivity {
             if (position > 0) {
                 position = position - 1;
                 itemImg.setImageURI(uriArrayList.get(position));
+                itemImg.setRotation(rotation);
             }
         });
 
@@ -230,7 +259,7 @@ public class AddItemActivity extends AppCompatActivity {
         rotate.setOnClickListener(view -> {
             rotation = (rotation + 90) % 360;
             itemImg.setRotation(rotation);
-
+//            rotationList.set(position,rotation);
         });
 
         /* Upload image to item */
@@ -342,8 +371,18 @@ public class AddItemActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
     }
     private void deleteImages() {
         itemImg.setImageDrawable(null);
+    }
+    private void provideInfo() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("How to Add Items");
+        builder.setMessage("Make your title simple! e.g (TC7)\nAdd more details in the description.\n* Year purchased, subjects, marks, damage, etc.\n(Max 250 characters)");
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

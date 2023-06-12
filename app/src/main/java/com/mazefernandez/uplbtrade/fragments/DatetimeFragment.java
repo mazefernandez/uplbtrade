@@ -62,12 +62,16 @@ public class DatetimeFragment extends Fragment implements View.OnClickListener{
 
         /* retrieve image from firebase */
         StorageReference ref = storageReference.child("images/"+imgString+"/0");
+        String[] split = imgString.split("-");
+        String rotate = split[split.length-1];
+        int rotation = Integer.parseInt(rotate);
 
         final long ONE_MEGABYTE = 1024 * 1024 * 5;
         ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             System.out.println("Successfully read image");
             itemImg.setImageBitmap(bitmap);
+            itemImg.setRotation(rotation);
         }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
 
 

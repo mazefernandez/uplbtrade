@@ -61,6 +61,7 @@ public class ItemActivity extends AppCompatActivity {
     private int itemId;
     private int sellerId;
     private int position = 0;
+    private int rotation = 0;
     private Offer offer;
     private Customer seller;
     private ChipGroup chipGroup;
@@ -275,7 +276,7 @@ public class ItemActivity extends AppCompatActivity {
         });
 
         flag.setOnClickListener(v -> {
-            Intent intent = new Intent(ItemActivity.this, ReportUserActivity.class);
+            Intent intent = new Intent(ItemActivity.this, ReportItemActivity.class);
             intent.putExtra("ITEM", item);
             startActivity(intent);
         });
@@ -301,8 +302,10 @@ public class ItemActivity extends AppCompatActivity {
         else {
             /* retrieve image from firebase */
             String[] split = item.getImage().split("-");
-            String image = split[split.length-1];
+            String image = split[split.length-2];
+            String rotate = split[split.length-1];
             int size = Integer.parseInt(image);
+            rotation = Integer.parseInt(rotate);
             /* Store all addresses in an arraylist */
             for (int i = 0; i<size; i++){
                 String address = "images/" + item.getImage() + "/" + i;
@@ -314,6 +317,7 @@ public class ItemActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
                 itemImg.setImageDrawable(drawable);
+                itemImg.setRotation(rotation);
                 System.out.println("Successfully read image");
             }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
         }
@@ -398,6 +402,7 @@ public class ItemActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<Item> call, @NonNull Throwable t) {
                 out.println("Failed to delete item");
                 out.println(t.getMessage());
+
             }
         }, itemId);
     }

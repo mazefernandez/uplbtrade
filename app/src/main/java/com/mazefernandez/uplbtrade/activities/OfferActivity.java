@@ -154,7 +154,9 @@ public class OfferActivity extends AppCompatActivity {
                 price = "\u20B1" + price;
                 originalPrice.setText(price);
                 imgString = item.getImage();
-
+                String[] split = imgString.split("-");
+                String rotate = split[split.length-1];
+                int rotation = Integer.parseInt(rotate);
                 /* Firebase instances */
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageReference = storage.getReference();
@@ -167,6 +169,7 @@ public class OfferActivity extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     System.out.println("Successfully read image");
                     offerImg.setImageBitmap(bitmap);
+                    offerImg.setRotation(rotation);
                 }).addOnFailureListener(fail -> System.out.println("Failed to read image" + fail));
 
             }

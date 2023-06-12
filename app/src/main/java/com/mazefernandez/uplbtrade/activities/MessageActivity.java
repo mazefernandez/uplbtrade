@@ -105,8 +105,8 @@ public class MessageActivity extends AppCompatActivity {
                     messages.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                         /* check if the sender and receiver are either the user or the person they are chatting */
-                        if ((Objects.equals(dataSnapshot.child("sender").getValue(), customerEmail) || (Objects.equals(dataSnapshot.child("receiver").getValue(), customerEmail))
-                        & (Objects.equals(dataSnapshot.child("sender").getValue(), chatterEmail) || Objects.equals(dataSnapshot.child("sender").getValue(), chatterEmail))))
+                        if ((Objects.equals(dataSnapshot.child("receiver").getValue(), customerEmail) & (Objects.equals(dataSnapshot.child("sender").getValue(), chatterEmail))
+                        || (Objects.equals(dataSnapshot.child("receiver").getValue(), chatterEmail) & Objects.equals(dataSnapshot.child("sender").getValue(), customerEmail))))
                         {
                             String message = Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString();
                             /* check if the sender is not the user */

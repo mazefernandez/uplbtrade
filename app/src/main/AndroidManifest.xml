@@ -28,7 +28,8 @@
         tools:targetApi="s">
         <activity
             android:name=".activities.ReportItemActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.CustomerProfileActivity"
             android:exported="false"
@@ -57,7 +58,8 @@
         <activity
             android:name=".activities.TransactionActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.ReportUserActivity" />
+        <activity android:name=".activities.ReportUserActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true"

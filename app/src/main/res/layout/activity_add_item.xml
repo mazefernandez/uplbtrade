@@ -25,6 +25,18 @@
             app:layout_constraintStart_toStartOf="@+id/item_name"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/info"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/background"
+            app:layout_constraintStart_toStartOf="@id/rotate"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@android:drawable/ic_menu_info_details"
+            android:contentDescription="@string/info">
+        </ImageButton>
+
         <!-- Delete Image -->
         <ImageButton
             android:id="@+id/delete_images"
