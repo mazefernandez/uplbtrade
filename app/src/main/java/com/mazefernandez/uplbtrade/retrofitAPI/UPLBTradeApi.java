@@ -50,7 +50,7 @@ public interface UPLBTradeApi {
     Call<List<CustomerReview>> getSpecificCustomerReviews();
 
     @GET("/api/customer-reviews/rating/{id}")
-    Call<Double> getCustomerRating();
+    Call<Double> getCustomerRating(@Path("id") int id);
 
     @DELETE("/api/customer-reviews/{id}")
     Call<CustomerReview> deleteCustomerReview(@Path("customerReview_id") int customerReview_id);

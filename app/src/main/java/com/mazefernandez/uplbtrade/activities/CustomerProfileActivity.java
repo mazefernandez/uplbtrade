@@ -162,8 +162,7 @@ public class CustomerProfileActivity extends AppCompatActivity {
         String name = customer.getFirstName() + " " + customer.getLastName();
         profileAddress.setText(customer.getAddress());
         contactNo.setText(customer.getContactNo());
-        float f = customer.getOverallRating().floatValue();
-        rating.setRating(f);
+        getRating(customer.getCustomerId());
         profileName.setText(name);
     }
     public void displayCustomerItems(int customerId){
@@ -185,5 +184,23 @@ public class CustomerProfileActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, customerId);
+    }
+    private void getRating(int customer_id) {
+        UPLBTrade.retrofitClient.getCustomerRating(new Callback<Double>() {
+            @Override
+            public void onResponse(@NonNull Call<Double> call, @NonNull Response<Double> response) {
+                Double rate = response.body();
+                assert rate != null;
+                float r = rate.floatValue();
+                rating.setRating(r);
+                System.out.println("Got customer rating");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Double> call, @NonNull Throwable t) {
+                System.out.println("Error in getting customer rating");
+                System.out.println(t.getMessage());
+            }
+        }, customer_id);
     }
 }

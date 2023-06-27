@@ -14,18 +14,16 @@
         android:id="@+id/add_friend"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
         android:background="@color/background"
         android:contentDescription="@string/add_friend"
         android:padding="3dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/add_friend"
-        app:layout_constraintEnd_toEndOf="@id/flag"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@id/profile_search"
+        app:layout_constraintEnd_toEndOf="@id/flag"
         app:layout_constraintStart_toEndOf="@id/profile_search"
         app:tint="@color/orange"
-        tools:ignore="ImageContrastCheck" />
+        tools:src="@drawable/add_friend" />
 
     <!-- User name -->
     <TextView
