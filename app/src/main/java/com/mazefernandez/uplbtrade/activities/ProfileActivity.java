@@ -129,6 +129,8 @@ public class ProfileActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ProfileActivity.this, 2);
         recyclerView.setLayoutManager(layoutManager);
 
+        getRating(sessionId);
+
         /* Set up search view */
         profileSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -219,7 +221,6 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
         /* Navigation bar */
         navigation = findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_profile);
@@ -284,9 +285,6 @@ public class ProfileActivity extends AppCompatActivity {
                 assert customer != null;
                 profileAddress.setText(customer.getAddress());
                 contactNo.setText(customer.getContactNo());
-                double rate = customer.getOverallRating();
-                float r = (float) rate;
-                rating.setRating(r);
                 sessionId = customer.getCustomerId();
                 editor.putInt("customer_id", sessionId);
                 editor.apply();
@@ -318,5 +316,23 @@ public class ProfileActivity extends AppCompatActivity {
                 System.out.println(t.getMessage());
             }
         }, customerId);
+    }
+    private void getRating(int customer_id) {
+        UPLBTrade.retrofitClient.getCustomerRating(new Callback<Double>() {
+            @Override
+            public void onResponse(@NonNull Call<Double> call, @NonNull Response<Double> response) {
+                Double rate = response.body();
+                assert rate != null;
+                float r = rate.floatValue();
+                rating.setRating(r);
+                System.out.println("Got customer rating");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Double> call, @NonNull Throwable t) {
+                System.out.println("Error in getting customer rating");
+                System.out.println(t.getMessage());
+            }
+        }, customer_id);
     }
 }

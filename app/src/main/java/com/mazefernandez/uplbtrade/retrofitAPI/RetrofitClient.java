@@ -83,8 +83,8 @@ public class RetrofitClient {
         getSpecificCustomerReviewsCall.enqueue(callback);
     }
 
-    public void getCustomerRating(Callback<Double> callback) {
-        Call<Double> getCustomerRatingCall = service.getCustomerRating();
+    public void getCustomerRating(Callback<Double> callback, int id) {
+        Call<Double> getCustomerRatingCall = service.getCustomerRating(id);
         getCustomerRatingCall.enqueue(callback);
     }
 
