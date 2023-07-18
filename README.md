@@ -35,3 +35,7 @@ uplbtrade/
 4. To setup project in Android Studio click Build > Make Project
 5. To choose device click Device Manager > Create Device or click Device Manager > Physical > Pair Device 
 6. To run the application click Run > Run app 
+
+# Demo 
+* [Prerecorded Presentation](https://drive.google.com/file/d/1df7f6BqRoquu9dzWaMpBxtZZwcdNVHTL/view?usp=sharing)
+
