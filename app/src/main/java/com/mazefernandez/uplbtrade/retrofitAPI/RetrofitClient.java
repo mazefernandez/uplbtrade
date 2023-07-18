@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /* Handles Retrofit Calls */
 
 public class RetrofitClient {
-    private static final String BASE_URL = "https://uplbtrade.com/";
+    private static final String BASE_URL = "http://localhost:8000/";
     private static UPLBTradeApi service;
     private static RetrofitClient retrofitClient;
 
